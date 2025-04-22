@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';

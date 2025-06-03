@@ -44,7 +44,20 @@ const obterProdutos = (): ProdutoInfo[] => {
     if (Array.isArray(armazenados)) {
       return armazenados.map((p: any) => ({
         ...p,
-        categoria: p.categoria ?? ''
+        categoria: p.categoria ?? '',
+        preco: Number(p.preco) || 0,
+        infoNutricional: p.infoNutricional
+          ? {
+              calorias: Number(p.infoNutricional.calorias) || 0,
+              carboidratos: Number(p.infoNutricional.carboidratos) || 0,
+              proteinas: Number(p.infoNutricional.proteinas) || 0,
+              gordurasTotais: Number(p.infoNutricional.gordurasTotais) || 0,
+              gordurasSaturadas: Number(p.infoNutricional.gordurasSaturadas) || 0,
+              gordurasTrans: Number(p.infoNutricional.gordurasTrans) || 0,
+              fibras: Number(p.infoNutricional.fibras) || 0,
+              sodio: Number(p.infoNutricional.sodio) || 0
+            }
+          : undefined
       }));
     }
   } catch (error) {

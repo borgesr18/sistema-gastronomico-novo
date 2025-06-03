@@ -258,6 +258,12 @@ export const categoriasReceitas = [
   { value: 'outro', label: 'Outro' },
 ];
 
+// Obter rótulo legível da categoria de receita
+export const obterLabelCategoriaReceita = (valor: string) => {
+  const encontrada = categoriasReceitas.find(c => c.value === valor);
+  return encontrada ? encontrada.label : valor;
+};
+
 // Dados iniciais para unidades de rendimento
 export const unidadesRendimento = [
   { value: 'porcoes', label: 'Porções' },

@@ -1,7 +1,10 @@
 'use client';
 
 import { useProdutos, obterLabelCategoria } from './produtosService';
-import { useFichasTecnicas } from './fichasTecnicasService';
+import {
+  useFichasTecnicas,
+  obterLabelCategoriaReceita
+} from './fichasTecnicasService';
 
 // Interface para dados de relatórios
 export interface DadosRelatorio {
@@ -115,7 +118,10 @@ export const useRelatorios = () => {
     });
     
     const distribuicaoCategoriasReceitas = Object.entries(categoriasReceitas)
-      .map(([categoria, quantidade]) => ({ categoria, quantidade }))
+      .map(([categoria, quantidade]) => ({
+        categoria: obterLabelCategoriaReceita(categoria),
+        quantidade
+      }))
       .sort((a, b) => b.quantidade - a.quantidade);
     
     return {

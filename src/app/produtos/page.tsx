@@ -34,14 +34,15 @@ export default function ProdutosPage() {
       </div>
 
       <Card>
-        <Table 
-          headers={['Nome', 'Unidade', 'Preço', 'Fornecedor', 'Ações']}
+        <Table
+          headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor', 'Ações']}
           isLoading={isLoading}
           emptyMessage="Nenhum produto cadastrado. Clique em 'Novo Produto' para adicionar."
         >
           {produtos.map((produto: ProdutoInfo) => (
             <TableRow key={produto.id}>
               <TableCell className="font-medium text-gray-700">{produto.nome}</TableCell>
+              <TableCell>{produto.categoria}</TableCell>
               <TableCell>{produto.unidadeMedida}</TableCell>
               <TableCell>{formatarPreco(produto.preco)}</TableCell>
               <TableCell>{produto.fornecedor}</TableCell>

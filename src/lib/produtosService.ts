@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 export interface ProdutoInfo {
   id: string;
   nome: string;
+  categoria: string;
   marca?: string;
   unidadeMedida: string;
   preco: number;
@@ -36,7 +37,8 @@ const salvarProdutos = (produtos: ProdutoInfo[]) => {
 // Função para obter produtos do localStorage
 const obterProdutos = (): ProdutoInfo[] => {
   const produtosString = localStorage.getItem('produtos');
-  return produtosString ? JSON.parse(produtosString) : [];
+  const armazenados = produtosString ? JSON.parse(produtosString) : [];
+  return armazenados.map((p: any) => ({ categoria: '', ...p }));
 };
 
 // Hook para gerenciar produtos
@@ -111,4 +113,15 @@ export const unidadesMedida = [
   { value: 'un', label: 'Unidade' },
   { value: 'cx', label: 'Caixa' },
   { value: 'pct', label: 'Pacote' },
+];
+
+// Categorias de produtos para classificacao em relatorios
+export const categoriasProdutos = [
+  { value: 'hortifruti', label: 'Hortifruti' },
+  { value: 'carnes', label: 'Carnes' },
+  { value: 'laticinios', label: 'Laticínios' },
+  { value: 'graos', label: 'Grãos e Cereais' },
+  { value: 'bebidas', label: 'Bebidas' },
+  { value: 'temperos', label: 'Temperos' },
+  { value: 'outros', label: 'Outros' },
 ];

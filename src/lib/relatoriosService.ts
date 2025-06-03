@@ -88,7 +88,7 @@ export const useRelatorios = () => {
     // Distribuição de categorias de produtos
     const categoriasProdutos: Record<string, number> = {};
     produtos.forEach(produto => {
-      const categoria = produto.categoria;
+      const categoria = produto.categoria || 'Não informado';
       if (!categoriasProdutos[categoria]) {
         categoriasProdutos[categoria] = 0;
       }

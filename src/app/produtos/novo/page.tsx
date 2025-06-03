@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
-import { useProdutos, unidadesMedida } from '@/lib/produtosService';
+import { useProdutos, unidadesMedida, categoriasProdutos } from '@/lib/produtosService';
 import { useState } from 'react';
 
 export default function NovoProdutoPage() {
@@ -17,6 +17,7 @@ export default function NovoProdutoPage() {
   
   const [produto, setProduto] = useState({
     nome: '',
+    categoria: '',
     marca: '',
     unidadeMedida: '',
     preco: '',
@@ -59,6 +60,7 @@ export default function NovoProdutoPage() {
     const novosErros: Record<string, string> = {};
     
     if (!produto.nome) novosErros.nome = 'Nome é obrigatório';
+    if (!produto.categoria) novosErros.categoria = 'Categoria é obrigatória';
     if (!produto.unidadeMedida) novosErros.unidadeMedida = 'Unidade de medida é obrigatória';
     if (!produto.preco) novosErros.preco = 'Preço é obrigatório';
     else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0) 
@@ -138,7 +140,7 @@ export default function NovoProdutoPage() {
       <form onSubmit={handleSubmit}>
         <Card>
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Input
                 label="Nome do Produto *"
                 name="nome"
@@ -147,7 +149,16 @@ export default function NovoProdutoPage() {
                 error={erros.nome}
                 placeholder="Ex: Farinha de Trigo"
               />
-              
+
+              <Select
+                label="Categoria *"
+                name="categoria"
+                value={produto.categoria}
+                onChange={handleChange}
+                options={categoriasProdutos}
+                error={erros.categoria}
+              />
+
               <Input
                 label="Marca"
                 name="marca"

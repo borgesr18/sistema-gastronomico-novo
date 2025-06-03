@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
-import { useProdutos, unidadesMedida } from '@/lib/produtosService';
+import { useProdutos, unidadesMedida, categoriasProdutos } from '@/lib/produtosService';
 
 export default function EditarProdutoPage() {
   const params = useParams();
@@ -20,6 +20,7 @@ export default function EditarProdutoPage() {
   
   const [produto, setProduto] = useState({
     nome: '',
+    categoria: '',
     marca: '',
     unidadeMedida: '',
     preco: '',
@@ -43,6 +44,7 @@ export default function EditarProdutoPage() {
     if (produtoOriginal) {
       setProduto({
         nome: produtoOriginal.nome,
+        categoria: produtoOriginal.categoria || '',
         marca: produtoOriginal.marca || '',
         unidadeMedida: produtoOriginal.unidadeMedida,
         preco: produtoOriginal.preco.toString(),
@@ -93,6 +95,7 @@ export default function EditarProdutoPage() {
     const novosErros: Record<string, string> = {};
     
     if (!produto.nome) novosErros.nome = 'Nome é obrigatório';
+    if (!produto.categoria) novosErros.categoria = 'Categoria é obrigatória';
     if (!produto.unidadeMedida) novosErros.unidadeMedida = 'Unidade de medida é obrigatória';
     if (!produto.preco) novosErros.preco = 'Preço é obrigatório';
     else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0) 
@@ -172,7 +175,7 @@ export default function EditarProdutoPage() {
       <form onSubmit={handleSubmit}>
         <Card>
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Input
                 label="Nome do Produto *"
                 name="nome"
@@ -181,7 +184,16 @@ export default function EditarProdutoPage() {
                 error={erros.nome}
                 placeholder="Ex: Farinha de Trigo"
               />
-              
+
+              <Select
+                label="Categoria *"
+                name="categoria"
+                value={produto.categoria}
+                onChange={handleChange}
+                options={categoriasProdutos}
+                error={erros.categoria}
+              />
+
               <Input
                 label="Marca"
                 name="marca"

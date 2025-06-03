@@ -50,7 +50,7 @@ export default function EditarProdutoPage() {
         categoria: produtoOriginal.categoria || '',
         marca: produtoOriginal.marca || '',
         unidadeMedida: produtoOriginal.unidadeMedida,
-        preco: produtoOriginal.preco.toString(),
+        preco: produtoOriginal.preco?.toString() || '',
         fornecedor: produtoOriginal.fornecedor,
         infoNutricional: {
           calorias: produtoOriginal.infoNutricional?.calorias?.toString() || '',

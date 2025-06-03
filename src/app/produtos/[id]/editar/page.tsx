@@ -50,14 +50,14 @@ export default function EditarProdutoPage() {
         preco: produtoOriginal.preco.toString(),
         fornecedor: produtoOriginal.fornecedor,
         infoNutricional: {
-          calorias: produtoOriginal.infoNutricional?.calorias.toString() || '',
-          carboidratos: produtoOriginal.infoNutricional?.carboidratos.toString() || '',
-          proteinas: produtoOriginal.infoNutricional?.proteinas.toString() || '',
-          gordurasTotais: produtoOriginal.infoNutricional?.gordurasTotais.toString() || '',
-          gordurasSaturadas: produtoOriginal.infoNutricional?.gordurasSaturadas.toString() || '',
-          gordurasTrans: produtoOriginal.infoNutricional?.gordurasTrans.toString() || '',
-          fibras: produtoOriginal.infoNutricional?.fibras.toString() || '',
-          sodio: produtoOriginal.infoNutricional?.sodio.toString() || ''
+          calorias: produtoOriginal.infoNutricional?.calorias?.toString() || '',
+          carboidratos: produtoOriginal.infoNutricional?.carboidratos?.toString() || '',
+          proteinas: produtoOriginal.infoNutricional?.proteinas?.toString() || '',
+          gordurasTotais: produtoOriginal.infoNutricional?.gordurasTotais?.toString() || '',
+          gordurasSaturadas: produtoOriginal.infoNutricional?.gordurasSaturadas?.toString() || '',
+          gordurasTrans: produtoOriginal.infoNutricional?.gordurasTrans?.toString() || '',
+          fibras: produtoOriginal.infoNutricional?.fibras?.toString() || '',
+          sodio: produtoOriginal.infoNutricional?.sodio?.toString() || ''
         }
       });
       

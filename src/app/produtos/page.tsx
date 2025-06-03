@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';

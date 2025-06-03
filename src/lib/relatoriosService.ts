@@ -1,3 +1,5 @@
+'use client';
+
 import { useProdutos } from './produtosService';
 import { useFichasTecnicas } from './fichasTecnicasService';
 

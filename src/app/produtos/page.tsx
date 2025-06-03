@@ -1,6 +1,4 @@
 'use client';
-// Force dynamic rendering to access localStorage at runtime
-export const dynamic = 'force-dynamic';
 
 import React from 'react';
 import Card from '@/components/ui/Card';

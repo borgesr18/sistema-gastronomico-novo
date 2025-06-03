@@ -1,6 +1,4 @@
 'use client';
-// Avoid static generation since data comes from localStorage
-export const dynamic = 'force-dynamic';
 
 import React from 'react';
 import Card from '@/components/ui/Card';

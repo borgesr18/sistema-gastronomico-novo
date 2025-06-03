@@ -134,15 +134,17 @@ export const useFichasTecnicas = () => {
     });
 
     // Calcular valores por porção
+    const divisor = rendimentoTotal > 0 ? rendimentoTotal : 1;
+
     const infoPorcao: InfoNutricionalFicha = {
-      calorias: infoTotal.calorias / rendimentoTotal,
-      carboidratos: infoTotal.carboidratos / rendimentoTotal,
-      proteinas: infoTotal.proteinas / rendimentoTotal,
-      gordurasTotais: infoTotal.gordurasTotais / rendimentoTotal,
-      gordurasSaturadas: infoTotal.gordurasSaturadas / rendimentoTotal,
-      gordurasTrans: infoTotal.gordurasTrans / rendimentoTotal,
-      fibras: infoTotal.fibras / rendimentoTotal,
-      sodio: infoTotal.sodio / rendimentoTotal
+      calorias: infoTotal.calorias / divisor,
+      carboidratos: infoTotal.carboidratos / divisor,
+      proteinas: infoTotal.proteinas / divisor,
+      gordurasTotais: infoTotal.gordurasTotais / divisor,
+      gordurasSaturadas: infoTotal.gordurasSaturadas / divisor,
+      gordurasTrans: infoTotal.gordurasTrans / divisor,
+      fibras: infoTotal.fibras / divisor,
+      sodio: infoTotal.sodio / divisor
     };
 
     return { infoTotal, infoPorcao };
@@ -157,7 +159,9 @@ export const useFichasTecnicas = () => {
     const custoTotal = ingredientesComCusto.reduce((total, ingrediente) => total + ingrediente.custo, 0);
     
     // Calcular custo por porção
-    const custoPorcao = custoTotal / ficha.rendimentoTotal;
+    const custoPorcao = ficha.rendimentoTotal > 0
+      ? custoTotal / ficha.rendimentoTotal
+      : 0;
     
     // Calcular informações nutricionais
     const { infoTotal, infoPorcao } = calcularInfoNutricional(ingredientesComCusto, ficha.rendimentoTotal);
@@ -191,7 +195,9 @@ export const useFichasTecnicas = () => {
     const custoTotal = ingredientesComCusto.reduce((total, ingrediente) => total + ingrediente.custo, 0);
     
     // Calcular custo por porção
-    const custoPorcao = custoTotal / ficha.rendimentoTotal;
+    const custoPorcao = ficha.rendimentoTotal > 0
+      ? custoTotal / ficha.rendimentoTotal
+      : 0;
     
     // Calcular informações nutricionais
     const { infoTotal, infoPorcao } = calcularInfoNutricional(ingredientesComCusto, ficha.rendimentoTotal);

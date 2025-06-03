@@ -4,7 +4,7 @@ import React from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
-import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
+import { useProdutos, ProdutoInfo, obterLabelCategoria } from '@/lib/produtosService';
 import Link from 'next/link';
 
 export default function ProdutosPage() {
@@ -44,7 +44,7 @@ export default function ProdutosPage() {
           {produtos.map((produto: ProdutoInfo) => (
             <TableRow key={produto.id}>
               <TableCell className="font-medium text-gray-700">{produto.nome}</TableCell>
-              <TableCell>{produto.categoria}</TableCell>
+              <TableCell>{obterLabelCategoria(produto.categoria)}</TableCell>
               <TableCell>{produto.unidadeMedida}</TableCell>
               <TableCell>{formatarPreco(produto.preco)}</TableCell>
               <TableCell>{produto.fornecedor}</TableCell>

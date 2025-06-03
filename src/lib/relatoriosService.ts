@@ -1,6 +1,6 @@
 'use client';
 
-import { useProdutos } from './produtosService';
+import { useProdutos, obterLabelCategoria } from './produtosService';
 import { useFichasTecnicas } from './fichasTecnicasService';
 
 // Interface para dados de relatórios
@@ -98,7 +98,10 @@ export const useRelatorios = () => {
     });
     
     const distribuicaoCategoriasProdutos = Object.entries(categoriasProdutos)
-      .map(([categoria, quantidade]) => ({ categoria, quantidade }))
+      .map(([categoria, quantidade]) => ({
+        categoria: obterLabelCategoria(categoria),
+        quantidade
+      }))
       .sort((a, b) => b.quantidade - a.quantidade);
     
     // Distribuição de categorias de receitas

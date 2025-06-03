@@ -4,7 +4,7 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { useProdutos } from '@/lib/produtosService';
+import { useProdutos, obterLabelCategoria } from '@/lib/produtosService';
 
 export default function DetalheProdutoPage() {
   const params = useParams();
@@ -76,7 +76,7 @@ export default function DetalheProdutoPage() {
 
             <div>
               <h3 className="text-sm font-medium text-gray-500">Categoria</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">{produto.categoria}</p>
+              <p className="mt-1 text-lg font-medium text-gray-900">{obterLabelCategoria(produto.categoria)}</p>
             </div>
 
             {produto.marca && (

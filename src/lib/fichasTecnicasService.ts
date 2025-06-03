@@ -51,10 +51,18 @@ const salvarFichasTecnicas = (fichas: FichaTecnicaInfo[]) => {
   localStorage.setItem('fichasTecnicas', JSON.stringify(fichas));
 };
 
-// Função para obter fichas técnicas do localStorage
+// Função para obter fichas técnicas do localStorage com fallback
 const obterFichasTecnicas = (): FichaTecnicaInfo[] => {
-  const fichasString = localStorage.getItem('fichasTecnicas');
-  return fichasString ? JSON.parse(fichasString) : [];
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const fichasString = localStorage.getItem('fichasTecnicas');
+    const armazenadas = fichasString ? JSON.parse(fichasString) : [];
+    return Array.isArray(armazenadas) ? armazenadas : [];
+  } catch (error) {
+    console.error('Erro ao ler fichas técnicas do localStorage', error);
+    return [];
+  }
 };
 
 // Hook para gerenciar fichas técnicas

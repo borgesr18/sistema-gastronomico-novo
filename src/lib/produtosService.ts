@@ -34,11 +34,21 @@ const salvarProdutos = (produtos: ProdutoInfo[]) => {
   localStorage.setItem('produtos', JSON.stringify(produtos));
 };
 
-// Função para obter produtos do localStorage
+// Função para obter produtos do localStorage de forma segura
 const obterProdutos = (): ProdutoInfo[] => {
-  const produtosString = localStorage.getItem('produtos');
-  const armazenados = produtosString ? JSON.parse(produtosString) : [];
-  return armazenados.map((p: any) => ({ categoria: '', ...p }));
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const produtosString = localStorage.getItem('produtos');
+    const armazenados = produtosString ? JSON.parse(produtosString) : [];
+    if (Array.isArray(armazenados)) {
+      return armazenados.map((p: any) => ({ categoria: '', ...p }));
+    }
+  } catch (error) {
+    console.error('Erro ao ler produtos do localStorage', error);
+  }
+
+  return [];
 };
 
 // Hook para gerenciar produtos

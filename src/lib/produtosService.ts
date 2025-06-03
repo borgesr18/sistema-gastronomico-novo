@@ -141,6 +141,7 @@ export const categoriasProdutos = [
 
 // Obter rótulo legível de uma categoria pelo valor armazenado
 export const obterLabelCategoria = (valor: string) => {
+  if (!valor) return 'Não informado';
   const encontrado = categoriasProdutos.find(c => c.value === valor);
   return encontrado ? encontrado.label : valor;
 };

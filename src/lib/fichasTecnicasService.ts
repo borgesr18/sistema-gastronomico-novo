@@ -260,6 +260,7 @@ export const categoriasReceitas = [
 
 // Obter rótulo legível da categoria de receita
 export const obterLabelCategoriaReceita = (valor: string) => {
+  if (!valor) return 'Não informado';
   const encontrada = categoriasReceitas.find(c => c.value === valor);
   return encontrada ? encontrada.label : valor;
 };

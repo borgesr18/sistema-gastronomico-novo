@@ -42,7 +42,10 @@ const obterProdutos = (): ProdutoInfo[] => {
     const produtosString = localStorage.getItem('produtos');
     const armazenados = produtosString ? JSON.parse(produtosString) : [];
     if (Array.isArray(armazenados)) {
-      return armazenados.map((p: any) => ({ categoria: '', ...p }));
+      return armazenados.map((p: any) => ({
+        ...p,
+        categoria: p.categoria ?? ''
+      }));
     }
   } catch (error) {
     console.error('Erro ao ler produtos do localStorage', error);

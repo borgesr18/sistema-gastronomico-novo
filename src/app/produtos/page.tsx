@@ -1,8 +1,5 @@
 'use client';
 
-// Listagem de produtos usa localStorage, portanto precisa ser dinâmico
-export const dynamic = 'force-dynamic';
-
 import React from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';

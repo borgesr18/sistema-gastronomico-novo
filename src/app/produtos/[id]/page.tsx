@@ -1,8 +1,5 @@
 'use client';
 
-// Depende de dados do localStorage
-export const dynamic = 'force-dynamic';
-
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';

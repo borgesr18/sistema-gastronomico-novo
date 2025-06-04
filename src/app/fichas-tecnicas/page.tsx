@@ -1,8 +1,5 @@
 'use client';
 
-// Esta página depende de dados do localStorage e não deve ser pré-renderizada
-export const dynamic = 'force-dynamic';
-
 import React from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';

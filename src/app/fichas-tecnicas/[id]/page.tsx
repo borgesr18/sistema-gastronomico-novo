@@ -1,7 +1,4 @@
 'use client';
-
-// Depende de dados persistidos no navegador
-export const dynamic = 'force-dynamic';
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';

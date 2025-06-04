@@ -3,7 +3,10 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { useFichasTecnicas } from '@/lib/fichasTecnicasService';
+import {
+  useFichasTecnicas,
+  obterLabelCategoriaReceita
+} from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 
@@ -103,7 +106,7 @@ export default function DetalheFichaTecnicaPage() {
           
           <div>
             <h3 className="text-sm font-medium text-gray-500">Categoria</h3>
-            <p className="mt-1 text-lg font-medium text-gray-900">{ficha.categoria}</p>
+            <p className="mt-1 text-lg font-medium text-gray-900">{obterLabelCategoriaReceita(ficha.categoria)}</p>
           </div>
         </div>
         

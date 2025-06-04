@@ -1,8 +1,14 @@
+'use client';
+
 import React from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
-import { useFichasTecnicas, FichaTecnicaInfo } from '@/lib/fichasTecnicasService';
+import {
+  useFichasTecnicas,
+  FichaTecnicaInfo,
+  obterLabelCategoriaReceita
+} from '@/lib/fichasTecnicasService';
 import Link from 'next/link';
 
 export default function FichasTecnicasPage() {
@@ -51,7 +57,7 @@ export default function FichasTecnicasPage() {
           {fichasTecnicas.map((ficha: FichaTecnicaInfo) => (
             <TableRow key={ficha.id}>
               <TableCell className="font-medium text-gray-700">{ficha.nome}</TableCell>
-              <TableCell>{ficha.categoria}</TableCell>
+              <TableCell>{obterLabelCategoriaReceita(ficha.categoria)}</TableCell>
               <TableCell>{ficha.rendimentoTotal} {ficha.unidadeRendimento}</TableCell>
               <TableCell>{formatarPreco(ficha.custoTotal)}</TableCell>
               <TableCell>{formatarPreco(ficha.custoPorcao)}</TableCell>

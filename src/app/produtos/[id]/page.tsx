@@ -4,7 +4,7 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { useProdutos } from '@/lib/produtosService';
+import { useProdutos, obterLabelCategoria } from '@/lib/produtosService';
 
 export default function DetalheProdutoPage() {
   const params = useParams();
@@ -68,12 +68,17 @@ export default function DetalheProdutoPage() {
       
       <Card>
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <h3 className="text-sm font-medium text-gray-500">Nome do Produto</h3>
               <p className="mt-1 text-lg font-medium text-gray-900">{produto.nome}</p>
             </div>
-            
+
+            <div>
+              <h3 className="text-sm font-medium text-gray-500">Categoria</h3>
+              <p className="mt-1 text-lg font-medium text-gray-900">{obterLabelCategoria(produto.categoria)}</p>
+            </div>
+
             {produto.marca && (
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Marca</h3>

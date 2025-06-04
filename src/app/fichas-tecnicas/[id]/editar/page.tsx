@@ -59,8 +59,8 @@ export default function EditarFichaTecnicaPage() {
           quantidade: ing.quantidade,
         })),
         modoPreparo: fichaOriginal.modoPreparo,
-        tempoPreparo: fichaOriginal.tempoPreparo.toString(),
-        rendimentoTotal: fichaOriginal.rendimentoTotal.toString(),
+        tempoPreparo: fichaOriginal.tempoPreparo?.toString() || '',
+        rendimentoTotal: fichaOriginal.rendimentoTotal?.toString() || '',
         unidadeRendimento: fichaOriginal.unidadeRendimento,
         observacoes: fichaOriginal.observacoes || '',
       });

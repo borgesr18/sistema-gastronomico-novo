@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 export interface ProdutoInfo {
   id: string;
   nome: string;
+  categoria: string;
   marca?: string;
   unidadeMedida: string;
   preco: number;
@@ -33,10 +34,37 @@ const salvarProdutos = (produtos: ProdutoInfo[]) => {
   localStorage.setItem('produtos', JSON.stringify(produtos));
 };
 
-// Função para obter produtos do localStorage
+// Função para obter produtos do localStorage de forma segura
 const obterProdutos = (): ProdutoInfo[] => {
-  const produtosString = localStorage.getItem('produtos');
-  return produtosString ? JSON.parse(produtosString) : [];
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const produtosString = localStorage.getItem('produtos');
+    const armazenados = produtosString ? JSON.parse(produtosString) : [];
+    if (Array.isArray(armazenados)) {
+      return armazenados.map((p: any) => ({
+        ...p,
+        categoria: p.categoria ?? '',
+        preco: Number(p.preco) || 0,
+        infoNutricional: p.infoNutricional
+          ? {
+              calorias: Number(p.infoNutricional.calorias) || 0,
+              carboidratos: Number(p.infoNutricional.carboidratos) || 0,
+              proteinas: Number(p.infoNutricional.proteinas) || 0,
+              gordurasTotais: Number(p.infoNutricional.gordurasTotais) || 0,
+              gordurasSaturadas: Number(p.infoNutricional.gordurasSaturadas) || 0,
+              gordurasTrans: Number(p.infoNutricional.gordurasTrans) || 0,
+              fibras: Number(p.infoNutricional.fibras) || 0,
+              sodio: Number(p.infoNutricional.sodio) || 0
+            }
+          : undefined
+      }));
+    }
+  } catch (error) {
+    console.error('Erro ao ler produtos do localStorage', error);
+  }
+
+  return [];
 };
 
 // Hook para gerenciar produtos
@@ -112,3 +140,21 @@ export const unidadesMedida = [
   { value: 'cx', label: 'Caixa' },
   { value: 'pct', label: 'Pacote' },
 ];
+
+// Categorias de produtos para classificacao em relatorios
+export const categoriasProdutos = [
+  { value: 'hortifruti', label: 'Hortifruti' },
+  { value: 'carnes', label: 'Carnes' },
+  { value: 'laticinios', label: 'Laticínios' },
+  { value: 'graos', label: 'Grãos e Cereais' },
+  { value: 'bebidas', label: 'Bebidas' },
+  { value: 'temperos', label: 'Temperos' },
+  { value: 'outros', label: 'Outros' },
+];
+
+// Obter rótulo legível de uma categoria pelo valor armazenado
+export const obterLabelCategoria = (valor: string) => {
+  if (!valor) return 'Não informado';
+  const encontrado = categoriasProdutos.find(c => c.value === valor);
+  return encontrado ? encontrado.label : valor;
+};

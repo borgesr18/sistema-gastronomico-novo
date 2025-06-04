@@ -1,5 +1,10 @@
-import { useProdutos } from './produtosService';
-import { useFichasTecnicas } from './fichasTecnicasService';
+'use client';
+
+import { useProdutos, obterLabelCategoria } from './produtosService';
+import {
+  useFichasTecnicas,
+  obterLabelCategoriaReceita
+} from './fichasTecnicasService';
 
 // Interface para dados de relatórios
 export interface DadosRelatorio {
@@ -88,7 +93,7 @@ export const useRelatorios = () => {
     // Distribuição de categorias de produtos
     const categoriasProdutos: Record<string, number> = {};
     produtos.forEach(produto => {
-      const categoria = produto.categoria;
+      const categoria = produto.categoria || 'Não informado';
       if (!categoriasProdutos[categoria]) {
         categoriasProdutos[categoria] = 0;
       }
@@ -96,7 +101,10 @@ export const useRelatorios = () => {
     });
     
     const distribuicaoCategoriasProdutos = Object.entries(categoriasProdutos)
-      .map(([categoria, quantidade]) => ({ categoria, quantidade }))
+      .map(([categoria, quantidade]) => ({
+        categoria: obterLabelCategoria(categoria),
+        quantidade
+      }))
       .sort((a, b) => b.quantidade - a.quantidade);
     
     // Distribuição de categorias de receitas
@@ -110,7 +118,10 @@ export const useRelatorios = () => {
     });
     
     const distribuicaoCategoriasReceitas = Object.entries(categoriasReceitas)
-      .map(([categoria, quantidade]) => ({ categoria, quantidade }))
+      .map(([categoria, quantidade]) => ({
+        categoria: obterLabelCategoriaReceita(categoria),
+        quantidade
+      }))
       .sort((a, b) => b.quantidade - a.quantidade);
     
     return {

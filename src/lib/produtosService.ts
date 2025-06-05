@@ -99,7 +99,7 @@ export const useProdutos = () => {
       id,
     };
     
-    const novosProdutos = produtos.map(p => 
+    const novosProdutos = produtos.map((p: ProdutoInfo) =>
       p.id === id ? produtoAtualizado : p
     );
     
@@ -110,14 +110,14 @@ export const useProdutos = () => {
 
   // Remover produto
   const removerProduto = (id: string) => {
-    const novosProdutos = produtos.filter(p => p.id !== id);
+    const novosProdutos = produtos.filter((p: ProdutoInfo) => p.id !== id);
     setProdutos(novosProdutos);
     salvarProdutos(novosProdutos);
   };
 
   // Obter produto por ID
   const obterProdutoPorId = (id: string) => {
-    return produtos.find(p => p.id === id);
+    return produtos.find((p: ProdutoInfo) => p.id === id);
   };
 
   return {

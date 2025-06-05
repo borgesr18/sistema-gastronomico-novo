@@ -211,28 +211,28 @@ export default function DetalheFichaTecnicaPage() {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Calorias</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
-                    {formatarValorNutricional(ficha.infoNutricionalPorcao.calorias, 'kcal')}
+                    {formatarValorNutricional(ficha.infoNutricionalPorcao?.calorias ?? 0, 'kcal')}
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Carboidratos</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
-                    {formatarValorNutricional(ficha.infoNutricionalPorcao.carboidratos, 'g')}
+                    {formatarValorNutricional(ficha.infoNutricionalPorcao?.carboidratos ?? 0, 'g')}
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Proteínas</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
-                    {formatarValorNutricional(ficha.infoNutricionalPorcao.proteinas, 'g')}
+                    {formatarValorNutricional(ficha.infoNutricionalPorcao?.proteinas ?? 0, 'g')}
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Gorduras Totais</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
-                    {formatarValorNutricional(ficha.infoNutricionalPorcao.gordurasTotais, 'g')}
+                    {formatarValorNutricional(ficha.infoNutricionalPorcao?.gordurasTotais ?? 0, 'g')}
                   </p>
                 </div>
               </div>

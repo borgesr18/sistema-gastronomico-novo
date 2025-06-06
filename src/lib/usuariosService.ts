@@ -86,4 +86,5 @@ export const useUsuarios = () => {
   };
 
   return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario };
+  return { usuarios, usuarioAtual, registrarUsuario, login, logout };
 };

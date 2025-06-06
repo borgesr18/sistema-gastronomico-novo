@@ -11,18 +11,17 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <aside 
-      className={`bg-gray-800 text-white transition-all duration-300 ${
-        isCollapsed ? 'w-16' : 'w-64'
-      } min-h-screen`}
+    <aside
+      className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen`}
+      style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
       <div className="p-4 flex items-center justify-between">
         {!isCollapsed && (
-          <h1 className="text-xl font-bold">Gestão Gastro</h1>
+          <h1 className="text-xl font-bold">Sistema de Controle</h1>
         )}
         <button 
           onClick={toggleSidebar}
-          className="p-1 rounded-full hover:bg-gray-700"
+          className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"
         >
           {isCollapsed ? '→' : '←'}
         </button>
@@ -33,25 +32,43 @@ const Sidebar: React.FC = () => {
           <li>
             <Link 
               href="/"
-              className="flex items-center p-4 hover:bg-gray-700"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
             >
               <span className="material-icons mr-3">dashboard</span>
               {!isCollapsed && <span>Dashboard</span>}
             </Link>
           </li>
           <li>
-            <Link 
+            <Link
               href="/produtos"
-              className="flex items-center p-4 hover:bg-gray-700"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
             >
               <span className="material-icons mr-3">inventory</span>
               {!isCollapsed && <span>Produtos</span>}
             </Link>
           </li>
+        <li>
+          <Link
+            href="/estoque"
+            className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+          >
+            <span className="material-icons mr-3">store</span>
+            {!isCollapsed && <span>Estoque</span>}
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/producao"
+            className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+          >
+            <span className="material-icons mr-3">manufacturing</span>
+            {!isCollapsed && <span>Produção</span>}
+          </Link>
+        </li>
           <li>
             <Link 
               href="/fichas-tecnicas"
-              className="flex items-center p-4 hover:bg-gray-700"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
             >
               <span className="material-icons mr-3">receipt</span>
               {!isCollapsed && <span>Fichas Técnicas</span>}
@@ -60,7 +77,7 @@ const Sidebar: React.FC = () => {
           <li>
             <Link 
               href="/relatorios"
-              className="flex items-center p-4 hover:bg-gray-700"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
             >
               <span className="material-icons mr-3">bar_chart</span>
               {!isCollapsed && <span>Relatórios</span>}

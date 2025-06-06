@@ -44,7 +44,7 @@ O CustoChef foi completamente reconstruído e está pronto para uso. Este docume
 5. **Controle de Estoque**
    - Registro de compras com atualização de preços de produtos
  - Histórico de movimentações para acompanhar evolução de custos
- - Página "Estoque Produção" para ajustes e consulta do saldo de produtos fabricados
+ - Página "Estoque de Produção" para ajustes e consulta do saldo de produtos fabricados
 6. **Produção**
    - Cálculo automático de insumos necessários
    - Baixa de ingredientes e entrada do produto final no estoque

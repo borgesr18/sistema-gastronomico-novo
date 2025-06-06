@@ -40,42 +40,6 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <Link
-              href="/produtos"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">inventory</span>
-              {!isCollapsed && <span>Produtos</span>}
-            </Link>
-          </li>
-        <li>
-          <Link
-            href="/estoque"
-            className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-          >
-            <span className="material-icons mr-3">store</span>
-            {!isCollapsed && <span>Estoque</span>}
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/producao"
-            className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-          >
-            <span className="material-icons mr-3">factory</span>
-            {!isCollapsed && <span>Produção</span>}
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/estoque-producao"
-            className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-          >
-            <span className="material-icons mr-3">warehouse</span>
-            {!isCollapsed && <span>Estoque Produção</span>}
-          </Link>
-        </li>
-          <li>
-            <Link 
               href="/fichas-tecnicas"
               className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
             >
@@ -84,7 +48,43 @@ const Sidebar: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link 
+            <Link
+              href="/produtos"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">inventory</span>
+              {!isCollapsed && <span>Insumos</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/estoque"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">store</span>
+              {!isCollapsed && <span>Estoque de Insumos</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/producao"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">factory</span>
+              {!isCollapsed && <span>Produção</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/estoque-producao"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">warehouse</span>
+              {!isCollapsed && <span>Estoque de Produção</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/relatorios"
               className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
             >

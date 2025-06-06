@@ -107,7 +107,7 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 ### Estoque de Produção
 
 1. **Ajustar Quantidades**:
-   - No menu lateral, acesse "Estoque Produção"
+   - No menu lateral, acesse "Estoque de Produção"
    - Escolha a ficha técnica desejada e indique se é entrada ou saída de unidades
    - Informe a quantidade e clique em "Registrar" para atualizar o saldo
 2. **Consultar Saldo**:

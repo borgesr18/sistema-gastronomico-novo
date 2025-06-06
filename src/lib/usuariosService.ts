@@ -34,6 +34,13 @@ const obterUsuarios = (): UsuarioInfo[] => {
 };
 
 export const useUsuarios = () => {
+  const [usuarios, setUsuarios] = useState<UsuarioInfo[]>(() => obterUsuarios());
+  const [usuarioAtual, setUsuarioAtual] = useState<UsuarioInfo | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const armazenados = obterUsuarios();
+    const idLogado = localStorage.getItem('usuarioLogado');
+    return idLogado ? armazenados.find(u => u.id === idLogado) || null : null;
+  });
   const [usuarios, setUsuarios] = useState<UsuarioInfo[]>([]);
   const [usuarioAtual, setUsuarioAtual] = useState<UsuarioInfo | null>(null);
 

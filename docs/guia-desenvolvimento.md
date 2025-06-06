@@ -148,7 +148,7 @@ Para fazer deploy:
 Áreas para desenvolvimento futuro:
 
 1. **Autenticação e Autorização**:
-   - Implementar sistema de login
+   - Sistema de login implementado utilizando armazenamento local
    - Definir níveis de acesso para diferentes usuários
 
 2. **Banco de Dados Remoto**:

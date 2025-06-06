@@ -47,12 +47,12 @@ const gerarId = () => {
 };
 
 // Função para salvar fichas técnicas no localStorage
-const salvarFichasTecnicas = (fichas: FichaTecnicaInfo[]) => {
+export const salvarFichasTecnicas = (fichas: FichaTecnicaInfo[]) => {
   localStorage.setItem('fichasTecnicas', JSON.stringify(fichas));
 };
 
 // Função para obter fichas técnicas do localStorage com fallback
-const obterFichasTecnicas = (): FichaTecnicaInfo[] => {
+export const obterFichasTecnicas = (): FichaTecnicaInfo[] => {
   if (typeof window === 'undefined') return [];
 
   try {
@@ -80,8 +80,8 @@ export const useFichasTecnicas = () => {
 
   // Calcular custo dos ingredientes
   const calcularCustoIngredientes = (ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]) => {
-    return ingredientes.map(ingrediente => {
-      const produto = produtos.find(p => p.id === ingrediente.produtoId);
+    return ingredientes.map((ingrediente: Omit<IngredienteFicha, 'custo' | 'id'>) => {
+      const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
       if (!produto) {
         return {
           ...ingrediente,
@@ -116,8 +116,8 @@ export const useFichasTecnicas = () => {
     };
 
     // Somar valores nutricionais de cada ingrediente
-    ingredientes.forEach(ingrediente => {
-      const produto = produtos.find(p => p.id === ingrediente.produtoId);
+    ingredientes.forEach((ingrediente: IngredienteFicha) => {
+      const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
       if (produto?.infoNutricional) {
         // Calcular proporção baseada na quantidade do ingrediente
         const proporcao = ingrediente.quantidade / 100; // Valores nutricionais são por 100g/ml
@@ -156,7 +156,10 @@ export const useFichasTecnicas = () => {
     const ingredientesComCusto = calcularCustoIngredientes(ficha.ingredientes);
     
     // Calcular custo total
-    const custoTotal = ingredientesComCusto.reduce((total, ingrediente) => total + ingrediente.custo, 0);
+    const custoTotal = ingredientesComCusto.reduce(
+      (total: number, ingrediente: IngredienteFicha) => total + ingrediente.custo,
+      0
+    );
     
     // Calcular custo por porção
     const custoPorcao = ficha.rendimentoTotal > 0
@@ -192,7 +195,10 @@ export const useFichasTecnicas = () => {
     const ingredientesComCusto = calcularCustoIngredientes(ficha.ingredientes);
     
     // Calcular custo total
-    const custoTotal = ingredientesComCusto.reduce((total, ingrediente) => total + ingrediente.custo, 0);
+    const custoTotal = ingredientesComCusto.reduce(
+      (total: number, ingrediente: IngredienteFicha) => total + ingrediente.custo,
+      0
+    );
     
     // Calcular custo por porção
     const custoPorcao = ficha.rendimentoTotal > 0
@@ -202,7 +208,7 @@ export const useFichasTecnicas = () => {
     // Calcular informações nutricionais
     const { infoTotal, infoPorcao } = calcularInfoNutricional(ingredientesComCusto, ficha.rendimentoTotal);
     
-    const fichaOriginal = fichasTecnicas.find(f => f.id === id);
+    const fichaOriginal = fichasTecnicas.find((f: FichaTecnicaInfo) => f.id === id);
     
     const fichaAtualizada: FichaTecnicaInfo = {
       ...ficha,
@@ -216,7 +222,7 @@ export const useFichasTecnicas = () => {
       ultimaAtualizacao: new Date().toISOString()
     };
     
-    const novasFichas = fichasTecnicas.map(f => 
+    const novasFichas = fichasTecnicas.map((f: FichaTecnicaInfo) =>
       f.id === id ? fichaAtualizada : f
     );
     
@@ -227,14 +233,14 @@ export const useFichasTecnicas = () => {
 
   // Remover ficha técnica
   const removerFichaTecnica = (id: string) => {
-    const novasFichas = fichasTecnicas.filter(f => f.id !== id);
+    const novasFichas = fichasTecnicas.filter((f: FichaTecnicaInfo) => f.id !== id);
     setFichasTecnicas(novasFichas);
     salvarFichasTecnicas(novasFichas);
   };
 
   // Obter ficha técnica por ID
   const obterFichaTecnicaPorId = (id: string) => {
-    return fichasTecnicas.find(f => f.id === id);
+    return fichasTecnicas.find((f: FichaTecnicaInfo) => f.id === id);
   };
 
   return {

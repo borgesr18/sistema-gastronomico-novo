@@ -31,13 +31,23 @@ interface FichaTecnicaForm {
 export default function EditarFichaTecnicaPage() {
   const params = useParams();
   const router = useRouter();
-  const { obterFichaTecnicaPorId, atualizarFichaTecnica } = useFichasTecnicas();
+  const {
+    obterFichaTecnicaPorId,
+    atualizarFichaTecnica,
+    isLoading: carregandoFichas,
+  } = useFichasTecnicas();
   const { produtos } = useProdutos();
   const { unidades } = useUnidadesMedida();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   const fichaId = params.id as string;
   const fichaOriginal = obterFichaTecnicaPorId(fichaId);
+
+  useEffect(() => {
+    if (!carregandoFichas && !fichaOriginal) {
+      router.push('/fichas-tecnicas');
+    }
+  }, [carregandoFichas, fichaOriginal, router]);
   
   // Modal para adicionar ingredientes
   const { isOpen, openModal, closeModal } = useModal();
@@ -70,6 +80,7 @@ export default function EditarFichaTecnicaPage() {
 
   // Carregar dados da ficha técnica
   useEffect(() => {
+    if (carregandoFichas) return;
     if (fichaOriginal) {
       setFichaTecnica({
         nome: fichaOriginal.nome,
@@ -88,11 +99,14 @@ export default function EditarFichaTecnicaPage() {
         observacoes: fichaOriginal.observacoes || '',
       });
     }
-  }, [fichaOriginal]);
+  }, [carregandoFichas, fichaOriginal]);
 
-  // Redirecionar se a ficha técnica não existir
+  // Exibir carregamento ou mensagem de ficha não encontrada
+  if (carregandoFichas) {
+    return <p>Carregando...</p>;
+  }
+
   if (!fichaOriginal) {
-    router.push('/fichas-tecnicas');
     return null;
   }
 
@@ -218,7 +232,7 @@ export default function EditarFichaTecnicaPage() {
     
     if (!validarFormulario()) return;
     
-    setIsLoading(true);
+    setIsSaving(true);
     
     try {
       // Converter valores numéricos
@@ -234,7 +248,7 @@ export default function EditarFichaTecnicaPage() {
       console.error('Erro ao atualizar ficha técnica:', error);
       alert('Ocorreu um erro ao atualizar a ficha técnica. Tente novamente.');
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -397,7 +411,7 @@ export default function EditarFichaTecnicaPage() {
             <Button
               type="submit"
               variant="primary"
-              isLoading={isLoading}
+              isLoading={isSaving}
             >
               Atualizar Ficha Técnica
             </Button>

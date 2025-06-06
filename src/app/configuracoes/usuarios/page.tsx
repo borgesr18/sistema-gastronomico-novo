@@ -16,6 +16,10 @@ export default function UsuariosConfigPage() {
   const [erro, setErro] = useState('');
   const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [erroSenha, setErroSenha] = useState('');
+  const { usuarios, registrarUsuario, removerUsuario } = useUsuarios();
+  const { isOpen, openModal, closeModal } = useModal();
+  const [novo, setNovo] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
+  const [erro, setErro] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

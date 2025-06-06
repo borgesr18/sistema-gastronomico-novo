@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useFichasTecnicas, FichaTecnicaInfo, IngredienteFicha } from './fichasTecnicasService';
 
 // Tipos para produtos
 export interface ProdutoInfo {
@@ -76,6 +77,7 @@ export const obterProdutos = (): ProdutoInfo[] => {
 export const useProdutos = () => {
   const [produtos, setProdutos] = useState<ProdutoInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { fichasTecnicas, atualizarFichaTecnica } = useFichasTecnicas();
 
   // Carregar produtos do localStorage ao inicializar
   useEffect(() => {
@@ -118,6 +120,29 @@ export const useProdutos = () => {
     
     setProdutos(novosProdutos);
     salvarProdutos(novosProdutos);
+    fichasTecnicas
+      .filter(f => f.ingredientes.some(i => i.produtoId === id))
+      .forEach(f => {
+        const dados = {
+          nome: f.nome,
+          descricao: f.descricao,
+          categoria: f.categoria,
+          ingredientes: f.ingredientes.map(i => ({
+            produtoId: i.produtoId,
+            quantidade: i.quantidade,
+            unidade: i.unidade,
+          })) as Omit<IngredienteFicha, 'custo' | 'id'>[],
+          modoPreparo: f.modoPreparo,
+          tempoPreparo: f.tempoPreparo,
+          rendimentoTotal: f.rendimentoTotal,
+          unidadeRendimento: f.unidadeRendimento,
+          observacoes: f.observacoes || '',
+        } as Omit<
+          FichaTecnicaInfo,
+          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'
+        >;
+        atualizarFichaTecnica(f.id, dados);
+      });
     return produtoAtualizado;
   };
 

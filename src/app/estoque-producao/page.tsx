@@ -6,11 +6,11 @@ import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
 import Input from '@/components/ui/Input';
-import { useEstoque } from '@/lib/estoqueService';
+import { useEstoqueProducao } from '@/lib/estoqueProducaoService';
 import { useFichasTecnicas, FichaTecnicaInfo } from '@/lib/fichasTecnicasService';
 
 export default function EstoqueProducaoPage() {
-  const { calcularEstoqueAtual, registrarEntrada, registrarSaida } = useEstoque();
+  const { calcularEstoqueAtual, registrarEntrada, registrarSaida } = useEstoqueProducao();
   const { fichasTecnicas } = useFichasTecnicas();
 
   const [form, setForm] = useState({ fichaId: '', tipo: 'saida', quantidade: '' });
@@ -28,14 +28,9 @@ export default function EstoqueProducaoPage() {
       return;
     }
     if (form.tipo === 'entrada') {
-      registrarEntrada({
-        produtoId: form.fichaId,
-        quantidade: Number(form.quantidade),
-        preco: 0,
-        fornecedor: 'Producao',
-      });
+      registrarEntrada({ fichaId: form.fichaId, quantidade: Number(form.quantidade) });
     } else {
-      registrarSaida({ produtoId: form.fichaId, quantidade: Number(form.quantidade) });
+      registrarSaida({ fichaId: form.fichaId, quantidade: Number(form.quantidade) });
     }
     setForm({ fichaId: '', tipo: 'saida', quantidade: '' });
     setErro('');

@@ -49,10 +49,13 @@ export const useEstoque = () => {
     const atualizados = produtos.map((p: ProdutoInfo) => {
       if (p.id !== mov.produtoId) return p;
       const pesoEmb = p.pesoEmbalagem || 1;
-      const precoUnitario = pesoEmb > 0 ? mov.preco! / pesoEmb : mov.preco!;
+      const qtd = Math.abs(mov.quantidade) || 1;
+      const totalPeso = pesoEmb * qtd;
+      const custoTotal = (mov.preco || p.preco) * qtd;
+      const precoUnitario = totalPeso > 0 ? custoTotal / totalPeso : 0;
       return {
         ...p,
-        preco: mov.preco!,
+        preco: mov.preco || p.preco,
         precoUnitario,
         fornecedor: mov.fornecedor || p.fornecedor,
         marca: mov.marca || p.marca,
@@ -114,7 +117,10 @@ export const useEstoque = () => {
     const atualizados = produtos.map((p: ProdutoInfo) => {
       if (p.id !== nova.produtoId) return p;
       const pesoEmb = p.pesoEmbalagem || 1;
-      const precoUnitario = pesoEmb > 0 ? dados.preco / pesoEmb : dados.preco;
+      const qtd = Math.abs(nova.quantidade) || 1;
+      const totalPeso = pesoEmb * qtd;
+      const custoTotal = dados.preco * qtd;
+      const precoUnitario = totalPeso > 0 ? custoTotal / totalPeso : 0;
       return {
         ...p,
         preco: dados.preco,

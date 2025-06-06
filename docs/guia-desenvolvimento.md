@@ -83,6 +83,8 @@ Gerencia autenticação e cadastro de usuários:
 
 - `useUsuarios()`: Hook para acessar usuários e funções de login
 - Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`, `alterarSenha`
+- Persistência em localStorage
+
 ### estoqueService.ts
 
 Gerencia o histórico de compras e a quantidade em estoque:
@@ -91,7 +93,6 @@ Gerencia o histórico de compras e a quantidade em estoque:
 - Funções: `registrarCompra`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
 - Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas
 - Persistência em localStorage
-
 - Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`
 - Persistência em localStorage
 

@@ -118,11 +118,12 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 1. **Definir Margens de Lucro**:
    - No menu lateral, acesse "Preços de Venda"
    - Selecione o lote produzido desejado
-   - Informe a porcentagem de lucro para até três estratégias diferentes
-   - O sistema calcula automaticamente os três preços de venda
-   - Clique em "Salvar Estratégia" para registrar
+   - Informe apenas as porcentagens de lucro para até três estratégias
+   - Os preços calculados ficam ocultos no formulário e são mostrados somente na lista
+   - Clique em "Salvar Estratégia" para registrar ou atualizar
 2. **Histórico de Estratégias**:
-   - Abaixo do formulário é exibida a lista de estratégias já salvas com seus valores
+   - Abaixo do formulário é exibida a lista de estratégias salvas com data no formato `dd/mm/aaaa`
+   - Utilize o botão **Alterar** para carregar os valores novamente e ajustá-los
 
 ### Fichas Técnicas
 

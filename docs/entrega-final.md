@@ -50,7 +50,8 @@ O CustoChef foi completamente reconstruído e está pronto para uso. Este docume
   - Baixa de ingredientes e entrada do produto final no estoque
   - Registro do custo total de cada lote produzido
 7. **Preços de Venda**
-  - Cálculo de três preços de venda a partir do custo unitário das produções
+  - Cálculo de preços de venda com base nas margens informadas
+  - Lista de estratégias permite alterar valores posteriormente
 
 ## Tecnologias Utilizadas
 

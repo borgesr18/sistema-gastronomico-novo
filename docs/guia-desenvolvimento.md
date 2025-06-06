@@ -108,11 +108,11 @@ Controla o histórico de produções realizadas:
 
 ### precosService.ts
 
-Gerencia estratégias de precificação baseadas em produções:
+ Gerencia estratégias de precificação baseadas em produções:
 
-- `usePrecosVenda()`: Hook para salvar e listar estratégias
-- Função `salvarEstrategia` calcula e armazena preços de venda a partir do custo unitário
-- Persistência em localStorage
+ - `usePrecosVenda()`: Hook para salvar, alterar e listar estratégias
+ - Função `salvarEstrategia` calcula e armazena preços de venda a partir do custo unitário
+ - Persistência em localStorage
 
 ## Padrões de Código
 

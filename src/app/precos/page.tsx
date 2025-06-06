@@ -17,9 +17,9 @@ export default function PrecosPage() {
 
   const [selecionada, setSelecionada] = useState('');
   const [lucros, setLucros] = useState({ lucro1: '', lucro2: '', lucro3: '' });
+  const [editId, setEditId] = useState<string | null>(null);
 
   const prod = producoes.find(p => p.id === selecionada);
-  const ficha = fichasTecnicas.find(f => f.id === prod?.fichaId);
   const custoUnit = prod?.custoUnitario || 0;
   const formatar = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -27,6 +27,12 @@ export default function PrecosPage() {
     const perc = parseFloat(lucroStr);
     if (isNaN(perc)) return 0;
     return custoUnit + (custoUnit * perc) / 100;
+  };
+
+  const formatarData = (iso: string) => {
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -44,16 +50,27 @@ export default function PrecosPage() {
         lucro3: parseFloat(lucros.lucro3) || 0,
         preco3: calcPreco(lucros.lucro3),
       },
-      obterPorProducao(prod.id)?.id
+      editId || obterPorProducao(prod.id)?.id
     );
     setLucros({ lucro1: '', lucro2: '', lucro3: '' });
+    setEditId(null);
+  };
+
+  const carregarEstrategia = (est: EstrategiaPreco) => {
+    setSelecionada(est.producaoId);
+    setLucros({
+      lucro1: est.lucro1.toString(),
+      lucro2: est.lucro2.toString(),
+      lucro3: est.lucro3.toString(),
+    });
+    setEditId(est.id);
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Preços de Venda</h1>
       <Card>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Select
             label="Produto Produzido"
             name="producao"
@@ -61,17 +78,14 @@ export default function PrecosPage() {
             onChange={e => setSelecionada(e.target.value)}
             options={producoes.map(p => {
               const f = fichasTecnicas.find(ft => ft.id === p.fichaId);
-              const label = f ? `${f.nome} (${p.data})` : p.id;
+              const label = f ? `${f.nome} (${formatarData(p.data)})` : p.id;
               return { value: p.id, label };
             })}
           />
           <Input label="Custo Unitário" readOnly value={prod ? formatar(custoUnit) : ''} />
           <Input label="Lucro % Preço 1" name="lucro1" value={lucros.lucro1} onChange={e => setLucros(prev => ({ ...prev, lucro1: e.target.value }))} />
-          <Input label="Preço 1" readOnly value={prod && lucros.lucro1 ? formatar(calcPreco(lucros.lucro1)) : ''} />
           <Input label="Lucro % Preço 2" name="lucro2" value={lucros.lucro2} onChange={e => setLucros(prev => ({ ...prev, lucro2: e.target.value }))} />
-          <Input label="Preço 2" readOnly value={prod && lucros.lucro2 ? formatar(calcPreco(lucros.lucro2)) : ''} />
           <Input label="Lucro % Preço 3" name="lucro3" value={lucros.lucro3} onChange={e => setLucros(prev => ({ ...prev, lucro3: e.target.value }))} />
-          <Input label="Preço 3" readOnly value={prod && lucros.lucro3 ? formatar(calcPreco(lucros.lucro3)) : ''} />
           <div className="md:col-span-6 flex justify-end">
             <Button type="submit" variant="primary">Salvar Estratégia</Button>
           </div>
@@ -85,12 +99,14 @@ export default function PrecosPage() {
             return (
               <TableRow key={e.id}>
                 <TableCell>{fichaRef?.nome || e.fichaId}</TableCell>
-                <TableCell>{prodRef ? prodRef.data : ''}</TableCell>
+                <TableCell>{prodRef ? formatarData(prodRef.data) : ''}</TableCell>
                 <TableCell>{formatar(e.custoUnitario)}</TableCell>
                 <TableCell>{formatar(e.preco1)}</TableCell>
                 <TableCell>{formatar(e.preco2)}</TableCell>
                 <TableCell>{formatar(e.preco3)}</TableCell>
                 <TableCell>
+                  <Button size="sm" variant="secondary" onClick={() => carregarEstrategia(e)}>Alterar</Button>
+                  <span className="px-1" />
                   <Button size="sm" variant="danger" onClick={() => removerEstrategia(e.id)}>Excluir</Button>
                 </TableCell>
               </TableRow>

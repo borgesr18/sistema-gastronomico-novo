@@ -1,9 +1,10 @@
 'use client';
 
-import { useProdutos, obterLabelCategoria } from './produtosService';
+import { useProdutos, obterLabelCategoria, ProdutoInfo } from './produtosService';
 import {
   useFichasTecnicas,
-  obterLabelCategoriaReceita
+  obterLabelCategoriaReceita,
+  FichaTecnicaInfo
 } from './fichasTecnicasService';
 
 // Interface para dados de relatórios
@@ -38,22 +39,33 @@ export const useRelatorios = () => {
     const totalFichasTecnicas = fichasTecnicas.length;
     
     // Calcular custo total do estoque (considerando que não temos quantidade em estoque, apenas preço unitário)
-    const custoTotalEstoque = produtos.reduce((total, produto) => total + produto.preco, 0);
+    const custoTotalEstoque = produtos.reduce(
+      (total: number, produto: ProdutoInfo) => total + produto.preco,
+      0
+    );
     
     // Calcular custo médio por ficha técnica
-    const custoMedioPorFicha = fichasTecnicas.length > 0 
-      ? fichasTecnicas.reduce((total, ficha) => total + ficha.custoTotal, 0) / fichasTecnicas.length 
+    const custoMedioPorFicha = fichasTecnicas.length > 0
+      ? fichasTecnicas.reduce(
+          (total: number, ficha: FichaTecnicaInfo) => total + ficha.custoTotal,
+          0
+        ) / fichasTecnicas.length
       : 0;
     
     // Fichas técnicas ordenadas por custo (mais caras e mais baratas)
-    const fichasOrdenadasPorCusto = [...fichasTecnicas].sort((a, b) => b.custoTotal - a.custoTotal);
-    const fichasMaisCustos = fichasOrdenadasPorCusto.slice(0, 5).map(ficha => ({
+    const fichasOrdenadasPorCusto = [...fichasTecnicas].sort(
+      (a: FichaTecnicaInfo, b: FichaTecnicaInfo) => b.custoTotal - a.custoTotal
+    );
+    const fichasMaisCustos = fichasOrdenadasPorCusto.slice(0, 5).map((ficha: FichaTecnicaInfo) => ({
       id: ficha.id,
       nome: ficha.nome,
       custo: ficha.custoTotal
     }));
-    
-    const fichasMenosCustos = [...fichasOrdenadasPorCusto].reverse().slice(0, 5).map(ficha => ({
+
+    const fichasMenosCustos = [...fichasOrdenadasPorCusto]
+      .reverse()
+      .slice(0, 5)
+      .map((ficha: FichaTecnicaInfo) => ({
       id: ficha.id,
       nome: ficha.nome,
       custo: ficha.custoTotal
@@ -62,7 +74,7 @@ export const useRelatorios = () => {
     // Calcular ingredientes mais usados
     const contagemIngredientes: Record<string, {quantidade: number, ocorrencias: number}> = {};
     
-    fichasTecnicas.forEach(ficha => {
+    fichasTecnicas.forEach((ficha: FichaTecnicaInfo) => {
       ficha.ingredientes.forEach(ingrediente => {
         if (!contagemIngredientes[ingrediente.produtoId]) {
           contagemIngredientes[ingrediente.produtoId] = {
@@ -77,8 +89,8 @@ export const useRelatorios = () => {
     });
     
     const ingredientesMaisUsados = Object.entries(contagemIngredientes)
-      .map(([produtoId, dados]) => {
-        const produto = produtos.find(p => p.id === produtoId);
+      .map(([produtoId, dados]: [string, { quantidade: number; ocorrencias: number }]) => {
+        const produto = produtos.find((p: ProdutoInfo) => p.id === produtoId);
         return {
           id: produtoId,
           nome: produto ? produto.nome : 'Produto não encontrado',
@@ -87,12 +99,17 @@ export const useRelatorios = () => {
           ocorrencias: dados.ocorrencias
         };
       })
-      .sort((a, b) => b.ocorrencias - a.ocorrencias)
+      .sort(
+        (
+          a: { ocorrencias: number },
+          b: { ocorrencias: number }
+        ) => b.ocorrencias - a.ocorrencias
+      )
       .slice(0, 10);
     
     // Distribuição de categorias de produtos
     const categoriasProdutos: Record<string, number> = {};
-    produtos.forEach(produto => {
+    produtos.forEach((produto: ProdutoInfo) => {
       const categoria = produto.categoria || 'Não informado';
       if (!categoriasProdutos[categoria]) {
         categoriasProdutos[categoria] = 0;
@@ -101,15 +118,20 @@ export const useRelatorios = () => {
     });
     
     const distribuicaoCategoriasProdutos = Object.entries(categoriasProdutos)
-      .map(([categoria, quantidade]) => ({
+      .map(([categoria, quantidade]: [string, number]) => ({
         categoria: obterLabelCategoria(categoria),
         quantidade
       }))
-      .sort((a, b) => b.quantidade - a.quantidade);
+      .sort(
+        (
+          a: { quantidade: number },
+          b: { quantidade: number }
+        ) => b.quantidade - a.quantidade
+      );
     
     // Distribuição de categorias de receitas
     const categoriasReceitas: Record<string, number> = {};
-    fichasTecnicas.forEach(ficha => {
+    fichasTecnicas.forEach((ficha: FichaTecnicaInfo) => {
       const categoria = ficha.categoria;
       if (!categoriasReceitas[categoria]) {
         categoriasReceitas[categoria] = 0;
@@ -118,11 +140,16 @@ export const useRelatorios = () => {
     });
     
     const distribuicaoCategoriasReceitas = Object.entries(categoriasReceitas)
-      .map(([categoria, quantidade]) => ({
+      .map(([categoria, quantidade]: [string, number]) => ({
         categoria: obterLabelCategoriaReceita(categoria),
         quantidade
       }))
-      .sort((a, b) => b.quantidade - a.quantidade);
+      .sort(
+        (
+          a: { quantidade: number },
+          b: { quantidade: number }
+        ) => b.quantidade - a.quantidade
+      );
     
     return {
       totalProdutos,

@@ -102,6 +102,7 @@ Controla o histórico de produções realizadas:
 
 - `useProducao()`: Hook para registrar novas produções
 - Função: `registrarProducao`
+- Cada registro armazena `custoTotal` com o valor calculado do lote
 - Persistência em localStorage
 
 ## Padrões de Código

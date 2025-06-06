@@ -64,6 +64,7 @@ export default function ProducaoPage() {
     const pesoUnitG = converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g');
     const unidades = Math.round(qtdTotalG / pesoUnitG);
     const precoUnit = (ficha.custoPorKg / 1000) * pesoUnitG;
+    const custoTotal = ficha.custoTotal * fator;
     registrarEntrada({
       produtoId: form.fichaId,
       quantidade: unidades,
@@ -78,6 +79,7 @@ export default function ProducaoPage() {
       pesoUnitario: Number(form.pesoUnitario),
       unidadePeso: form.unidadePeso,
       unidadesGeradas: unidades,
+      custoTotal,
       validade: form.validade,
       data: form.data,
     });
@@ -99,6 +101,7 @@ export default function ProducaoPage() {
       pesoUnitario: Number(edit.pesoUnitario),
       unidadePeso: edit.unidadePeso,
       unidadesGeradas: Number(edit.unidadesGeradas),
+      custoTotal: edit.custoTotal,
       validade: edit.validade,
       data: edit.data,
     });
@@ -182,7 +185,7 @@ export default function ProducaoPage() {
         </form>
       </Card>
       <Card title="Histórico de Produções">
-        <Table headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Ações"]} emptyMessage="Nenhuma produção registrada">
+        <Table headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Custo", "Ações"]} emptyMessage="Nenhuma produção registrada">
           {producoes.map((p: ProducaoInfo) => {
             const ficha = fichasTecnicas.find(f => f.id === p.fichaId);
             return (
@@ -193,6 +196,7 @@ export default function ProducaoPage() {
                 <TableCell>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
                 <TableCell>{p.pesoUnitario}{p.unidadePeso}</TableCell>
                 <TableCell>{p.unidadesGeradas}</TableCell>
+                <TableCell>{p.custoTotal.toFixed(2)}</TableCell>
                 <TableCell className="flex space-x-2">
                   <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(p)}>Editar</Button>
                   <Button size="sm" variant="danger" onClick={() => removerProducao(p.id)}>Excluir</Button>
@@ -229,6 +233,7 @@ export default function ProducaoPage() {
               options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
             />
             <Input label="Unidades Geradas" name="unidadesGeradas" value={String(edit.unidadesGeradas)} onChange={e => setEdit({ ...edit, unidadesGeradas: Number(e.target.value) })} />
+            <Input label="Custo Total" name="custoTotal" value={edit.custoTotal.toFixed(2)} readOnly />
             <Input label="Data" type="date" name="data" value={edit.data} onChange={e => setEdit({ ...edit, data: e.target.value })} />
             <Input label="Validade" type="date" name="validade" value={edit.validade} onChange={e => setEdit({ ...edit, validade: e.target.value })} />
             <div className="md:col-span-6 flex justify-end space-x-2">

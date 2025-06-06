@@ -63,11 +63,18 @@ export const useEstoque = () => {
 
     // Atualizar produto com novo preco/fornecedor/marca
     const produtos = obterProdutos();
-      const atualizados = produtos.map((p: ProdutoInfo) =>
-        p.id === nova.produtoId
-          ? { ...p, preco: nova.preco as number, fornecedor: nova.fornecedor as string, marca: nova.marca || p.marca }
-          : p
-      );
+    const atualizados = produtos.map((p: ProdutoInfo) => {
+      if (p.id !== nova.produtoId) return p;
+      const pesoEmb = p.pesoEmbalagem || 1;
+      const precoUnitario = pesoEmb > 0 ? dados.preco / pesoEmb : dados.preco;
+      return {
+        ...p,
+        preco: dados.preco,
+        precoUnitario,
+        fornecedor: nova.fornecedor as string,
+        marca: nova.marca || p.marca,
+      };
+    });
     salvarProdutos(atualizados);
 
     // Atualizar fichas tecnicas que utilizam este produto

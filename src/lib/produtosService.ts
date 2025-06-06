@@ -10,6 +10,8 @@ export interface ProdutoInfo {
   marca?: string;
   unidadeMedida: string;
   preco: number;
+  /** Preço real por grama ou mililitro calculado a partir do peso/volume da embalagem */
+  precoUnitario?: number;
   fornecedor: string;
   pesoEmbalagem?: number;
   imagem?: string;
@@ -47,6 +49,7 @@ export const obterProdutos = (): ProdutoInfo[] => {
         ...p,
         categoria: p.categoria ?? '',
         preco: Number(p.preco) || 0,
+        precoUnitario: p.precoUnitario ? Number(p.precoUnitario) : undefined,
         pesoEmbalagem: p.pesoEmbalagem ? Number(p.pesoEmbalagem) : undefined,
         infoNutricional: p.infoNutricional
           ? {
@@ -86,6 +89,10 @@ export const useProdutos = () => {
     const novoProduto = {
       ...produto,
       id: gerarId(),
+      precoUnitario:
+        produto.pesoEmbalagem && produto.pesoEmbalagem > 0
+          ? produto.preco / produto.pesoEmbalagem
+          : undefined,
     };
     
     const novosProdutos = [...produtos, novoProduto];
@@ -99,6 +106,10 @@ export const useProdutos = () => {
     const produtoAtualizado = {
       ...produto,
       id,
+      precoUnitario:
+        produto.pesoEmbalagem && produto.pesoEmbalagem > 0
+          ? produto.preco / produto.pesoEmbalagem
+          : undefined,
     };
     
     const novosProdutos = produtos.map((p: ProdutoInfo) =>

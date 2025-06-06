@@ -120,7 +120,10 @@ export const useFichasTecnicas = () => {
         const base = tipoUso === 'peso' ? 'g' : 'ml';
         const qtdBase = converterUnidade(ingrediente.quantidade, unidadeIng, base);
         const pesoEmbalagem = produto.pesoEmbalagem || infoUnidades[produto.unidadeMedida]?.fator || 1;
-        const custoUnitario = produto.preco / pesoEmbalagem;
+        const custoUnitario =
+          produto.precoUnitario !== undefined
+            ? produto.precoUnitario
+            : produto.preco / pesoEmbalagem;
         custo = qtdBase * custoUnitario;
       } else {
         const quantidadeConvertida = converterUnidade(

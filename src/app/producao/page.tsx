@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
@@ -31,6 +31,9 @@ export default function ProducaoPage() {
   const [edit, setEdit] = useState<ProducaoInfo | null>(null);
   const { isOpen, openModal, closeModal } = useModal();
 
+  const formatarMoeda = (valor: number) =>
+    valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
   const calcularCusto = () => {
     if (!form.fichaId || !form.quantidade) return '';
     const ficha = fichasTecnicas.find(f => f.id === form.fichaId);
@@ -38,7 +41,7 @@ export default function ProducaoPage() {
     const qtdTotalG = converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g');
     const fichaRendG = converterUnidade(ficha.rendimentoTotal, ficha.unidadeRendimento, 'g');
     const fator = qtdTotalG / fichaRendG;
-    return (ficha.custoTotal * fator).toFixed(2);
+    return formatarMoeda(ficha.custoTotal * fator);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -100,6 +103,23 @@ export default function ProducaoPage() {
     setEdit({ ...p });
     openModal();
   };
+
+  useEffect(() => {
+    if (!edit) return;
+    const ficha = fichasTecnicas.find(f => f.id === edit.fichaId);
+    if (!ficha) return;
+    const qtdTotalG = converterUnidade(edit.quantidadeTotal, edit.unidadeQuantidade, 'g');
+    const fichaRendG = converterUnidade(ficha.rendimentoTotal, ficha.unidadeRendimento, 'g');
+    const fator = qtdTotalG / fichaRendG;
+    const pesoUnitG = converterUnidade(edit.pesoUnitario, edit.unidadePeso, 'g');
+    const unidades = Math.round(qtdTotalG / pesoUnitG);
+    const custoTotal = ficha.custoTotal * fator;
+    setEdit(prev => {
+      if (!prev) return prev;
+      if (prev.unidadesGeradas === unidades && prev.custoTotal === custoTotal) return prev;
+      return { ...prev, unidadesGeradas: unidades, custoTotal };
+    });
+  }, [edit?.quantidadeTotal, edit?.unidadeQuantidade, edit?.pesoUnitario, edit?.unidadePeso, edit?.fichaId, fichasTecnicas]);
 
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -212,7 +232,7 @@ export default function ProducaoPage() {
                 <TableCell>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
                 <TableCell>{p.pesoUnitario}{p.unidadePeso}</TableCell>
                 <TableCell>{p.unidadesGeradas}</TableCell>
-                <TableCell>{p.custoTotal.toFixed(2)}</TableCell>
+                <TableCell>{formatarMoeda(p.custoTotal)}</TableCell>
                 <TableCell className="flex space-x-2">
                   <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(p)}>Editar</Button>
                   <Button size="sm" variant="danger" onClick={() => removerProducao(p.id)}>Excluir</Button>
@@ -248,8 +268,8 @@ export default function ProducaoPage() {
               onChange={e => setEdit({ ...edit, unidadePeso: e.target.value })}
               options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
             />
-            <Input label="Unidades Geradas" name="unidadesGeradas" value={String(edit.unidadesGeradas)} onChange={e => setEdit({ ...edit, unidadesGeradas: Number(e.target.value) })} />
-            <Input label="Custo Total" name="custoTotal" value={edit.custoTotal.toFixed(2)} readOnly />
+            <Input label="Unidades Geradas" name="unidadesGeradas" value={String(edit.unidadesGeradas)} readOnly />
+            <Input label="Custo Total" name="custoTotal" value={formatarMoeda(edit.custoTotal)} readOnly />
             <Input label="Data" type="date" name="data" value={edit.data} onChange={e => setEdit({ ...edit, data: e.target.value })} />
             <Input label="Validade" type="date" name="validade" value={edit.validade} onChange={e => setEdit({ ...edit, validade: e.target.value })} />
             <div className="md:col-span-6 flex justify-end space-x-2">

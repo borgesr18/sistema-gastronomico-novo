@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useUsuarios } from '@/lib/usuariosService';
 
 const Header: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { usuarioAtual, logout } = useUsuarios();
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
@@ -14,7 +16,7 @@ const Header: React.FC = () => {
     <header className="bg-white border-b shadow-sm">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center">
-          <h2 className="text-xl font-semibold text-gray-800">Sistema de Gestão Gastronômica</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Sistema de Controle - Fichas Técnicas</h2>
         </div>
 
         <div className="flex items-center space-x-4">
@@ -26,7 +28,7 @@ const Header: React.FC = () => {
               <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <span className="text-sm font-medium text-gray-700">U</span>
               </div>
-              <span className="hidden md:block text-sm font-medium text-gray-700">Usuário</span>
+              <span className="hidden md:block text-sm font-medium text-gray-700">{usuarioAtual?.nome || 'Usuário'}</span>
             </button>
 
             {isProfileOpen && (
@@ -44,7 +46,8 @@ const Header: React.FC = () => {
                   Configurações
                 </Link>
                 <div className="border-t border-gray-100"></div>
-                <button 
+                <button
+                  onClick={logout}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Sair

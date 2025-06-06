@@ -126,7 +126,7 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Acesse a página "Relatórios" no menu lateral
    - Selecione o tipo de relatório desejado (Completo, Custos, Ingredientes, Receitas)
    - Visualize as informações detalhadas
-   - Utilize os botões de exportação para salvar os relatórios (funcionalidade futura)
+   - Utilize os botões de exportação para salvar os relatórios em PDF ou Excel
 
 ## Manutenção e Suporte
 
@@ -141,7 +141,6 @@ O sistema utiliza localStorage para persistência de dados, o que significa que:
 
 - O sistema conta com autenticação básica de usuários, mas as credenciais ficam armazenadas localmente
 - Não há sincronização de dados entre diferentes dispositivos
-- A exportação de relatórios para PDF e Excel está planejada para versões futuras
 
 ### Próximas Versões
 

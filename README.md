@@ -17,6 +17,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Peso por Embalagem**: Defina quantos gramas ou mililitros cada unidade comprada possui
 - **Relatório de Estoque**: Consulte o balanço completo de itens armazenados
 - **Relatórios e Dashboard**: Visualizações e métricas para tomada de decisão
+- **Exportação de Relatórios**: Salve qualquer relatório em PDF ou Excel
 - **Interface Responsiva**: Acesso em qualquer dispositivo
 
 ## Tecnologias

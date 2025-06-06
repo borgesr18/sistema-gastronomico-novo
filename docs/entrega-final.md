@@ -36,6 +36,7 @@ O Sistema de Controle - Fichas Técnicas foi completamente reconstruído e está
    - Relatórios específicos (custos, ingredientes, receitas)
    - Análises de distribuição por categoria
    - Identificação de itens mais utilizados
+   - Exportação de relatórios em PDF e Excel
 4. **Controle de Usuários**
    - Login e logout básico
    - Cadastro e exclusão de usuários na seção de configurações
@@ -80,7 +81,6 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
    - Definir diferentes níveis de usuário
 
 3. **Funcionalidades Adicionais**
-   - Exportação de relatórios em PDF/Excel
    - Planejamento de produção
 
 ## Conclusão

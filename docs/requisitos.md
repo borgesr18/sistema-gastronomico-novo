@@ -1,4 +1,4 @@
-# Requisitos do Sistema de Gestão Gastronômica
+# Requisitos do Sistema de Controle - Fichas Técnicas
 
 ## 1. Cadastro de Produtos (Insumos)
 

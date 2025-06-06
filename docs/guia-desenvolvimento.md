@@ -1,6 +1,6 @@
 # Guia de Desenvolvimento e Manutenção
 
-Este documento fornece informações técnicas sobre a estrutura do código, arquitetura e práticas de desenvolvimento do Sistema de Gestão Gastronômica.
+Este documento fornece informações técnicas sobre a estrutura do código, arquitetura e práticas de desenvolvimento do Sistema de Controle - Fichas Técnicas.
 
 ## Arquitetura do Sistema
 
@@ -17,6 +17,7 @@ sistema-gastronomico-novo/
 │   │   ├── configuracoes/   # Módulo de configurações
 │   │   ├── fichas-tecnicas/ # Módulo de fichas técnicas
 │   │   ├── produtos/        # Módulo de produtos
+│   │   ├── estoque/         # Módulo de controle de estoque
 │   │   ├── relatorios/      # Módulo de relatórios
 │   │   ├── layout.tsx       # Layout principal da aplicação
 │   │   └── page.tsx         # Página inicial (dashboard)
@@ -57,6 +58,7 @@ Gerencia o estado e operações relacionadas aos produtos:
 
 - `useProdutos()`: Hook que fornece acesso aos produtos e funções para manipulá-los
 - Funções: `adicionarProduto`, `atualizarProduto`, `removerProduto`, `obterProdutoPorId`
+- Cada produto armazena também o campo `pesoEmbalagem`, usado para calcular o custo real por grama ou mililitro.
 - Persistência em localStorage
 
 ### fichasTecnicasService.ts
@@ -75,6 +77,31 @@ Gera relatórios baseados nos dados de produtos e fichas técnicas:
 - `useRelatorios()`: Hook que fornece funções para gerar diferentes tipos de relatórios
 - Funções: `gerarRelatorioCompleto`, `gerarRelatorioCustos`, `gerarRelatorioIngredientes`, `gerarRelatorioReceitas`
 - Cálculos de métricas e estatísticas
+
+### usuariosService.ts
+
+Gerencia autenticação e cadastro de usuários:
+
+- `useUsuarios()`: Hook para acessar usuários e funções de login
+- Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`, `alterarSenha`
+- Persistência em localStorage
+
+### estoqueService.ts
+
+Gerencia o histórico de compras e a quantidade em estoque:
+
+- `useEstoque()`: Hook para registrar entradas e saídas de produtos
+- Funções: `registrarEntrada`, `registrarSaida`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
+- Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas
+- Persistência em localStorage
+
+### producaoService.ts
+
+Controla o histórico de produções realizadas:
+
+- `useProducao()`: Hook para registrar novas produções
+- Função: `registrarProducao`
+- Persistência em localStorage
 
 ## Padrões de Código
 
@@ -148,7 +175,7 @@ Para fazer deploy:
 Áreas para desenvolvimento futuro:
 
 1. **Autenticação e Autorização**:
-   - Implementar sistema de login
+   - Sistema de login implementado utilizando armazenamento local
    - Definir níveis de acesso para diferentes usuários
 
 2. **Banco de Dados Remoto**:

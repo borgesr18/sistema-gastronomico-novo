@@ -6,17 +6,20 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
-import { useProdutos, unidadesMedida, categoriasProdutos } from '@/lib/produtosService';
+import { useProdutos } from '@/lib/produtosService';
+import { useUnidadesMedida } from '@/lib/unidadesService';
+import { useCategorias } from '@/lib/categoriasService';
 
 export default function EditarProdutoPage() {
   const params = useParams();
   const router = useRouter();
-  const { obterProdutoPorId, atualizarProduto } = useProdutos();
+  const { obterProdutoPorId, atualizarProduto, isLoading: produtosLoading } = useProdutos();
+  const { categorias } = useCategorias();
+  const { unidades } = useUnidadesMedida();
   const [isLoading, setIsLoading] = useState(false);
   const [mostrarInfoNutricional, setMostrarInfoNutricional] = useState(false);
   
   const produtoId = params.id as string;
-  const produtoOriginal = obterProdutoPorId(produtoId);
   
   const [produto, setProduto] = useState({
     nome: '',
@@ -25,6 +28,7 @@ export default function EditarProdutoPage() {
     unidadeMedida: '',
     preco: '',
     fornecedor: '',
+    pesoEmbalagem: '',
     infoNutricional: {
       calorias: '',
       carboidratos: '',
@@ -41,34 +45,36 @@ export default function EditarProdutoPage() {
 
   // Carregar dados do produto
   useEffect(() => {
-    if (produtoOriginal) {
-      setProduto({
-        nome: produtoOriginal.nome,
-        categoria: produtoOriginal.categoria || '',
-        marca: produtoOriginal.marca || '',
-        unidadeMedida: produtoOriginal.unidadeMedida,
-        preco: produtoOriginal.preco?.toString() || '',
-        fornecedor: produtoOriginal.fornecedor,
-        infoNutricional: {
-          calorias: produtoOriginal.infoNutricional?.calorias?.toString() || '',
-          carboidratos: produtoOriginal.infoNutricional?.carboidratos?.toString() || '',
-          proteinas: produtoOriginal.infoNutricional?.proteinas?.toString() || '',
-          gordurasTotais: produtoOriginal.infoNutricional?.gordurasTotais?.toString() || '',
-          gordurasSaturadas: produtoOriginal.infoNutricional?.gordurasSaturadas?.toString() || '',
-          gordurasTrans: produtoOriginal.infoNutricional?.gordurasTrans?.toString() || '',
-          fibras: produtoOriginal.infoNutricional?.fibras?.toString() || '',
-          sodio: produtoOriginal.infoNutricional?.sodio?.toString() || ''
-        }
-      });
-      
-      setMostrarInfoNutricional(!!produtoOriginal.infoNutricional);
+    if (produtosLoading) return;
+    const original = obterProdutoPorId(produtoId);
+    if (!original) {
+      router.push('/produtos');
+      return;
     }
-  }, [produtoOriginal]);
+    setProduto({
+      nome: original.nome,
+      categoria: original.categoria || '',
+      marca: original.marca || '',
+      unidadeMedida: original.unidadeMedida,
+      preco: original.preco?.toString() || '',
+      fornecedor: original.fornecedor,
+      pesoEmbalagem: original.pesoEmbalagem?.toString() || '',
+      infoNutricional: {
+        calorias: original.infoNutricional?.calorias?.toString() || '',
+        carboidratos: original.infoNutricional?.carboidratos?.toString() || '',
+        proteinas: original.infoNutricional?.proteinas?.toString() || '',
+        gordurasTotais: original.infoNutricional?.gordurasTotais?.toString() || '',
+        gordurasSaturadas: original.infoNutricional?.gordurasSaturadas?.toString() || '',
+        gordurasTrans: original.infoNutricional?.gordurasTrans?.toString() || '',
+        fibras: original.infoNutricional?.fibras?.toString() || '',
+        sodio: original.infoNutricional?.sodio?.toString() || ''
+      }
+    });
+    setMostrarInfoNutricional(!!original.infoNutricional);
+  }, [produtosLoading, produtoId]);
 
-  // Redirecionar se o produto não existir
-  if (!produtoOriginal) {
-    router.push('/produtos');
-    return null;
+  if (produtosLoading) {
+    return <p>Carregando...</p>;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -98,9 +104,11 @@ export default function EditarProdutoPage() {
     if (!produto.categoria) novosErros.categoria = 'Categoria é obrigatória';
     if (!produto.unidadeMedida) novosErros.unidadeMedida = 'Unidade de medida é obrigatória';
     if (!produto.preco) novosErros.preco = 'Preço é obrigatório';
-    else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0) 
+    else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0)
       novosErros.preco = 'Preço deve ser um número positivo';
     if (!produto.fornecedor) novosErros.fornecedor = 'Fornecedor é obrigatório';
+    if (!produto.pesoEmbalagem || isNaN(Number(produto.pesoEmbalagem)) || Number(produto.pesoEmbalagem) <= 0)
+      novosErros.pesoEmbalagem = 'Informe o peso por embalagem';
     
     if (mostrarInfoNutricional) {
       const infoNutricional = produto.infoNutricional;
@@ -146,6 +154,7 @@ export default function EditarProdutoPage() {
       const produtoFormatado = {
         ...produto,
         preco: Number(produto.preco),
+        pesoEmbalagem: Number(produto.pesoEmbalagem),
         infoNutricional: mostrarInfoNutricional ? {
           calorias: Number(produto.infoNutricional.calorias) || 0,
           carboidratos: Number(produto.infoNutricional.carboidratos) || 0,
@@ -190,7 +199,7 @@ export default function EditarProdutoPage() {
                 name="categoria"
                 value={produto.categoria}
                 onChange={handleChange}
-                options={categoriasProdutos}
+                options={categorias.map(c => ({ value: c.id, label: c.nome }))}
                 error={erros.categoria}
               />
 
@@ -209,7 +218,7 @@ export default function EditarProdutoPage() {
                 name="unidadeMedida"
                 value={produto.unidadeMedida}
                 onChange={handleChange}
-                options={unidadesMedida}
+                options={unidades.map(u => ({ value: u.id, label: u.nome }))}
                 error={erros.unidadeMedida}
               />
               
@@ -232,6 +241,17 @@ export default function EditarProdutoPage() {
                 onChange={handleChange}
                 error={erros.fornecedor}
                 placeholder="Ex: Distribuidora Alimentos"
+              />
+
+              <Input
+                label="Peso/Volume por Embalagem (g ou ml) *"
+                name="pesoEmbalagem"
+                type="number"
+                min="0"
+                value={produto.pesoEmbalagem}
+                onChange={handleChange}
+                error={erros.pesoEmbalagem}
+                placeholder="Ex: 1000"
               />
             </div>
             

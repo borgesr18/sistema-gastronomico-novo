@@ -1,8 +1,8 @@
-# Documentação do Sistema de Gestão Gastronômica
+# Documentação do Sistema de Controle - Fichas Técnicas
 
 ## Visão Geral
 
-O Sistema de Gestão Gastronômica é uma aplicação web completa desenvolvida para auxiliar estabelecimentos gastronômicos no gerenciamento de produtos, fichas técnicas (receitas) e relatórios. O sistema permite o controle eficiente de insumos, cálculo automático de custos e informações nutricionais, além de fornecer relatórios detalhados para tomada de decisões.
+O Sistema de Controle - Fichas Técnicas é uma aplicação web completa desenvolvida para auxiliar estabelecimentos gastronômicos no gerenciamento de produtos, fichas técnicas (receitas) e relatórios. O sistema permite o controle eficiente de insumos, cálculo automático de custos e informações nutricionais, além de fornecer relatórios detalhados para tomada de decisões.
 
 ## Estrutura do Sistema
 
@@ -10,8 +10,8 @@ O sistema está organizado em três módulos principais:
 
 ### 1. Módulo de Produtos/Insumos
 
-Este módulo permite o cadastro e gerenciamento de todos os insumos utilizados nas receitas, incluindo:
-- Cadastro de produtos com nome, marca, categoria, unidade de medida e preço
+ Este módulo permite o cadastro e gerenciamento de todos os insumos utilizados nas receitas, incluindo:
+ - Cadastro de produtos com nome, marca, categoria, unidade de medida, preço e peso por embalagem
 - Registro de informações nutricionais
 - Listagem, edição e exclusão de produtos
 - Filtros e busca para localização rápida de produtos
@@ -46,6 +46,21 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 
 ## Guia de Uso
 
+### Acesso ao Sistema
+
+1. Acesse a página de login (`/login`).
+2. Caso seja o primeiro acesso, clique em "Cadastre-se" para criar um usuário.
+3. Informe seu email e senha para entrar no sistema. As credenciais ficam armazenadas somente no navegador.
+
+### Controle de Usuários
+
+1. Acesse "Configurações" no menu lateral.
+2. Clique em "Controle de Usuários".
+3. Utilize o botão "Novo Usuário" para cadastrar novas contas.
+4. Exclua usuários indesejados pelo botão "Excluir" na tabela.
+5. Altere senhas existentes clicando em "Alterar Senha" ao lado do usuário.
+6. Em "Unidades de Medida" é possível cadastrar, editar ou remover siglas utilizadas nos produtos.
+
 ### Produtos/Insumos
 
 1. **Listagem de Produtos**:
@@ -67,6 +82,26 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 4. **Exclusão de Produto**:
    - Na listagem de produtos, clique no botão de exclusão
    - Confirme a exclusão
+
+### Controle de Estoque
+
+1. **Registrar Compras**:
+   - Acesse a página "Estoque" no menu lateral
+   - Selecione o produto comprado e informe quantidade, preço e fornecedor
+   - Clique em "Registrar Entrada" para salvar
+2. **Histórico**:
+   - A tabela abaixo do formulário mostra todas as entradas realizadas
+  - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
+
+### Produção
+
+1. **Registrar Produção**:
+   - Acesse a página "Produção" no menu lateral
+   - Escolha a ficha técnica desejada e informe a quantidade a ser produzida
+   - Selecione o produto final que será adicionado ao estoque
+   - Clique em "Registrar Produção" para baixar os ingredientes e gerar o produto final
+2. **Histórico**:
+   - Abaixo do formulário é exibida a lista de produções já realizadas
 
 ### Fichas Técnicas
 
@@ -101,7 +136,7 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Acesse a página "Relatórios" no menu lateral
    - Selecione o tipo de relatório desejado (Completo, Custos, Ingredientes, Receitas)
    - Visualize as informações detalhadas
-   - Utilize os botões de exportação para salvar os relatórios (funcionalidade futura)
+   - Utilize os botões de exportação para salvar os relatórios em PDF ou Excel
 
 ## Manutenção e Suporte
 
@@ -114,14 +149,13 @@ O sistema utiliza localStorage para persistência de dados, o que significa que:
 
 ### Limitações Atuais
 
-- O sistema não possui autenticação de usuários
-- Não há sincronização de dados entre dispositivos
-- A exportação de relatórios para PDF e Excel está planejada para versões futuras
+- O sistema conta com autenticação básica de usuários, mas as credenciais ficam armazenadas localmente
+- Não há sincronização de dados entre diferentes dispositivos
 
 ### Próximas Versões
 
 Estão planejadas para versões futuras:
-- Autenticação de usuários
+- Diferentes níveis de permissão para usuários
 - Banco de dados remoto para sincronização entre dispositivos
 - Exportação de relatórios em diferentes formatos
 - Controle de estoque

@@ -10,7 +10,10 @@ export interface ProdutoInfo {
   marca?: string;
   unidadeMedida: string;
   preco: number;
+  /** Preço real por grama ou mililitro calculado a partir do peso/volume da embalagem */
+  precoUnitario?: number;
   fornecedor: string;
+  pesoEmbalagem?: number;
   imagem?: string;
   infoNutricional?: {
     calorias: number;
@@ -30,12 +33,12 @@ const gerarId = () => {
 };
 
 // Função para salvar produtos no localStorage
-const salvarProdutos = (produtos: ProdutoInfo[]) => {
+export const salvarProdutos = (produtos: ProdutoInfo[]) => {
   localStorage.setItem('produtos', JSON.stringify(produtos));
 };
 
 // Função para obter produtos do localStorage de forma segura
-const obterProdutos = (): ProdutoInfo[] => {
+export const obterProdutos = (): ProdutoInfo[] => {
   if (typeof window === 'undefined') return [];
 
   try {
@@ -46,6 +49,8 @@ const obterProdutos = (): ProdutoInfo[] => {
         ...p,
         categoria: p.categoria ?? '',
         preco: Number(p.preco) || 0,
+        precoUnitario: p.precoUnitario ? Number(p.precoUnitario) : undefined,
+        pesoEmbalagem: p.pesoEmbalagem ? Number(p.pesoEmbalagem) : undefined,
         infoNutricional: p.infoNutricional
           ? {
               calorias: Number(p.infoNutricional.calorias) || 0,
@@ -84,6 +89,10 @@ export const useProdutos = () => {
     const novoProduto = {
       ...produto,
       id: gerarId(),
+      precoUnitario:
+        produto.pesoEmbalagem && produto.pesoEmbalagem > 0
+          ? produto.preco / produto.pesoEmbalagem
+          : undefined,
     };
     
     const novosProdutos = [...produtos, novoProduto];
@@ -97,9 +106,13 @@ export const useProdutos = () => {
     const produtoAtualizado = {
       ...produto,
       id,
+      precoUnitario:
+        produto.pesoEmbalagem && produto.pesoEmbalagem > 0
+          ? produto.preco / produto.pesoEmbalagem
+          : undefined,
     };
     
-    const novosProdutos = produtos.map(p => 
+    const novosProdutos = produtos.map((p: ProdutoInfo) =>
       p.id === id ? produtoAtualizado : p
     );
     
@@ -110,14 +123,14 @@ export const useProdutos = () => {
 
   // Remover produto
   const removerProduto = (id: string) => {
-    const novosProdutos = produtos.filter(p => p.id !== id);
+    const novosProdutos = produtos.filter((p: ProdutoInfo) => p.id !== id);
     setProdutos(novosProdutos);
     salvarProdutos(novosProdutos);
   };
 
   // Obter produto por ID
   const obterProdutoPorId = (id: string) => {
-    return produtos.find(p => p.id === id);
+    return produtos.find((p: ProdutoInfo) => p.id === id);
   };
 
   return {
@@ -130,16 +143,6 @@ export const useProdutos = () => {
   };
 };
 
-// Dados iniciais para unidades de medida
-export const unidadesMedida = [
-  { value: 'g', label: 'Gramas (g)' },
-  { value: 'kg', label: 'Quilogramas (kg)' },
-  { value: 'ml', label: 'Mililitros (ml)' },
-  { value: 'l', label: 'Litros (l)' },
-  { value: 'un', label: 'Unidade' },
-  { value: 'cx', label: 'Caixa' },
-  { value: 'pct', label: 'Pacote' },
-];
 
 // Categorias de produtos para classificacao em relatorios
 export const categoriasProdutos = [

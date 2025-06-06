@@ -44,6 +44,9 @@ O Sistema de Controle - Fichas Técnicas foi completamente reconstruído e está
 5. **Controle de Estoque**
    - Registro de compras com atualização de preços de produtos
    - Histórico de movimentações para acompanhar evolução de custos
+6. **Produção**
+   - Cálculo automático de insumos necessários
+   - Baixa de ingredientes e entrada do produto final no estoque
 
 ## Tecnologias Utilizadas
 

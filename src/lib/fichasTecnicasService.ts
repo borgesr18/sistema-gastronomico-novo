@@ -14,7 +14,7 @@ export interface IngredienteFicha {
 
 type TipoUnidade = 'peso' | 'volume' | 'unidade';
 
-const infoUnidades: Record<string, { tipo: TipoUnidade; fator: number }> = {
+export const infoUnidades: Record<string, { tipo: TipoUnidade; fator: number }> = {
   g: { tipo: 'peso', fator: 1 },
   kg: { tipo: 'peso', fator: 1000 },
   ml: { tipo: 'volume', fator: 1 },
@@ -24,7 +24,7 @@ const infoUnidades: Record<string, { tipo: TipoUnidade; fator: number }> = {
   pct: { tipo: 'unidade', fator: 1 },
 };
 
-const converterUnidade = (valor: number, de: string, para: string) => {
+export const converterUnidade = (valor: number, de: string, para: string) => {
   const uDe = infoUnidades[de];
   const uPara = infoUnidades[para];
   if (!uDe || !uPara || uDe.tipo !== uPara.tipo) return valor;

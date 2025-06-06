@@ -90,9 +90,17 @@ Gerencia autenticação e cadastro de usuários:
 
 Gerencia o histórico de compras e a quantidade em estoque:
 
-- `useEstoque()`: Hook para registrar entradas de produtos
-- Funções: `registrarCompra`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
+- `useEstoque()`: Hook para registrar entradas e saídas de produtos
+- Funções: `registrarEntrada`, `registrarSaida`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
 - Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas
+- Persistência em localStorage
+
+### producaoService.ts
+
+Controla o histórico de produções realizadas:
+
+- `useProducao()`: Hook para registrar novas produções
+- Função: `registrarProducao`
 - Persistência em localStorage
 
 ## Padrões de Código

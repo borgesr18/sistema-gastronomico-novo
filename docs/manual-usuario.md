@@ -91,7 +91,17 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Clique em "Registrar Entrada" para salvar
 2. **Histórico**:
    - A tabela abaixo do formulário mostra todas as entradas realizadas
-   - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
+  - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
+
+### Produção
+
+1. **Registrar Produção**:
+   - Acesse a página "Produção" no menu lateral
+   - Escolha a ficha técnica desejada e informe a quantidade a ser produzida
+   - Selecione o produto final que será adicionado ao estoque
+   - Clique em "Registrar Produção" para baixar os ingredientes e gerar o produto final
+2. **Histórico**:
+   - Abaixo do formulário é exibida a lista de produções já realizadas
 
 ### Fichas Técnicas
 

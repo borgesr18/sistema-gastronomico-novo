@@ -82,6 +82,7 @@ Gerencia autenticação e cadastro de usuários:
 
 - `useUsuarios()`: Hook para acessar usuários e funções de login
 - Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`, `alterarSenha`
+- Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`
 - Persistência em localStorage
 
 ## Padrões de Código

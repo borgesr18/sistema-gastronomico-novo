@@ -103,6 +103,15 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 2. **Histórico**:
    - Abaixo do formulário é exibida a lista de produções já realizadas
 
+### Estoque de Produção
+
+1. **Ajustar Quantidades**:
+   - No menu lateral, acesse "Estoque Produção"
+   - Escolha a ficha técnica desejada e indique se é entrada ou saída de unidades
+   - Informe a quantidade e clique em "Registrar" para atualizar o saldo
+2. **Consultar Saldo**:
+   - A tabela "Estoque Atual" mostra a quantidade disponível de cada ficha técnica produzida
+
 ### Fichas Técnicas
 
 1. **Listagem de Fichas Técnicas**:

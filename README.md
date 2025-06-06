@@ -13,6 +13,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Controle de Estoque**: Registre compras de produtos e mantenha histórico
 - **Saídas de Estoque**: Lance baixas de produtos diretamente pelo estoque
 - **Produção**: Calcule ingredientes e registre produções retirando do estoque
+- **Estoque de Produção**: Acompanhe o saldo de itens produzidos e registre entradas ou saídas
 - **Categorias Personalizadas**: Cadastre e edite categorias de produtos nas configurações
 - **Unidades de Medida**: Gerencie siglas de unidades usadas nos produtos
 - **Peso por Embalagem**: Defina quantos gramas ou mililitros cada unidade comprada possui

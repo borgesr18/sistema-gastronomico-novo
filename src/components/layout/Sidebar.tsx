@@ -65,6 +65,15 @@ const Sidebar: React.FC = () => {
             {!isCollapsed && <span>Produção</span>}
           </Link>
         </li>
+        <li>
+          <Link
+            href="/estoque-producao"
+            className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+          >
+            <span className="material-icons mr-3">warehouse</span>
+            {!isCollapsed && <span>Estoque Produção</span>}
+          </Link>
+        </li>
           <li>
             <Link 
               href="/fichas-tecnicas"

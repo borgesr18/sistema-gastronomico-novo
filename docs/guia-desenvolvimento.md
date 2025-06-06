@@ -94,6 +94,7 @@ Gerencia o histórico de compras e a quantidade em estoque:
 - Funções: `registrarEntrada`, `registrarSaida`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
 - Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas
 - Persistência em localStorage
+- `/estoque-producao` lista o saldo de cada ficha técnica utilizando `calcularEstoqueAtual`
 
 ### producaoService.ts
 

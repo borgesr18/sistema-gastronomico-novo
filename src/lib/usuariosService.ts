@@ -41,6 +41,8 @@ export const useUsuarios = () => {
     const idLogado = localStorage.getItem('usuarioLogado');
     return idLogado ? armazenados.find(u => u.id === idLogado) || null : null;
   });
+  const [usuarios, setUsuarios] = useState<UsuarioInfo[]>([]);
+  const [usuarioAtual, setUsuarioAtual] = useState<UsuarioInfo | null>(null);
 
   useEffect(() => {
     const armazenados = obterUsuarios();
@@ -103,4 +105,6 @@ export const useUsuarios = () => {
   };
 
   return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha };
+  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario };
+  return { usuarios, usuarioAtual, registrarUsuario, login, logout };
 };

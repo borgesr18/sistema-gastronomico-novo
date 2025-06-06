@@ -31,6 +31,16 @@ export default function ProducaoPage() {
   const [edit, setEdit] = useState<ProducaoInfo | null>(null);
   const { isOpen, openModal, closeModal } = useModal();
 
+  const calcularCusto = () => {
+    if (!form.fichaId || !form.quantidade) return '';
+    const ficha = fichasTecnicas.find(f => f.id === form.fichaId);
+    if (!ficha) return '';
+    const qtdTotalG = converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g');
+    const fichaRendG = converterUnidade(ficha.rendimentoTotal, ficha.unidadeRendimento, 'g');
+    const fator = qtdTotalG / fichaRendG;
+    return (ficha.custoTotal * fator).toFixed(2);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -162,6 +172,12 @@ export default function ProducaoPage() {
             name="unidadesGeradas"
             readOnly
             value={form.pesoUnitario && form.quantidade ? String(Math.round(converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g') / converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g'))) : ''}
+          />
+          <Input
+            label="Custo"
+            name="custo"
+            readOnly
+            value={calcularCusto()}
           />
          <Input
             label="Data *"

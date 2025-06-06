@@ -100,7 +100,7 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Escolha a ficha técnica desejada, a quantidade total e o peso de cada unidade
  - O sistema calcula as unidades geradas e desconta os insumos do estoque
   - Clique em "Registrar Produção" para registrar a entrada das unidades produzidas
-  - O valor de custo calculado aparece no histórico da produção
+  - O valor de custo calculado é exibido no formulário e registrado no histórico
 2. **Histórico**:
    - Abaixo do formulário é exibida a lista de produções já realizadas
 

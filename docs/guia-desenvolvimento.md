@@ -17,6 +17,7 @@ sistema-gastronomico-novo/
 │   │   ├── configuracoes/   # Módulo de configurações
 │   │   ├── fichas-tecnicas/ # Módulo de fichas técnicas
 │   │   ├── produtos/        # Módulo de produtos
+│   │   ├── estoque/         # Módulo de controle de estoque
 │   │   ├── relatorios/      # Módulo de relatórios
 │   │   ├── layout.tsx       # Layout principal da aplicação
 │   │   └── page.tsx         # Página inicial (dashboard)
@@ -82,6 +83,15 @@ Gerencia autenticação e cadastro de usuários:
 
 - `useUsuarios()`: Hook para acessar usuários e funções de login
 - Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`, `alterarSenha`
+### estoqueService.ts
+
+Gerencia o histórico de compras e a quantidade em estoque:
+
+- `useEstoque()`: Hook para registrar entradas de produtos
+- Funções: `registrarCompra`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
+- Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas
+- Persistência em localStorage
+
 - Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`
 - Persistência em localStorage
 

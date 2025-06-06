@@ -30,12 +30,12 @@ const gerarId = () => {
 };
 
 // Função para salvar produtos no localStorage
-const salvarProdutos = (produtos: ProdutoInfo[]) => {
+export const salvarProdutos = (produtos: ProdutoInfo[]) => {
   localStorage.setItem('produtos', JSON.stringify(produtos));
 };
 
 // Função para obter produtos do localStorage de forma segura
-const obterProdutos = (): ProdutoInfo[] => {
+export const obterProdutos = (): ProdutoInfo[] => {
   if (typeof window === 'undefined') return [];
 
   try {

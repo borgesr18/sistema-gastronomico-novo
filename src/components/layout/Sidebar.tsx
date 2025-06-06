@@ -40,12 +40,21 @@ const Sidebar: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link 
+            <Link
               href="/produtos"
               className="flex items-center p-4 hover:bg-gray-700"
             >
               <span className="material-icons mr-3">inventory</span>
               {!isCollapsed && <span>Produtos</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/estoque"
+              className="flex items-center p-4 hover:bg-gray-700"
+            >
+              <span className="material-icons mr-3">store</span>
+              {!isCollapsed && <span>Estoque</span>}
             </Link>
           </li>
           <li>

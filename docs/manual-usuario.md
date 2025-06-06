@@ -82,6 +82,16 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Na listagem de produtos, clique no botão de exclusão
    - Confirme a exclusão
 
+### Controle de Estoque
+
+1. **Registrar Compras**:
+   - Acesse a página "Estoque" no menu lateral
+   - Selecione o produto comprado e informe quantidade, preço e fornecedor
+   - Clique em "Registrar Entrada" para salvar
+2. **Histórico**:
+   - A tabela abaixo do formulário mostra todas as entradas realizadas
+   - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
+
 ### Fichas Técnicas
 
 1. **Listagem de Fichas Técnicas**:

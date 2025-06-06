@@ -16,7 +16,7 @@ const Header: React.FC = () => {
     <header className="bg-white border-b shadow-sm">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center">
-          <h2 className="text-xl font-semibold text-gray-800">Sistema de Gestão Gastronômica</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Sistema de Controle - Fichas Técnicas</h2>
         </div>
 
         <div className="flex items-center space-x-4">

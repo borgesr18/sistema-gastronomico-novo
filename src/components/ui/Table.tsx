@@ -16,22 +16,26 @@ const Table: React.FC<TableProps> = ({
   isLoading = false,
 }) => {
   return (
-    <div className={`overflow-x-auto rounded-lg border border-gray-200 ${className}`}>
-      <table className="min-w-full divide-y divide-gray-200">
+    <div
+      className={`overflow-x-auto rounded-lg border ${className}`}
+      style={{ borderColor: 'var(--cor-borda)' }}
+    >
+      <table className="min-w-full divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
         <thead className="bg-gray-50">
           <tr>
             {headers.map((header, index) => (
               <th
                 key={index}
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: 'var(--cor-texto-secundario)' }}
               >
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
           {isLoading ? (
             <tr>
               <td
@@ -69,14 +73,14 @@ export const TableRow: React.FC<{ children: ReactNode; className?: string }> = (
   children,
   className = '',
 }) => {
-  return <tr className={`hover:bg-gray-50 ${className}`}>{children}</tr>;
+  return <tr className={`hover:bg-[var(--cor-secundaria)/10] ${className}`}>{children}</tr>;
 };
 
 export const TableCell: React.FC<{ children: ReactNode; className?: string }> = ({
   children,
   className = '',
 }) => {
-  return <td className={`px-6 py-4 text-sm text-gray-500 ${className}`}>{children}</td>;
+  return <td className={`px-6 py-4 text-sm ${className}`} style={{ color: 'var(--cor-texto-secundario)' }}>{children}</td>;
 };
 
 export default Table;

@@ -26,7 +26,23 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - Next.js 14.1.0
 - React 18.2.0
 - TypeScript
-- Tailwind CSS
+ - Tailwind CSS
+
+## Identidade Visual
+
+O sistema adota um tema moderno com a seguinte paleta de cores:
+
+- **Primária:** `#1E2A38`
+- **Secundária:** `#00B0FF`
+- **Ação:** `#007BFF`
+- **Fundo:** `#F9FAFB`
+- **Texto Principal:** `#333333`
+- **Texto Secundário:** `#6B7280`
+- **Borda:** `#E5E7EB`
+- **Sucesso:** `#10B981`
+- **Erro:** `#EF4444`
+
+A tipografia principal utiliza a fonte **Inter** com peso 400‑600.
 
 ## Instruções para Deploy no Vercel
 

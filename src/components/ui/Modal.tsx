@@ -61,9 +61,9 @@ const Modal: React.FC<ModalProps> = ({
         className={`bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} z-10 ${
           isOpen ? 'translate-y-0' : 'translate-y-4'
         } transition-transform duration-200`}
-      >
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+        >
+        <div className="flex justify-between items-center px-6 py-4 border-b" style={{ borderColor: 'var(--cor-borda)' }}>
+          <h3 className="text-lg font-medium" style={{ color: 'var(--cor-texto-principal)' }}>{title}</h3>
           <button
             type="button"
             className="text-gray-400 hover:text-gray-500 focus:outline-none"
@@ -89,7 +89,7 @@ const Modal: React.FC<ModalProps> = ({
         </div>
         <div className="px-6 py-4">{children}</div>
         {footer && (
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+          <div className="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3" style={{ borderColor: 'var(--cor-borda)' }}>
             {footer}
           </div>
         )}

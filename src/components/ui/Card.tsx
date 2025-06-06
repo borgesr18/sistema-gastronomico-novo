@@ -14,17 +14,17 @@ const Card: React.FC<CardProps> = ({
   footer 
 }) => {
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden ${className}`}>
+    <div className={`card overflow-hidden ${className}`}>
       {title && (
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-800">{title}</h3>
+        <div className="px-6 py-4 border-b" style={{ borderColor: 'var(--cor-borda)' }}>
+          <h3 className="text-lg font-medium" style={{ color: 'var(--cor-texto-principal)' }}>{title}</h3>
         </div>
       )}
       <div className="p-6">
         {children}
       </div>
       {footer && (
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+        <div className="px-6 py-4 bg-gray-50 border-t" style={{ borderColor: 'var(--cor-borda)' }}>
           {footer}
         </div>
       )}

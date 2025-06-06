@@ -62,7 +62,7 @@ body {
 
 @media print {
   body {
-    font-size: 11px;
+    font-size: 11pt;
   }
   @page {
     size: A4;

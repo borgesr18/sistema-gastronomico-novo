@@ -36,6 +36,9 @@ O Sistema de Gestão Gastronômica foi completamente reconstruído e está pront
    - Relatórios específicos (custos, ingredientes, receitas)
    - Análises de distribuição por categoria
    - Identificação de itens mais utilizados
+4. **Controle de Usuários**
+   - Login e logout básico
+   - Cadastro e exclusão de usuários na seção de configurações
 
 ## Tecnologias Utilizadas
 

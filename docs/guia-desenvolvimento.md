@@ -76,6 +76,14 @@ Gera relatórios baseados nos dados de produtos e fichas técnicas:
 - Funções: `gerarRelatorioCompleto`, `gerarRelatorioCustos`, `gerarRelatorioIngredientes`, `gerarRelatorioReceitas`
 - Cálculos de métricas e estatísticas
 
+### usuariosService.ts
+
+Gerencia autenticação e cadastro de usuários:
+
+- `useUsuarios()`: Hook para acessar usuários e funções de login
+- Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`
+- Persistência em localStorage
+
 ## Padrões de Código
 
 ### Componentes React

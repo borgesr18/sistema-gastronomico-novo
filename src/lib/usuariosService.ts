@@ -60,6 +60,16 @@ export const useUsuarios = () => {
     return novo;
   };
 
+  const removerUsuario = (id: string) => {
+    const filtrados = usuarios.filter(u => u.id !== id);
+    setUsuarios(filtrados);
+    salvarUsuarios(filtrados);
+    const idLogado = localStorage.getItem('usuarioLogado');
+    if (idLogado === id) {
+      logout();
+    }
+  };
+
   const login = (email: string, senha: string) => {
     const usuario = usuarios.find(u => u.email === email && u.senhaHash === hashSenha(senha));
     if (usuario) {
@@ -75,5 +85,6 @@ export const useUsuarios = () => {
     localStorage.removeItem('usuarioLogado');
   };
 
+  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario };
   return { usuarios, usuarioAtual, registrarUsuario, login, logout };
 };

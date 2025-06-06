@@ -52,6 +52,13 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 2. Caso seja o primeiro acesso, clique em "Cadastre-se" para criar um usuário.
 3. Informe seu email e senha para entrar no sistema. As credenciais ficam armazenadas somente no navegador.
 
+### Controle de Usuários
+
+1. Acesse "Configurações" no menu lateral.
+2. Clique em "Controle de Usuários".
+3. Utilize o botão "Novo Usuário" para cadastrar novas contas.
+4. Exclua usuários indesejados pelo botão "Excluir" na tabela.
+
 ### Produtos/Insumos
 
 1. **Listagem de Produtos**:

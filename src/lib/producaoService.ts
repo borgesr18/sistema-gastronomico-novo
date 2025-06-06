@@ -39,13 +39,29 @@ export const useProducao = () => {
     setProducoes(obterProducoes());
   }, []);
 
-  const registrarProducao = (dados: Omit<ProducaoInfo, 'id' | 'data'>) => {
-    const nova: ProducaoInfo = { ...dados, id: gerarId(), data: new Date().toISOString() };
+  const registrarProducao = (dados: Omit<ProducaoInfo, 'id'>) => {
+    const nova: ProducaoInfo = { ...dados, id: gerarId() };
     const novas = [...producoes, nova];
     setProducoes(novas);
     salvarProducoes(novas);
     return nova;
   };
 
-  return { producoes, registrarProducao };
+  const atualizarProducao = (id: string, dados: Partial<Omit<ProducaoInfo, 'id'>>) => {
+    const index = producoes.findIndex(p => p.id === id);
+    if (index === -1) return;
+    const atualizada = { ...producoes[index], ...dados } as ProducaoInfo;
+    const novas = [...producoes];
+    novas[index] = atualizada;
+    setProducoes(novas);
+    salvarProducoes(novas);
+  };
+
+  const removerProducao = (id: string) => {
+    const novas = producoes.filter(p => p.id !== id);
+    setProducoes(novas);
+    salvarProducoes(novas);
+  };
+
+  return { producoes, registrarProducao, atualizarProducao, removerProducao };
 };

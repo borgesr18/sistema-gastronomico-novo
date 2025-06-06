@@ -6,6 +6,7 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
+import Modal, { useModal } from '@/components/ui/Modal';
 import { useFichasTecnicas, FichaTecnicaInfo, converterUnidade } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useEstoque } from '@/lib/estoqueService';
@@ -15,16 +16,19 @@ export default function ProducaoPage() {
   const { fichasTecnicas } = useFichasTecnicas();
   const { produtos } = useProdutos();
   const { registrarSaida, registrarEntrada } = useEstoque();
-  const { producoes, registrarProducao } = useProducao();
+  const { producoes, registrarProducao, atualizarProducao, removerProducao } = useProducao();
 
   const [form, setForm] = useState({
     fichaId: '',
     quantidade: '',
     unidadeQtd: 'kg',
     pesoUnitario: '',
-    unidadePeso: 'g'
+    unidadePeso: 'g',
+    data: new Date().toISOString().split('T')[0]
   });
   const [erros, setErros] = useState<Record<string, string>>({});
+  const [edit, setEdit] = useState<ProducaoInfo | null>(null);
+  const { isOpen, openModal, closeModal } = useModal();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -36,6 +40,7 @@ export default function ProducaoPage() {
     if (!form.fichaId) errs.fichaId = 'Ficha é obrigatória';
     if (!form.quantidade || isNaN(Number(form.quantidade))) errs.quantidade = 'Qtd inválida';
     if (!form.pesoUnitario || isNaN(Number(form.pesoUnitario))) errs.pesoUnitario = 'Peso inválido';
+    if (!form.data) errs.data = 'Data obrigatória';
     setErros(errs);
     return Object.keys(errs).length === 0;
   };
@@ -55,7 +60,7 @@ export default function ProducaoPage() {
       registrarSaida({ produtoId: prod.id, quantidade: qtd });
     });
     const pesoUnitG = converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g');
-    const unidades = qtdTotalG / pesoUnitG;
+    const unidades = Math.round(qtdTotalG / pesoUnitG);
     const precoUnit = (ficha.custoPorKg / 1000) * pesoUnitG;
     registrarEntrada({
       produtoId: form.fichaId,
@@ -66,13 +71,34 @@ export default function ProducaoPage() {
     });
     registrarProducao({
       fichaId: form.fichaId,
-      quantidadeTotal: qtdTotalG,
+      quantidadeTotal: Number(form.quantidade),
       unidadeQuantidade: form.unidadeQtd,
-      pesoUnitario: pesoUnitG,
+      pesoUnitario: Number(form.pesoUnitario),
       unidadePeso: form.unidadePeso,
       unidadesGeradas: unidades,
+      data: form.data,
     });
-    setForm({ fichaId: '', quantidade: '', unidadeQtd: 'kg', pesoUnitario: '', unidadePeso: 'g' });
+    setForm({ fichaId: '', quantidade: '', unidadeQtd: 'kg', pesoUnitario: '', unidadePeso: 'g', data: new Date().toISOString().split('T')[0] });
+  };
+
+  const iniciarEdicao = (p: ProducaoInfo) => {
+    setEdit({ ...p });
+    openModal();
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!edit) return;
+    atualizarProducao(edit.id, {
+      fichaId: edit.fichaId,
+      quantidadeTotal: Number(edit.quantidadeTotal),
+      unidadeQuantidade: edit.unidadeQuantidade,
+      pesoUnitario: Number(edit.pesoUnitario),
+      unidadePeso: edit.unidadePeso,
+      unidadesGeradas: Number(edit.unidadesGeradas),
+      data: edit.data,
+    });
+    closeModal();
   };
 
   const formatarData = (d: string) => new Date(d).toLocaleDateString();
@@ -81,7 +107,7 @@ export default function ProducaoPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Produção</h1>
       <Card>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-4">
           <Select
             label="Ficha Técnica *"
             name="fichaId"
@@ -92,43 +118,47 @@ export default function ProducaoPage() {
               .sort((a, b) => a.label.localeCompare(b.label))}
             error={erros.fichaId}
           />
-          <div className="flex space-x-2">
-            <Input
-              label="Quantidade *"
-              name="quantidade"
-              value={form.quantidade}
-              onChange={handleChange}
-              error={erros.quantidade}
-            />
-            <Select
-              label="Unidade"
-              name="unidadeQtd"
-              value={form.unidadeQtd}
-              onChange={handleChange}
-              options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
-            />
-          </div>
-          <div className="flex space-x-2">
-            <Input
-              label="Peso por unidade *"
-              name="pesoUnitario"
-              value={form.pesoUnitario}
-              onChange={handleChange}
-              error={erros.pesoUnitario}
-            />
-            <Select
-              label="Unidade"
-              name="unidadePeso"
-              value={form.unidadePeso}
-              onChange={handleChange}
-              options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
-            />
-          </div>
+          <Input
+            label="Quantidade *"
+            name="quantidade"
+            value={form.quantidade}
+            onChange={handleChange}
+            error={erros.quantidade}
+          />
+          <Select
+            label="Unidade"
+            name="unidadeQtd"
+            value={form.unidadeQtd}
+            onChange={handleChange}
+            options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
+          />
+          <Input
+            label="Peso por unidade *"
+            name="pesoUnitario"
+            value={form.pesoUnitario}
+            onChange={handleChange}
+            error={erros.pesoUnitario}
+          />
+          <Select
+            label="Unidade"
+            name="unidadePeso"
+            value={form.unidadePeso}
+            onChange={handleChange}
+            options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
+          />
           <Input
             label="Unidades Geradas"
             name="unidadesGeradas"
             readOnly
-            value={form.pesoUnitario && form.quantidade ? (converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g') / converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g')).toFixed(2) : ''}
+            value={form.pesoUnitario && form.quantidade ? String(Math.round(converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g') / converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g'))) : ''}
+          />
+          <Input
+            label="Data *"
+            type="date"
+            name="data"
+            value={form.data}
+            onChange={handleChange}
+            error={erros.data}
           />
           <div className="md:col-span-5 flex justify-end">
             <Button type="submit" variant="primary">Registrar Produção</Button>
@@ -136,7 +166,7 @@ export default function ProducaoPage() {
         </form>
       </Card>
       <Card title="Histórico de Produções">
-        <Table headers={["Data", "Ficha", "Quantidade", "Unidades"]} emptyMessage="Nenhuma produção registrada">
+        <Table headers={["Data", "Ficha", "Quantidade", "Unidades", "Ações"]} emptyMessage="Nenhuma produção registrada">
           {producoes.map((p: ProducaoInfo) => {
             const ficha = fichasTecnicas.find(f => f.id === p.fichaId);
             return (
@@ -144,12 +174,51 @@ export default function ProducaoPage() {
                 <TableCell>{formatarData(p.data)}</TableCell>
                 <TableCell>{ficha?.nome || 'Ficha removida'}</TableCell>
                 <TableCell>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
-                <TableCell>{p.unidadesGeradas.toFixed(2)}</TableCell>
+                <TableCell>{p.unidadesGeradas}</TableCell>
+                <TableCell className="flex space-x-2">
+                  <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(p)}>Editar</Button>
+                  <Button size="sm" variant="danger" onClick={() => removerProducao(p.id)}>Excluir</Button>
+                </TableCell>
               </TableRow>
             );
           })}
         </Table>
       </Card>
+      <Modal isOpen={isOpen} onClose={closeModal} title="Editar Produção">
+        {edit && (
+          <form onSubmit={handleEditSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <Select
+              label="Ficha Técnica"
+              name="fichaId"
+              value={edit.fichaId}
+              onChange={e => setEdit({ ...edit, fichaId: e.target.value })}
+              options={fichasTecnicas.map((f: FichaTecnicaInfo) => ({ value: f.id, label: f.nome })).sort((a, b) => a.label.localeCompare(b.label))}
+            />
+            <Input label="Quantidade" name="quantidadeTotal" value={String(edit.quantidadeTotal)} onChange={e => setEdit({ ...edit, quantidadeTotal: Number(e.target.value) })} />
+            <Select
+              label="Unidade"
+              name="unidadeQuantidade"
+              value={edit.unidadeQuantidade}
+              onChange={e => setEdit({ ...edit, unidadeQuantidade: e.target.value })}
+              options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
+            />
+            <Input label="Peso por unidade" name="pesoUnitario" value={String(edit.pesoUnitario)} onChange={e => setEdit({ ...edit, pesoUnitario: Number(e.target.value) })} />
+            <Select
+              label="Unidade"
+              name="unidadePeso"
+              value={edit.unidadePeso}
+              onChange={e => setEdit({ ...edit, unidadePeso: e.target.value })}
+              options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
+            />
+            <Input label="Unidades Geradas" name="unidadesGeradas" value={String(edit.unidadesGeradas)} onChange={e => setEdit({ ...edit, unidadesGeradas: Number(e.target.value) })} />
+            <Input label="Data" type="date" name="data" value={edit.data} onChange={e => setEdit({ ...edit, data: e.target.value })} />
+            <div className="md:col-span-6 flex justify-end space-x-2">
+              <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
+              <Button type="submit" variant="primary">Salvar</Button>
+            </div>
+          </form>
+        )}
+      </Modal>
     </div>
   );
 }

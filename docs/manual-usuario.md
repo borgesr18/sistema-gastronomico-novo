@@ -58,6 +58,7 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 2. Clique em "Controle de Usuários".
 3. Utilize o botão "Novo Usuário" para cadastrar novas contas.
 4. Exclua usuários indesejados pelo botão "Excluir" na tabela.
+5. Altere senhas existentes clicando em "Alterar Senha" ao lado do usuário.
 
 ### Produtos/Insumos
 

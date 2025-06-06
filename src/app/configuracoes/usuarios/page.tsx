@@ -9,6 +9,13 @@ import Input from '@/components/ui/Input';
 import { useUsuarios } from '@/lib/usuariosService';
 
 export default function UsuariosConfigPage() {
+  const { usuarios, registrarUsuario, removerUsuario, alterarSenha } = useUsuarios();
+  const { isOpen, openModal, closeModal } = useModal();
+  const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
+  const [novo, setNovo] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
+  const [erro, setErro] = useState('');
+  const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
+  const [erroSenha, setErroSenha] = useState('');
   const { usuarios, registrarUsuario, removerUsuario } = useUsuarios();
   const { isOpen, openModal, closeModal } = useModal();
   const [novo, setNovo] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
@@ -26,6 +33,22 @@ export default function UsuariosConfigPage() {
     closeModal();
   };
 
+  const iniciarAlterarSenha = (id: string) => {
+    setSenhaForm({ id, senha: '', confirmarSenha: '' });
+    setErroSenha('');
+    openSenhaModal();
+  };
+
+  const handleAlterarSenha = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (senhaForm.senha !== senhaForm.confirmarSenha) {
+      setErroSenha('Senhas não conferem');
+      return;
+    }
+    alterarSenha(senhaForm.id, senhaForm.senha);
+    closeSenhaModal();
+  };
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
@@ -36,6 +59,9 @@ export default function UsuariosConfigPage() {
             <TableCell>{u.nome}</TableCell>
             <TableCell>{u.email}</TableCell>
             <TableCell className="space-x-2">
+              <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>
+                Alterar Senha
+              </Button>
               <Button size="sm" variant="danger" onClick={() => removerUsuario(u.id)}>
                 Excluir
               </Button>
@@ -53,6 +79,30 @@ export default function UsuariosConfigPage() {
           <Input label="Confirmar Senha" type="password" value={novo.confirmarSenha} onChange={e => setNovo({ ...novo, confirmarSenha: e.target.value })} required />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
+            <Button type="submit" variant="primary">Salvar</Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal isOpen={isSenhaOpen} onClose={closeSenhaModal} title="Alterar Senha">
+        <form onSubmit={handleAlterarSenha} className="space-y-4">
+          {erroSenha && <p className="text-sm text-red-600">{erroSenha}</p>}
+          <Input
+            label="Nova Senha"
+            type="password"
+            value={senhaForm.senha}
+            onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })}
+            required
+          />
+          <Input
+            label="Confirmar Senha"
+            type="password"
+            value={senhaForm.confirmarSenha}
+            onChange={e => setSenhaForm({ ...senhaForm, confirmarSenha: e.target.value })}
+            required
+          />
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="secondary" onClick={closeSenhaModal}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>
           </div>
         </form>

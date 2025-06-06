@@ -81,6 +81,7 @@ Gera relatórios baseados nos dados de produtos e fichas técnicas:
 Gerencia autenticação e cadastro de usuários:
 
 - `useUsuarios()`: Hook para acessar usuários e funções de login
+- Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`, `alterarSenha`
 - Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`
 - Persistência em localStorage
 

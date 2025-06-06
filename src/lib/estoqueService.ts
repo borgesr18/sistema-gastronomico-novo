@@ -70,7 +70,11 @@ export const useEstoque = () => {
           descricao: f.descricao,
           categoria: f.categoria,
           ingredientes: f.ingredientes.map(
-            (i: IngredienteFicha) => ({ produtoId: i.produtoId, quantidade: i.quantidade })
+            (i: IngredienteFicha) => ({
+              produtoId: i.produtoId,
+              quantidade: i.quantidade,
+              unidade: i.unidade,
+            })
           ) as Omit<IngredienteFicha, 'custo' | 'id'>[],
           modoPreparo: f.modoPreparo,
           tempoPreparo: f.tempoPreparo,
@@ -136,7 +140,11 @@ export const useEstoque = () => {
           descricao: f.descricao,
           categoria: f.categoria,
           ingredientes: f.ingredientes.map(
-            (i: IngredienteFicha) => ({ produtoId: i.produtoId, quantidade: i.quantidade })
+            (i: IngredienteFicha) => ({
+              produtoId: i.produtoId,
+              quantidade: i.quantidade,
+              unidade: i.unidade,
+            })
           ) as Omit<IngredienteFicha, 'custo' | 'id'>[],
           modoPreparo: f.modoPreparo,
           tempoPreparo: f.tempoPreparo,

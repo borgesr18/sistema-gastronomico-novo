@@ -36,6 +36,13 @@ O Sistema de Gestão Gastronômica foi completamente reconstruído e está pront
    - Relatórios específicos (custos, ingredientes, receitas)
    - Análises de distribuição por categoria
    - Identificação de itens mais utilizados
+4. **Controle de Usuários**
+   - Login e logout básico
+   - Cadastro e exclusão de usuários na seção de configurações
+   - Alteração de senha diretamente no controle de usuários
+5. **Controle de Estoque**
+   - Registro de compras com atualização de preços de produtos
+   - Histórico de movimentações para acompanhar evolução de custos
 
 ## Tecnologias Utilizadas
 
@@ -69,11 +76,10 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
    - Implementar sincronização entre dispositivos
 
 2. **Sistema de Autenticação**
-   - Adicionar login e controle de acesso
+   - Login básico com senha implementado utilizando localStorage
    - Definir diferentes níveis de usuário
 
 3. **Funcionalidades Adicionais**
-   - Controle de estoque
    - Exportação de relatórios em PDF/Excel
    - Planejamento de produção
 

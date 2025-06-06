@@ -30,12 +30,12 @@ const gerarId = () => {
 };
 
 // Função para salvar produtos no localStorage
-const salvarProdutos = (produtos: ProdutoInfo[]) => {
+export const salvarProdutos = (produtos: ProdutoInfo[]) => {
   localStorage.setItem('produtos', JSON.stringify(produtos));
 };
 
 // Função para obter produtos do localStorage de forma segura
-const obterProdutos = (): ProdutoInfo[] => {
+export const obterProdutos = (): ProdutoInfo[] => {
   if (typeof window === 'undefined') return [];
 
   try {
@@ -99,7 +99,7 @@ export const useProdutos = () => {
       id,
     };
     
-    const novosProdutos = produtos.map(p => 
+    const novosProdutos = produtos.map((p: ProdutoInfo) =>
       p.id === id ? produtoAtualizado : p
     );
     
@@ -110,14 +110,14 @@ export const useProdutos = () => {
 
   // Remover produto
   const removerProduto = (id: string) => {
-    const novosProdutos = produtos.filter(p => p.id !== id);
+    const novosProdutos = produtos.filter((p: ProdutoInfo) => p.id !== id);
     setProdutos(novosProdutos);
     salvarProdutos(novosProdutos);
   };
 
   // Obter produto por ID
   const obterProdutoPorId = (id: string) => {
-    return produtos.find(p => p.id === id);
+    return produtos.find((p: ProdutoInfo) => p.id === id);
   };
 
   return {

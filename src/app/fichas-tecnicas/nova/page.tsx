@@ -7,29 +7,50 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
-import { useFichasTecnicas, categoriasReceitas, unidadesRendimento } from '@/lib/fichasTecnicasService';
+import { useFichasTecnicas, categoriasReceitas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
+import { useUnidadesMedida } from '@/lib/unidadesService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import { useModal } from '@/components/ui/Modal';
 import Modal from '@/components/ui/Modal';
+
+type Ingrediente = Omit<IngredienteFicha, 'id' | 'custo'>;
+
+interface FichaTecnicaForm {
+  nome: string;
+  descricao: string;
+  categoria: string;
+  ingredientes: Ingrediente[];
+  modoPreparo: string;
+  tempoPreparo: string;
+  rendimentoTotal: string;
+  unidadeRendimento: string;
+  observacoes: string;
+}
 
 export default function NovaFichaTecnicaPage() {
   const router = useRouter();
   const { adicionarFichaTecnica } = useFichasTecnicas();
   const { produtos } = useProdutos();
+  const { unidades } = useUnidadesMedida();
   const [isLoading, setIsLoading] = useState(false);
   
   // Modal para adicionar ingredientes
   const { isOpen, openModal, closeModal } = useModal();
   
   // Estado para o ingrediente sendo adicionado
-  const [ingredienteAtual, setIngredienteAtual] = useState({
+  const [ingredienteAtual, setIngredienteAtual] = useState<{
+    produtoId: string;
+    quantidade: string;
+    unidade: string;
+  }>({
     produtoId: '',
     quantidade: '',
+    unidade: '',
   });
   
   // Estado para a ficha técnica
-  const [fichaTecnica, setFichaTecnica] = useState({
+  const [fichaTecnica, setFichaTecnica] = useState<FichaTecnicaForm>({
     nome: '',
     descricao: '',
     categoria: '',
@@ -55,10 +76,14 @@ export default function NovaFichaTecnicaPage() {
   // Manipular mudanças nos campos do ingrediente atual
   const handleIngredienteChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setIngredienteAtual(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setIngredienteAtual(prev => {
+      const atualizado = { ...prev, [name]: value };
+      if (name === 'produtoId') {
+        const prod = produtos.find(p => p.id === value);
+        if (prod) atualizado.unidade = prod.unidadeMedida;
+      }
+      return atualizado;
+    });
   };
 
   // Adicionar ingrediente à lista
@@ -75,6 +100,10 @@ export default function NovaFichaTecnicaPage() {
     } else if (isNaN(Number(ingredienteAtual.quantidade)) || Number(ingredienteAtual.quantidade) <= 0) {
       errosIngrediente.quantidade = 'Quantidade deve ser um número positivo';
     }
+
+    if (!ingredienteAtual.unidade) {
+      errosIngrediente.unidade = 'Selecione a unidade';
+    }
     
     if (Object.keys(errosIngrediente).length > 0) {
       setErros(prev => ({ ...prev, ...errosIngrediente }));
@@ -85,6 +114,7 @@ export default function NovaFichaTecnicaPage() {
     const novoIngrediente = {
       produtoId: ingredienteAtual.produtoId,
       quantidade: Number(ingredienteAtual.quantidade),
+      unidade: ingredienteAtual.unidade,
     };
     
     setFichaTecnica(prev => ({
@@ -96,6 +126,7 @@ export default function NovaFichaTecnicaPage() {
     setIngredienteAtual({
       produtoId: '',
       quantidade: '',
+      unidade: '',
     });
     
     // Limpar erros
@@ -103,6 +134,7 @@ export default function NovaFichaTecnicaPage() {
       const novosErros = { ...prev };
       delete novosErros.produtoId;
       delete novosErros.quantidade;
+      delete novosErros.unidade;
       return novosErros;
     });
     
@@ -162,7 +194,7 @@ export default function NovaFichaTecnicaPage() {
         ...fichaTecnica,
         tempoPreparo: Number(fichaTecnica.tempoPreparo),
         rendimentoTotal: Number(fichaTecnica.rendimentoTotal),
-      };
+      } as unknown as Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'>;
       
       adicionarFichaTecnica(fichaTecnicaFormatada);
       router.push('/fichas-tecnicas');
@@ -181,9 +213,9 @@ export default function NovaFichaTecnicaPage() {
   };
 
   // Formatar quantidade com unidade de medida
-  const formatarQuantidade = (produtoId: string, quantidade: number) => {
-    const produto = produtos.find(p => p.id === produtoId);
-    return produto ? `${quantidade} ${produto.unidadeMedida}` : `${quantidade}`;
+  const formatarQuantidade = (unidade: string, quantidade: number) => {
+    const label = unidades.find(u => u.id === unidade)?.id || unidade;
+    return `${quantidade} ${label}`;
   };
 
   return (
@@ -283,7 +315,7 @@ export default function NovaFichaTecnicaPage() {
                 {fichaTecnica.ingredientes.map((ingrediente, index) => (
                   <TableRow key={index}>
                     <TableCell>{getNomeProduto(ingrediente.produtoId)}</TableCell>
-                    <TableCell>{formatarQuantidade(ingrediente.produtoId, ingrediente.quantidade)}</TableCell>
+                    <TableCell>{formatarQuantidade(ingrediente.unidade, ingrediente.quantidade)}</TableCell>
                     <TableCell>
                       <Button
                         variant="outline"
@@ -366,7 +398,7 @@ export default function NovaFichaTecnicaPage() {
             error={erros.produtoId}
             options={produtos.map(p => ({ value: p.id, label: `${p.nome} (${p.unidadeMedida})` }))}
           />
-          
+
           <Input
             label="Quantidade *"
             name="quantidade"
@@ -377,6 +409,15 @@ export default function NovaFichaTecnicaPage() {
             onChange={handleIngredienteChange}
             error={erros.quantidade}
             placeholder="Ex: 250"
+          />
+
+          <Select
+            label="Unidade *"
+            name="unidade"
+            value={ingredienteAtual.unidade}
+            onChange={handleIngredienteChange}
+            error={erros.unidade}
+            options={unidades.map(u => ({ value: u.id, label: u.nome }))}
           />
         </div>
       </Modal>

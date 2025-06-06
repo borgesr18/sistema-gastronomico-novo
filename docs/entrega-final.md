@@ -1,8 +1,8 @@
-# Entrega Final - Sistema de Gestão Gastronômica
+# Entrega Final - Sistema de Controle - Fichas Técnicas
 
 ## Resumo do Projeto
 
-O Sistema de Gestão Gastronômica foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
+O Sistema de Controle - Fichas Técnicas foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
 
 ## Arquivos Entregues
 
@@ -36,6 +36,13 @@ O Sistema de Gestão Gastronômica foi completamente reconstruído e está pront
    - Relatórios específicos (custos, ingredientes, receitas)
    - Análises de distribuição por categoria
    - Identificação de itens mais utilizados
+4. **Controle de Usuários**
+   - Login e logout básico
+   - Cadastro e exclusão de usuários na seção de configurações
+   - Alteração de senha diretamente no controle de usuários
+5. **Controle de Estoque**
+   - Registro de compras com atualização de preços de produtos
+   - Histórico de movimentações para acompanhar evolução de custos
 
 ## Tecnologias Utilizadas
 
@@ -69,17 +76,16 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
    - Implementar sincronização entre dispositivos
 
 2. **Sistema de Autenticação**
-   - Adicionar login e controle de acesso
+   - Login básico com senha implementado utilizando localStorage
    - Definir diferentes níveis de usuário
 
 3. **Funcionalidades Adicionais**
-   - Controle de estoque
    - Exportação de relatórios em PDF/Excel
    - Planejamento de produção
 
 ## Conclusão
 
-O Sistema de Gestão Gastronômica está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
+O Sistema de Controle - Fichas Técnicas está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
 
 ---
 

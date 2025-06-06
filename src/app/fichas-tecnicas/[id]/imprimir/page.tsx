@@ -1,42 +1,30 @@
 'use client';
-import React from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Card from '@/components/ui/Card';
-import Button from '@/components/ui/Button';
-import {
-  useFichasTecnicas,
-  obterLabelCategoriaReceita
-} from '@/lib/fichasTecnicasService';
+import { useFichasTecnicas, obterLabelCategoriaReceita } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 
-export default function DetalheFichaTecnicaPage() {
+export default function ImprimirFichaTecnicaPage() {
   const params = useParams();
-  const router = useRouter();
-  const { obterFichaTecnicaPorId, removerFichaTecnica } = useFichasTecnicas();
+  const { obterFichaTecnicaPorId } = useFichasTecnicas();
   const { produtos } = useProdutos();
-  
+
   const fichaId = params.id as string;
   const ficha = obterFichaTecnicaPorId(fichaId);
-  
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
+  }, []);
+
   if (!ficha) {
     return (
-      <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Ficha técnica não encontrada</h2>
-        <p className="text-gray-600 mb-6">A ficha técnica que você está procurando não existe ou foi removida.</p>
-        <Button variant="primary" onClick={() => router.push('/fichas-tecnicas')}>
-          Voltar para Fichas Técnicas
-        </Button>
-      </div>
+      <div className="p-8 text-center">Ficha técnica não encontrada</div>
     );
   }
-
-  const handleRemover = () => {
-    if (confirm('Tem certeza que deseja remover esta ficha técnica?')) {
-      removerFichaTecnica(fichaId);
-      router.push('/fichas-tecnicas');
-    }
-  };
 
   const formatarPreco = (preco: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -54,110 +42,68 @@ export default function DetalheFichaTecnicaPage() {
     }).format(data);
   };
 
-  // Obter nome do produto pelo ID
   const getNomeProduto = (produtoId: string) => {
     const produto = produtos.find(p => p.id === produtoId);
     return produto ? produto.nome : 'Produto não encontrado';
   };
 
-  // Formatar quantidade com unidade de medida
   const formatarQuantidade = (unidade: string, quantidade: number) => {
     return `${quantidade} ${unidade}`;
   };
 
-  // Formatar valor nutricional
   const formatarValorNutricional = (valor: number, unidade: string) => {
     return `${valor.toFixed(2)} ${unidade}`;
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Ficha Técnica</h1>
-        <div className="flex space-x-3">
-          <Button 
-            variant="outline" 
-            onClick={() => router.push('/fichas-tecnicas')}
-          >
-            Voltar
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => router.push(`/fichas-tecnicas/${fichaId}/editar`)}
-          >
-            Editar
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => router.push(`/fichas-tecnicas/${fichaId}/imprimir`)}
-          >
-            Imprimir
-          </Button>
-          <Button
-            variant="danger"
-            onClick={handleRemover}
-          >
-            Remover
-          </Button>
-        </div>
-      </div>
-      
+    <div className="p-8 space-y-6">
+      <h1 className="text-2xl font-bold text-center">Ficha Técnica</h1>
       <Card title="Informações Básicas">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <h3 className="text-sm font-medium text-gray-500">Nome da Receita</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{ficha.nome}</p>
           </div>
-          
           <div>
             <h3 className="text-sm font-medium text-gray-500">Categoria</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{obterLabelCategoriaReceita(ficha.categoria)}</p>
           </div>
         </div>
-        
         {ficha.descricao && (
           <div className="mb-6">
             <h3 className="text-sm font-medium text-gray-500">Descrição</h3>
             <p className="mt-1 text-gray-700">{ficha.descricao}</p>
           </div>
         )}
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <h3 className="text-sm font-medium text-gray-500">Tempo de Preparo</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{ficha.tempoPreparo} minutos</p>
           </div>
-          
           <div>
             <h3 className="text-sm font-medium text-gray-500">Rendimento</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{ficha.rendimentoTotal} {ficha.unidadeRendimento}</p>
           </div>
-          
           <div>
             <h3 className="text-sm font-medium text-gray-500">Data de Criação</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataCriacao)}</p>
           </div>
         </div>
       </Card>
-      
       <Card title="Custos">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-gray-500">Custo Total</h3>
             <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoTotal)}</p>
           </div>
-          
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-gray-500">Custo por Porção</h3>
             <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoPorcao)}</p>
           </div>
         </div>
       </Card>
-      
       <Card title="Ingredientes">
-        <Table
-          headers={['Produto', 'Quantidade', 'Custo']}
-        >
+        <Table headers={['Produto', 'Quantidade', 'Custo']}>
           {ficha.ingredientes.map((ingrediente, index) => (
             <TableRow key={index}>
               <TableCell>{getNomeProduto(ingrediente.produtoId)}</TableCell>
@@ -167,13 +113,11 @@ export default function DetalheFichaTecnicaPage() {
           ))}
         </Table>
       </Card>
-      
       <Card title="Modo de Preparo">
         <div className="whitespace-pre-line text-gray-700">
           {ficha.modoPreparo}
         </div>
       </Card>
-      
       {ficha.infoNutricional && (
         <Card title="Informações Nutricionais">
           <div className="grid grid-cols-2 gap-4">
@@ -186,21 +130,18 @@ export default function DetalheFichaTecnicaPage() {
                     {formatarValorNutricional(ficha.infoNutricional.calorias, 'kcal')}
                   </p>
                 </div>
-                
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Carboidratos</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
                     {formatarValorNutricional(ficha.infoNutricional.carboidratos, 'g')}
                   </p>
                 </div>
-                
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Proteínas</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
                     {formatarValorNutricional(ficha.infoNutricional.proteinas, 'g')}
                   </p>
                 </div>
-                
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Gorduras Totais</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
@@ -209,7 +150,6 @@ export default function DetalheFichaTecnicaPage() {
                 </div>
               </div>
             </div>
-            
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-4">Por Porção</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -219,21 +159,18 @@ export default function DetalheFichaTecnicaPage() {
                     {formatarValorNutricional(ficha.infoNutricionalPorcao?.calorias ?? 0, 'kcal')}
                   </p>
                 </div>
-                
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Carboidratos</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
                     {formatarValorNutricional(ficha.infoNutricionalPorcao?.carboidratos ?? 0, 'g')}
                   </p>
                 </div>
-                
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Proteínas</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
                     {formatarValorNutricional(ficha.infoNutricionalPorcao?.proteinas ?? 0, 'g')}
                   </p>
                 </div>
-                
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500">Gorduras Totais</h4>
                   <p className="mt-1 text-lg font-medium text-gray-900">
@@ -245,7 +182,6 @@ export default function DetalheFichaTecnicaPage() {
           </div>
         </Card>
       )}
-      
       {ficha.observacoes && (
         <Card title="Observações">
           <div className="whitespace-pre-line text-gray-700">

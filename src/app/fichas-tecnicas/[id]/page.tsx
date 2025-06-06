@@ -5,7 +5,8 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import {
   useFichasTecnicas,
-  obterLabelCategoriaReceita
+  obterLabelCategoriaReceita,
+  obterLabelUnidadeRendimento,
 } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
@@ -130,7 +131,9 @@ export default function DetalheFichaTecnicaPage() {
           
           <div>
             <h3 className="text-sm font-medium text-gray-500">Rendimento</h3>
-            <p className="mt-1 text-lg font-medium text-gray-900">{ficha.rendimentoTotal} {ficha.unidadeRendimento}</p>
+            <p className="mt-1 text-lg font-medium text-gray-900">
+              {ficha.rendimentoTotal} {obterLabelUnidadeRendimento(ficha.unidadeRendimento)}
+            </p>
           </div>
           
           <div>
@@ -141,15 +144,19 @@ export default function DetalheFichaTecnicaPage() {
       </Card>
       
       <Card title="Custos">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-gray-500">Custo Total</h3>
             <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoTotal)}</p>
           </div>
-          
+
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-gray-500">Custo por Porção</h3>
             <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoPorcao)}</p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-500">Custo por Kg</h3>
+            <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoPorKg)}</p>
           </div>
         </div>
       </Card>

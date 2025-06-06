@@ -59,3 +59,10 @@ body {
     padding: 24px;
   }
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+}

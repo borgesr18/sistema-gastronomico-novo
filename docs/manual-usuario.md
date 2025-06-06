@@ -97,9 +97,9 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 
 1. **Registrar Produção**:
    - Acesse a página "Produção" no menu lateral
-   - Escolha a ficha técnica desejada e informe a quantidade a ser produzida
-   - Selecione o produto final que será adicionado ao estoque
-   - Clique em "Registrar Produção" para baixar os ingredientes e gerar o produto final
+   - Escolha a ficha técnica desejada, a quantidade total e o peso de cada unidade
+   - O sistema calcula as unidades geradas e desconta os insumos do estoque
+   - Clique em "Registrar Produção" para registrar a entrada das unidades produzidas
 2. **Histórico**:
    - Abaixo do formulário é exibida a lista de produções já realizadas
 

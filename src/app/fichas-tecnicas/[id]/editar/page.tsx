@@ -7,7 +7,7 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
-import { useFichasTecnicas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha } from '@/lib/fichasTecnicasService';
+import { useFichasTecnicas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha, calcularRendimentoTotal } from '@/lib/fichasTecnicasService';
 import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
@@ -79,6 +79,18 @@ export default function EditarFichaTecnicaPage() {
   });
 
   const [erros, setErros] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!fichaTecnica.unidadeRendimento) return;
+    const total = calcularRendimentoTotal(
+      fichaTecnica.ingredientes,
+      fichaTecnica.unidadeRendimento
+    );
+    setFichaTecnica(prev => ({
+      ...prev,
+      rendimentoTotal: total ? total.toString() : '0'
+    }));
+  }, [fichaTecnica.ingredientes, fichaTecnica.unidadeRendimento]);
 
   // Carregar dados da ficha técnica
   useEffect(() => {
@@ -212,11 +224,6 @@ export default function EditarFichaTecnicaPage() {
       novosErros.tempoPreparo = 'Tempo de preparo deve ser um número positivo';
     }
     
-    if (!fichaTecnica.rendimentoTotal) {
-      novosErros.rendimentoTotal = 'Rendimento total é obrigatório';
-    } else if (isNaN(Number(fichaTecnica.rendimentoTotal)) || Number(fichaTecnica.rendimentoTotal) <= 0) {
-      novosErros.rendimentoTotal = 'Rendimento total deve ser um número positivo';
-    }
     
     if (!fichaTecnica.unidadeRendimento) novosErros.unidadeRendimento = 'Unidade de rendimento é obrigatória';
     
@@ -318,15 +325,11 @@ export default function EditarFichaTecnicaPage() {
                 />
                 
                 <Input
-                  label="Rendimento Total *"
+                  label="Rendimento Total"
                   name="rendimentoTotal"
                   type="number"
-                  min="0.1"
-                  step="0.1"
+                  readOnly
                   value={fichaTecnica.rendimentoTotal}
-                  onChange={handleChange}
-                  error={erros.rendimentoTotal}
-                  placeholder="Ex: 4"
                 />
                 
                 <Select

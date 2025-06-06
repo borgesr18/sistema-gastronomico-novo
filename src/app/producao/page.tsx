@@ -7,7 +7,7 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import { useFichasTecnicas, FichaTecnicaInfo, converterUnidade } from '@/lib/fichasTecnicasService';
-import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
+import { useProdutos } from '@/lib/produtosService';
 import { useEstoque } from '@/lib/estoqueService';
 import { useProducao, ProducaoInfo } from '@/lib/producaoService';
 
@@ -17,7 +17,13 @@ export default function ProducaoPage() {
   const { registrarSaida, registrarEntrada } = useEstoque();
   const { producoes, registrarProducao } = useProducao();
 
-  const [form, setForm] = useState({ fichaId: '', quantidade: '', produtoFinalId: '', pesoUnitario: '' });
+  const [form, setForm] = useState({
+    fichaId: '',
+    quantidade: '',
+    unidadeQtd: 'kg',
+    pesoUnitario: '',
+    unidadePeso: 'g'
+  });
   const [erros, setErros] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -29,7 +35,7 @@ export default function ProducaoPage() {
     const errs: Record<string, string> = {};
     if (!form.fichaId) errs.fichaId = 'Ficha é obrigatória';
     if (!form.quantidade || isNaN(Number(form.quantidade))) errs.quantidade = 'Qtd inválida';
-    if (!form.produtoFinalId) errs.produtoFinalId = 'Produto final é obrigatório';
+    if (!form.pesoUnitario || isNaN(Number(form.pesoUnitario))) errs.pesoUnitario = 'Peso inválido';
     setErros(errs);
     return Object.keys(errs).length === 0;
   };
@@ -39,27 +45,34 @@ export default function ProducaoPage() {
     if (!validar()) return;
     const ficha = fichasTecnicas.find(f => f.id === form.fichaId);
     if (!ficha) return;
-    const fator = Number(form.quantidade) / ficha.rendimentoTotal;
+    const qtdTotalG = converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g');
+    const fichaRendG = converterUnidade(ficha.rendimentoTotal, ficha.unidadeRendimento, 'g');
+    const fator = qtdTotalG / fichaRendG;
     ficha.ingredientes.forEach(ing => {
       const prod = produtos.find(p => p.id === ing.produtoId);
       if (!prod) return;
       const qtd = converterUnidade(ing.quantidade * fator, ing.unidade, prod.unidadeMedida);
       registrarSaida({ produtoId: prod.id, quantidade: qtd });
     });
+    const pesoUnitG = converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g');
+    const unidades = qtdTotalG / pesoUnitG;
+    const precoUnit = (ficha.custoPorKg / 1000) * pesoUnitG;
     registrarEntrada({
-      produtoId: form.produtoFinalId,
-      quantidade: Number(form.quantidade),
-      preco: ficha.custoTotal * fator,
+      produtoId: form.fichaId,
+      quantidade: unidades,
+      preco: precoUnit,
       fornecedor: 'Producao',
       marca: ficha.nome,
     });
     registrarProducao({
       fichaId: form.fichaId,
-      quantidade: Number(form.quantidade),
-      produtoFinalId: form.produtoFinalId,
-      pesoUnitario: form.pesoUnitario ? Number(form.pesoUnitario) : undefined,
+      quantidadeTotal: qtdTotalG,
+      unidadeQuantidade: form.unidadeQtd,
+      pesoUnitario: pesoUnitG,
+      unidadePeso: form.unidadePeso,
+      unidadesGeradas: unidades,
     });
-    setForm({ fichaId: '', quantidade: '', produtoFinalId: '', pesoUnitario: '' });
+    setForm({ fichaId: '', quantidade: '', unidadeQtd: 'kg', pesoUnitario: '', unidadePeso: 'g' });
   };
 
   const formatarData = (d: string) => new Date(d).toLocaleDateString();
@@ -79,34 +92,59 @@ export default function ProducaoPage() {
               .sort((a, b) => a.label.localeCompare(b.label))}
             error={erros.fichaId}
           />
-          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} />
-          <Select
-            label="Produto Final *"
-            name="produtoFinalId"
-            value={form.produtoFinalId}
-            onChange={handleChange}
-            options={produtos
-              .map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))
-              .sort((a, b) => a.label.localeCompare(b.label))}
-            error={erros.produtoFinalId}
+          <div className="flex space-x-2">
+            <Input
+              label="Quantidade *"
+              name="quantidade"
+              value={form.quantidade}
+              onChange={handleChange}
+              error={erros.quantidade}
+            />
+            <Select
+              label="Unidade"
+              name="unidadeQtd"
+              value={form.unidadeQtd}
+              onChange={handleChange}
+              options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
+            />
+          </div>
+          <div className="flex space-x-2">
+            <Input
+              label="Peso por unidade *"
+              name="pesoUnitario"
+              value={form.pesoUnitario}
+              onChange={handleChange}
+              error={erros.pesoUnitario}
+            />
+            <Select
+              label="Unidade"
+              name="unidadePeso"
+              value={form.unidadePeso}
+              onChange={handleChange}
+              options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
+            />
+          </div>
+          <Input
+            label="Unidades Geradas"
+            name="unidadesGeradas"
+            readOnly
+            value={form.pesoUnitario && form.quantidade ? (converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g') / converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g')).toFixed(2) : ''}
           />
-          <Input label="Peso por unidade" name="pesoUnitario" value={form.pesoUnitario} onChange={handleChange} />
           <div className="md:col-span-5 flex justify-end">
             <Button type="submit" variant="primary">Registrar Produção</Button>
           </div>
         </form>
       </Card>
       <Card title="Histórico de Produções">
-        <Table headers={["Data", "Ficha", "Quantidade", "Produto Final"]} emptyMessage="Nenhuma produção registrada">
+        <Table headers={["Data", "Ficha", "Quantidade", "Unidades"]} emptyMessage="Nenhuma produção registrada">
           {producoes.map((p: ProducaoInfo) => {
             const ficha = fichasTecnicas.find(f => f.id === p.fichaId);
-            const prod = produtos.find(pr => pr.id === p.produtoFinalId);
             return (
               <TableRow key={p.id}>
                 <TableCell>{formatarData(p.data)}</TableCell>
                 <TableCell>{ficha?.nome || 'Ficha removida'}</TableCell>
-                <TableCell>{p.quantidade}</TableCell>
-                <TableCell>{prod?.nome || 'Produto removido'}</TableCell>
+                <TableCell>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
+                <TableCell>{p.unidadesGeradas.toFixed(2)}</TableCell>
               </TableRow>
             );
           })}

@@ -9,6 +9,7 @@ import Select from '@/components/ui/Select';
 import Modal, { useModal } from '@/components/ui/Modal';
 import { useEstoque } from '@/lib/estoqueService';
 import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
+import { useFichasTecnicas } from '@/lib/fichasTecnicasService';
 
 export default function EstoquePage() {
   const {
@@ -20,6 +21,7 @@ export default function EstoquePage() {
     removerMovimentacao,
   } = useEstoque();
   const { produtos } = useProdutos();
+  const { fichasTecnicas } = useFichasTecnicas();
 
   const [form, setForm] = useState({
     tipo: 'entrada',
@@ -145,10 +147,11 @@ export default function EstoquePage() {
         >
           {movimentacoes.map(m => {
             const prod = produtos.find(p => p.id === m.produtoId);
+            const ficha = fichasTecnicas.find(f => f.id === m.produtoId);
             return (
               <TableRow key={m.id}>
                 <TableCell>{formatarData(m.data)}</TableCell>
-                <TableCell>{prod?.nome || 'Produto removido'}</TableCell>
+                <TableCell>{prod?.nome || ficha?.nome || 'Produto removido'}</TableCell>
                 <TableCell>{m.quantidade}</TableCell>
                 <TableCell>{m.preco ? formatarPreco(m.preco) : '-'}</TableCell>
                 <TableCell>{m.fornecedor || '-'}</TableCell>

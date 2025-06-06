@@ -86,6 +86,53 @@ export const obterFichasTecnicas = (): FichaTecnicaInfo[] => {
   }
 };
 
+// Calcular peso total dos ingredientes em gramas
+export const calcularPesoIngredientes = (
+  ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]
+) => {
+  const todosProdutos = obterProdutos();
+  return ingredientes.reduce((total, ingrediente) => {
+    const produto = todosProdutos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
+    if (!produto) return total;
+
+    const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
+    const tipoUso = infoUnidades[unidadeIng]?.tipo;
+
+    if (tipoUso === 'peso') {
+      const qtdG = converterUnidade(ingrediente.quantidade, unidadeIng, 'g');
+      return total + qtdG;
+    }
+
+    if (tipoUso === 'volume') {
+      const qtdMl = converterUnidade(ingrediente.quantidade, unidadeIng, 'ml');
+      return total + qtdMl; // aproximar 1ml = 1g
+    }
+
+    const qtdUn = converterUnidade(ingrediente.quantidade, unidadeIng, produto.unidadeMedida);
+    const pesoEmb = produto.pesoEmbalagem || infoUnidades[produto.unidadeMedida]?.fator || 1;
+    return total + qtdUn * pesoEmb;
+  }, 0);
+};
+
+export const calcularRendimentoTotal = (
+  ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[],
+  unidade: string
+) => {
+  const tipoRend = infoUnidades[unidade]?.tipo;
+  if (tipoRend === 'peso' || tipoRend === 'volume') {
+    const totalG = calcularPesoIngredientes(ingredientes);
+    const base = tipoRend === 'peso' ? 'g' : 'ml';
+    return converterUnidade(totalG, base, unidade);
+  }
+  const todosProdutos = obterProdutos();
+  return ingredientes.reduce((tot, ing) => {
+    const prod = todosProdutos.find(p => p.id === ing.produtoId);
+    const unidadeIng: string = (ing as any).unidade || prod?.unidadeMedida || 'un';
+    const qtd = converterUnidade(ing.quantidade, unidadeIng, unidade);
+    return tot + qtd;
+  }, 0);
+};
+
 // Hook para gerenciar fichas técnicas
 export const useFichasTecnicas = () => {
   const [fichasTecnicas, setFichasTecnicas] = useState<FichaTecnicaInfo[]>([]);
@@ -136,34 +183,6 @@ export const useFichasTecnicas = () => {
     });
   }
 
-  // Calcular peso total dos ingredientes em gramas
-  function calcularPesoIngredientes(
-    ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]
-  ) {
-    const todosProdutos = obterProdutos();
-    return ingredientes.reduce((total, ingrediente) => {
-      const produto = todosProdutos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
-      if (!produto) return total;
-
-      const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
-      const tipoUso = infoUnidades[unidadeIng]?.tipo;
-
-      if (tipoUso === 'peso') {
-        const qtdG = converterUnidade(ingrediente.quantidade, unidadeIng, 'g');
-        return total + qtdG;
-      }
-
-      if (tipoUso === 'volume') {
-        const qtdMl = converterUnidade(ingrediente.quantidade, unidadeIng, 'ml');
-        return total + qtdMl; // aproximar 1ml = 1g
-      }
-
-      // unidade -> usar peso da embalagem
-      const qtdUn = converterUnidade(ingrediente.quantidade, unidadeIng, produto.unidadeMedida);
-      const pesoEmb = produto.pesoEmbalagem || infoUnidades[produto.unidadeMedida]?.fator || 1;
-      return total + qtdUn * pesoEmb;
-    }, 0);
-  }
 
   // Calcular informações nutricionais
   function calcularInfoNutricional(
@@ -245,21 +264,26 @@ export const useFichasTecnicas = () => {
 
       const ingredientesComCusto = calcularCustoIngredientes(baseIngredientes);
       const pesoTotal = calcularPesoIngredientes(baseIngredientes);
+      const rendimentoTotal = calcularRendimentoTotal(
+        baseIngredientes,
+        f.unidadeRendimento
+      );
       const custoTotal = ingredientesComCusto.reduce(
         (total: number, ing: IngredienteFicha) => total + ing.custo,
         0
       );
-      const custoPorcao = f.rendimentoTotal > 0 ? custoTotal / f.rendimentoTotal : 0;
+      const custoPorcao = rendimentoTotal > 0 ? custoTotal / rendimentoTotal : 0;
       const custoPorKg = pesoTotal > 0 ? custoTotal / (pesoTotal / 1000) : 0;
 
       const { infoTotal, infoPorcao } = calcularInfoNutricional(
         ingredientesComCusto,
-        f.rendimentoTotal
+        rendimentoTotal
       );
 
       return {
         ...f,
         ingredientes: ingredientesComCusto,
+        rendimentoTotal,
         custoTotal,
         custoPorcao,
         custoPorKg,
@@ -277,6 +301,10 @@ export const useFichasTecnicas = () => {
     // Calcular custo dos ingredientes
     const ingredientesComCusto = calcularCustoIngredientes(ficha.ingredientes);
     const pesoTotal = calcularPesoIngredientes(ficha.ingredientes);
+    const rendimentoTotal = calcularRendimentoTotal(
+      ficha.ingredientes,
+      ficha.unidadeRendimento
+    );
     
     // Calcular custo total
     const custoTotal = ingredientesComCusto.reduce(
@@ -285,13 +313,16 @@ export const useFichasTecnicas = () => {
     );
     
     // Calcular custo por porção
-    const custoPorcao = ficha.rendimentoTotal > 0
-      ? custoTotal / ficha.rendimentoTotal
+    const custoPorcao = rendimentoTotal > 0
+      ? custoTotal / rendimentoTotal
       : 0;
     const custoPorKg = pesoTotal > 0 ? custoTotal / (pesoTotal / 1000) : 0;
     
     // Calcular informações nutricionais
-    const { infoTotal, infoPorcao } = calcularInfoNutricional(ingredientesComCusto, ficha.rendimentoTotal);
+    const { infoTotal, infoPorcao } = calcularInfoNutricional(
+      ingredientesComCusto,
+      rendimentoTotal
+    );
     
     const dataAtual = new Date().toISOString();
     
@@ -299,6 +330,7 @@ export const useFichasTecnicas = () => {
       ...ficha,
       id: gerarId(),
       ingredientes: ingredientesComCusto,
+      rendimentoTotal,
       custoTotal,
       custoPorcao,
       custoPorKg,
@@ -319,6 +351,10 @@ export const useFichasTecnicas = () => {
     // Calcular custo dos ingredientes
     const ingredientesComCusto = calcularCustoIngredientes(ficha.ingredientes);
     const pesoTotal = calcularPesoIngredientes(ficha.ingredientes);
+    const rendimentoTotal = calcularRendimentoTotal(
+      ficha.ingredientes,
+      ficha.unidadeRendimento
+    );
     
     // Calcular custo total
     const custoTotal = ingredientesComCusto.reduce(
@@ -327,13 +363,16 @@ export const useFichasTecnicas = () => {
     );
     
     // Calcular custo por porção
-    const custoPorcao = ficha.rendimentoTotal > 0
-      ? custoTotal / ficha.rendimentoTotal
+    const custoPorcao = rendimentoTotal > 0
+      ? custoTotal / rendimentoTotal
       : 0;
     const custoPorKg = pesoTotal > 0 ? custoTotal / (pesoTotal / 1000) : 0;
     
     // Calcular informações nutricionais
-    const { infoTotal, infoPorcao } = calcularInfoNutricional(ingredientesComCusto, ficha.rendimentoTotal);
+    const { infoTotal, infoPorcao } = calcularInfoNutricional(
+      ingredientesComCusto,
+      rendimentoTotal
+    );
     
     const fichaOriginal = fichasTecnicas.find((f: FichaTecnicaInfo) => f.id === id);
     
@@ -341,6 +380,7 @@ export const useFichasTecnicas = () => {
       ...ficha,
       id,
       ingredientes: ingredientesComCusto,
+      rendimentoTotal,
       custoTotal,
       custoPorcao,
       custoPorKg,
@@ -378,6 +418,7 @@ export const useFichasTecnicas = () => {
     atualizarFichaTecnica,
     removerFichaTecnica,
     obterFichaTecnicaPorId,
+    calcularRendimentoTotal,
   };
 };
 

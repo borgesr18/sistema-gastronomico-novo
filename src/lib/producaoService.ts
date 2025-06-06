@@ -5,9 +5,11 @@ import { useState, useEffect } from 'react';
 export interface ProducaoInfo {
   id: string;
   fichaId: string;
-  quantidade: number;
-  produtoFinalId: string;
-  pesoUnitario?: number;
+  quantidadeTotal: number;
+  unidadeQuantidade: string;
+  pesoUnitario: number;
+  unidadePeso: string;
+  unidadesGeradas: number;
   data: string;
 }
 

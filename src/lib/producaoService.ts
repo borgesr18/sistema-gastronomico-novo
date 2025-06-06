@@ -1,6 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import {
+  FichaTecnicaInfo,
+  obterFichasTecnicas,
+  converterUnidade,
+  useFichasTecnicas,
+} from './fichasTecnicasService';
 
 export interface ProducaoInfo {
   id: string;
@@ -43,12 +49,54 @@ const obterProducoes = (): ProducaoInfo[] => {
   }
 };
 
+const recalcTodas = (
+  lista: ProducaoInfo[],
+  fichas: FichaTecnicaInfo[]
+) => {
+  return lista.map(p => calcularCustos(p, fichas));
+};
+
+const calcularCustos = (
+  prod: ProducaoInfo,
+  fichas: FichaTecnicaInfo[]
+) => {
+  const ficha = fichas.find(f => f.id === prod.fichaId);
+  if (!ficha) return prod;
+  const qtdTotalG = converterUnidade(
+    prod.quantidadeTotal,
+    prod.unidadeQuantidade,
+    'g'
+  );
+  const fichaRendG = converterUnidade(
+    ficha.rendimentoTotal,
+    ficha.unidadeRendimento,
+    'g'
+  );
+  const fator = fichaRendG ? qtdTotalG / fichaRendG : 0;
+  const pesoUnitG = converterUnidade(prod.pesoUnitario, prod.unidadePeso, 'g');
+  const unidades = pesoUnitG ? Math.round(qtdTotalG / pesoUnitG) : prod.unidadesGeradas;
+  const custoTotal = ficha.custoTotal * fator;
+  const custoUnitario = unidades ? custoTotal / unidades : 0;
+  return { ...prod, unidadesGeradas: unidades, custoTotal, custoUnitario };
+};
+
 export const useProducao = () => {
+  const { fichasTecnicas } = useFichasTecnicas();
   const [producoes, setProducoes] = useState<ProducaoInfo[]>([]);
 
   useEffect(() => {
-    setProducoes(obterProducoes());
+    const base = obterProducoes();
+    const recalc = recalcTodas(base, fichasTecnicas.length ? fichasTecnicas : obterFichasTecnicas());
+    setProducoes(recalc);
   }, []);
+
+  useEffect(() => {
+    if (!producoes.length) return;
+    const atualizadas = recalcTodas(producoes, fichasTecnicas);
+    setProducoes(atualizadas);
+    salvarProducoes(atualizadas);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fichasTecnicas]);
 
   const registrarProducao = (dados: Omit<ProducaoInfo, 'id'>) => {
     const nova: ProducaoInfo = { ...dados, id: gerarId() };

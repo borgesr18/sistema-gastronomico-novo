@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import { useFichasTecnicas, obterLabelCategoriaReceita, obterLabelUnidadeRendimento } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
@@ -10,15 +10,24 @@ export default function ImprimirFichaTecnicaPage() {
   const params = useParams();
   const { obterFichaTecnicaPorId } = useFichasTecnicas();
   const { produtos } = useProdutos();
+  const router = useRouter();
 
   const fichaId = params.id as string;
   const ficha = obterFichaTecnicaPorId(fichaId);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.print();
+      const timer = setTimeout(() => {
+        window.print();
+      }, 300);
+      const handleAfterPrint = () => router.back();
+      window.addEventListener('afterprint', handleAfterPrint);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('afterprint', handleAfterPrint);
+      };
     }
-  }, []);
+  }, [router]);
 
   if (!ficha) {
     return (
@@ -57,7 +66,15 @@ export default function ImprimirFichaTecnicaPage() {
 
   return (
     <div className="p-8 space-y-6">
-      <h1 className="text-2xl font-bold text-center">Ficha Técnica</h1>
+      <div className="flex justify-end print:hidden mb-4">
+        <button
+          className="px-4 py-2 bg-gray-200 rounded-md"
+          onClick={() => router.back()}
+        >
+          Voltar
+        </button>
+      </div>
+      <h1 className="text-2xl font-bold text-center mb-4">Ficha Técnica</h1>
       <Card title="Informações Básicas">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-6">
           <div>

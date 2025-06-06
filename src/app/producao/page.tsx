@@ -202,7 +202,7 @@ export default function ProducaoPage() {
           })}
         </Table>
       </Card>
-      <Modal isOpen={isOpen} onClose={closeModal} title="Editar Produção">
+      <Modal isOpen={isOpen} onClose={closeModal} title="Editar Produção" size="xl">
         {edit && (
           <form onSubmit={handleEditSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-4">
             <Select

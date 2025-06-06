@@ -89,7 +89,7 @@ export const useEstoque = () => {
           | 'infoNutricional'
           | 'infoNutricionalPorcao'
           | 'dataCriacao'
-          | 'ultimaAtualizacao'
+          | 'dataModificacao'
         >;
         atualizarFichaTecnica(f.id, dadosFicha);
       });
@@ -153,7 +153,7 @@ export const useEstoque = () => {
           observacoes: f.observacoes || ''
         } as Omit<
           FichaTecnicaInfo,
-          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'
+          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'
         >;
         atualizarFichaTecnica(f.id, dadosFicha);
       });

@@ -59,7 +59,7 @@ export interface FichaTecnicaInfo {
   infoNutricionalPorcao?: InfoNutricionalFicha;
   observacoes?: string;
   dataCriacao: string;
-  ultimaAtualizacao: string;
+  dataModificacao: string;
 }
 
 // Função para gerar ID único
@@ -255,12 +255,12 @@ export const useFichasTecnicas = () => {
   // Carregar fichas técnicas do localStorage ao inicializar e atualizar custos
   useEffect(() => {
     const armazenadas = obterFichasTecnicas();
-    const atualizadas = armazenadas.map((f: FichaTecnicaInfo) => {
-      const baseIngredientes = f.ingredientes.map((i) => ({
-        produtoId: i.produtoId,
-        quantidade: i.quantidade,
-        unidade: (i as any).unidade || '',
-      })) as Omit<IngredienteFicha, 'custo' | 'id'>[];
+    const atualizadas = armazenadas.map((f: any) => {
+        const baseIngredientes = f.ingredientes.map((i: any) => ({
+          produtoId: i.produtoId,
+          quantidade: i.quantidade,
+          unidade: (i as any).unidade || '',
+        })) as Omit<IngredienteFicha, 'custo' | 'id'>[];
 
       const ingredientesComCusto = calcularCustoIngredientes(baseIngredientes);
       const pesoTotal = calcularPesoIngredientes(baseIngredientes);
@@ -289,6 +289,7 @@ export const useFichasTecnicas = () => {
         custoPorKg,
         infoNutricional: infoTotal,
         infoNutricionalPorcao: infoPorcao,
+        dataModificacao: f.dataModificacao || f.ultimaAtualizacao || f.dataCriacao,
       } as FichaTecnicaInfo;
     });
     setFichasTecnicas(atualizadas);
@@ -297,7 +298,7 @@ export const useFichasTecnicas = () => {
   }, []);
 
   // Adicionar nova ficha técnica
-  const adicionarFichaTecnica = (ficha: Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'>) => {
+  const adicionarFichaTecnica = (ficha: Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'>) => {
     // Calcular custo dos ingredientes
     const ingredientesComCusto = calcularCustoIngredientes(ficha.ingredientes);
     const pesoTotal = calcularPesoIngredientes(ficha.ingredientes);
@@ -337,7 +338,7 @@ export const useFichasTecnicas = () => {
       infoNutricional: infoTotal,
       infoNutricionalPorcao: infoPorcao,
       dataCriacao: dataAtual,
-      ultimaAtualizacao: dataAtual
+      dataModificacao: dataAtual
     };
     
     const novasFichas = [...fichasTecnicas, novaFicha];
@@ -347,7 +348,7 @@ export const useFichasTecnicas = () => {
   };
 
   // Atualizar ficha técnica existente
-  const atualizarFichaTecnica = (id: string, ficha: Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'>) => {
+  const atualizarFichaTecnica = (id: string, ficha: Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'>) => {
     // Calcular custo dos ingredientes
     const ingredientesComCusto = calcularCustoIngredientes(ficha.ingredientes);
     const pesoTotal = calcularPesoIngredientes(ficha.ingredientes);
@@ -387,7 +388,7 @@ export const useFichasTecnicas = () => {
       infoNutricional: infoTotal,
       infoNutricionalPorcao: infoPorcao,
       dataCriacao: fichaOriginal?.dataCriacao || new Date().toISOString(),
-      ultimaAtualizacao: new Date().toISOString()
+      dataModificacao: new Date().toISOString()
     };
     
     const novasFichas = fichasTecnicas.map((f: FichaTecnicaInfo) =>

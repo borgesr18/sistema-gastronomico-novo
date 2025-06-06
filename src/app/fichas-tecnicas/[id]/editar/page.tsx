@@ -249,7 +249,7 @@ export default function EditarFichaTecnicaPage() {
         ...fichaTecnica,
         tempoPreparo: Number(fichaTecnica.tempoPreparo),
         rendimentoTotal: Number(fichaTecnica.rendimentoTotal),
-      } as unknown as Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'>;
+      } as unknown as Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'>;
       
       atualizarFichaTecnica(fichaId, fichaTecnicaFormatada);
       router.push(`/fichas-tecnicas/${fichaId}`);

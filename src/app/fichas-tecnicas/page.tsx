@@ -49,8 +49,8 @@ export default function FichasTecnicasPage() {
       </div>
 
       <Card>
-        <Table 
-          headers={['Nome', 'Categoria', 'Rendimento', 'Custo Total', 'Custo por Porção', 'Última Atualização', 'Ações']}
+        <Table
+          headers={['Nome', 'Categoria', 'Rendimento', 'Custo Total', 'Data de Modificação', 'Ações']}
           isLoading={isLoading}
           emptyMessage="Nenhuma ficha técnica cadastrada. Clique em 'Nova Ficha Técnica' para adicionar."
         >
@@ -60,8 +60,7 @@ export default function FichasTecnicasPage() {
               <TableCell>{obterLabelCategoriaReceita(ficha.categoria)}</TableCell>
               <TableCell>{ficha.rendimentoTotal} {ficha.unidadeRendimento}</TableCell>
               <TableCell>{formatarPreco(ficha.custoTotal)}</TableCell>
-              <TableCell>{formatarPreco(ficha.custoPorcao)}</TableCell>
-              <TableCell>{formatarData(ficha.ultimaAtualizacao)}</TableCell>
+              <TableCell>{formatarData(ficha.dataModificacao)}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
                   <Link href={`/fichas-tecnicas/${ficha.id}`}>

@@ -59,7 +59,7 @@ export default function ImprimirFichaTecnicaPage() {
     <div className="p-8 space-y-6">
       <h1 className="text-2xl font-bold text-center">Ficha Técnica</h1>
       <Card title="Informações Básicas">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-6">
           <div>
             <h3 className="text-sm font-medium text-gray-500">Nome da Receita</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{ficha.nome}</p>
@@ -67,6 +67,22 @@ export default function ImprimirFichaTecnicaPage() {
           <div>
             <h3 className="text-sm font-medium text-gray-500">Categoria</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{obterLabelCategoriaReceita(ficha.categoria)}</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Tempo de Preparo</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{ficha.tempoPreparo} minutos</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Rendimento</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{ficha.rendimentoTotal} {obterLabelUnidadeRendimento(ficha.unidadeRendimento)}</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Data de Criação</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataCriacao)}</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Data de Modificação</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataModificacao)}</p>
           </div>
         </div>
         {ficha.descricao && (
@@ -90,6 +106,10 @@ export default function ImprimirFichaTecnicaPage() {
             <h3 className="text-sm font-medium text-gray-500">Data de Criação</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataCriacao)}</p>
           </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Data de Modificação</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataModificacao)}</p>
+          </div>
         </div>
       </Card>
       <Card title="Custos">
@@ -97,10 +117,6 @@ export default function ImprimirFichaTecnicaPage() {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-gray-500">Custo Total</h3>
             <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoTotal)}</p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-500">Custo por Porção</h3>
-            <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoPorcao)}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-gray-500">Custo por Kg</h3>

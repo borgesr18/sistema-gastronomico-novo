@@ -61,7 +61,7 @@ const Sidebar: React.FC = () => {
             href="/producao"
             className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
           >
-            <span className="material-icons mr-3">manufacturing</span>
+            <span className="material-icons mr-3">factory</span>
             {!isCollapsed && <span>Produção</span>}
           </Link>
         </li>

@@ -85,6 +85,15 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <Link
+              href="/precos"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">attach_money</span>
+              {!isCollapsed && <span>Preços de Venda</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/relatorios"
               className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
             >

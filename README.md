@@ -15,6 +15,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Produção**: Calcule ingredientes e registre produções retirando do estoque
 - **Estoque de Produção**: Acompanhe o saldo de itens produzidos e registre entradas ou saídas
 - **Custo de Produção**: O formulário mostra o custo estimado e registra o valor total de cada lote
+- **Preços de Venda**: Defina margens de lucro e calcule até três preços de venda por lote produzido
 - **Categorias Personalizadas**: Cadastre e edite categorias de produtos nas configurações
 - **Unidades de Medida**: Gerencie siglas de unidades usadas nos produtos
 - **Peso por Embalagem**: Defina quantos gramas ou mililitros cada unidade comprada possui

@@ -111,7 +111,18 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Escolha a ficha técnica desejada e indique se é entrada ou saída de unidades
    - Informe a quantidade e clique em "Registrar" para atualizar o saldo
 2. **Consultar Saldo**:
-   - A tabela "Estoque Atual" mostra a quantidade disponível de cada ficha técnica produzida
+  - A tabela "Estoque Atual" mostra a quantidade disponível de cada ficha técnica produzida
+
+### Preços de Venda
+
+1. **Definir Margens de Lucro**:
+   - No menu lateral, acesse "Preços de Venda"
+   - Selecione o lote produzido desejado
+   - Informe a porcentagem de lucro para até três estratégias diferentes
+   - O sistema calcula automaticamente os três preços de venda
+   - Clique em "Salvar Estratégia" para registrar
+2. **Histórico de Estratégias**:
+   - Abaixo do formulário é exibida a lista de estratégias já salvas com seus valores
 
 ### Fichas Técnicas
 

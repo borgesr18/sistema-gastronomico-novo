@@ -46,9 +46,11 @@ O CustoChef foi completamente reconstruído e está pronto para uso. Este docume
  - Histórico de movimentações para acompanhar evolução de custos
  - Página "Estoque de Produção" para ajustes e consulta do saldo de produtos fabricados
 6. **Produção**
-   - Cálculo automático de insumos necessários
-   - Baixa de ingredientes e entrada do produto final no estoque
-   - Registro do custo total de cada lote produzido
+  - Cálculo automático de insumos necessários
+  - Baixa de ingredientes e entrada do produto final no estoque
+  - Registro do custo total de cada lote produzido
+7. **Preços de Venda**
+  - Cálculo de três preços de venda a partir do custo unitário das produções
 
 ## Tecnologias Utilizadas
 

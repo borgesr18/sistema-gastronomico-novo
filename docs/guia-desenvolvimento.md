@@ -106,6 +106,14 @@ Controla o histórico de produções realizadas:
 - O custo é calculado multiplicando `custoTotal` da ficha pelo fator da quantidade produzida
 - Persistência em localStorage
 
+### precosService.ts
+
+Gerencia estratégias de precificação baseadas em produções:
+
+- `usePrecosVenda()`: Hook para salvar e listar estratégias
+- Função `salvarEstrategia` calcula e armazena preços de venda a partir do custo unitário
+- Persistência em localStorage
+
 ## Padrões de Código
 
 ### Componentes React

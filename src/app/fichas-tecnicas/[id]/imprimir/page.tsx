@@ -108,26 +108,6 @@ export default function ImprimirFichaTecnicaPage() {
             <p className="mt-1 text-gray-700">{ficha.descricao}</p>
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Tempo de Preparo</h3>
-            <p className="mt-1 text-lg font-medium text-gray-900">{ficha.tempoPreparo} minutos</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Rendimento</h3>
-            <p className="mt-1 text-lg font-medium text-gray-900">
-              {ficha.rendimentoTotal} {obterLabelUnidadeRendimento(ficha.unidadeRendimento)}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Data de Criação</h3>
-            <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataCriacao)}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500">Data de Modificação</h3>
-            <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataModificacao)}</p>
-          </div>
-        </div>
       </Card>
       <Card title="Custos">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

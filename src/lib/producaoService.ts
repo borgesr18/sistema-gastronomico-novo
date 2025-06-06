@@ -10,6 +10,7 @@ export interface ProducaoInfo {
   pesoUnitario: number;
   unidadePeso: string;
   unidadesGeradas: number;
+  validade: string;
   data: string;
 }
 
@@ -25,7 +26,8 @@ const obterProducoes = (): ProducaoInfo[] => {
   if (typeof window === 'undefined') return [];
   try {
     const str = localStorage.getItem('producoes');
-    return str ? JSON.parse(str) : [];
+    const arr = str ? JSON.parse(str) : [];
+    return arr.map((p: any) => ({ validade: '', ...p }));
   } catch (err) {
     console.error('Erro ao ler produções do localStorage', err);
     return [];

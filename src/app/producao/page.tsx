@@ -24,7 +24,8 @@ export default function ProducaoPage() {
     unidadeQtd: 'kg',
     pesoUnitario: '',
     unidadePeso: 'g',
-    data: new Date().toISOString().split('T')[0]
+    data: new Date().toISOString().split('T')[0],
+    validade: ''
   });
   const [erros, setErros] = useState<Record<string, string>>({});
   const [edit, setEdit] = useState<ProducaoInfo | null>(null);
@@ -41,6 +42,7 @@ export default function ProducaoPage() {
     if (!form.quantidade || isNaN(Number(form.quantidade))) errs.quantidade = 'Qtd inválida';
     if (!form.pesoUnitario || isNaN(Number(form.pesoUnitario))) errs.pesoUnitario = 'Peso inválido';
     if (!form.data) errs.data = 'Data obrigatória';
+    if (!form.validade) errs.validade = 'Validade obrigatória';
     setErros(errs);
     return Object.keys(errs).length === 0;
   };
@@ -76,9 +78,10 @@ export default function ProducaoPage() {
       pesoUnitario: Number(form.pesoUnitario),
       unidadePeso: form.unidadePeso,
       unidadesGeradas: unidades,
+      validade: form.validade,
       data: form.data,
     });
-    setForm({ fichaId: '', quantidade: '', unidadeQtd: 'kg', pesoUnitario: '', unidadePeso: 'g', data: new Date().toISOString().split('T')[0] });
+    setForm({ fichaId: '', quantidade: '', unidadeQtd: 'kg', pesoUnitario: '', unidadePeso: 'g', data: new Date().toISOString().split('T')[0], validade: '' });
   };
 
   const iniciarEdicao = (p: ProducaoInfo) => {
@@ -96,12 +99,17 @@ export default function ProducaoPage() {
       pesoUnitario: Number(edit.pesoUnitario),
       unidadePeso: edit.unidadePeso,
       unidadesGeradas: Number(edit.unidadesGeradas),
+      validade: edit.validade,
       data: edit.data,
     });
     closeModal();
   };
 
-  const formatarData = (d: string) => new Date(d).toLocaleDateString();
+  const formatarData = (d: string) => {
+    if (!d) return '';
+    const date = new Date(d + 'T00:00:00');
+    return date.toLocaleDateString();
+  };
 
   return (
     <div className="space-y-6">
@@ -152,7 +160,7 @@ export default function ProducaoPage() {
             readOnly
             value={form.pesoUnitario && form.quantidade ? String(Math.round(converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g') / converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g'))) : ''}
           />
-          <Input
+         <Input
             label="Data *"
             type="date"
             name="data"
@@ -160,20 +168,30 @@ export default function ProducaoPage() {
             onChange={handleChange}
             error={erros.data}
           />
+          <Input
+            label="Validade *"
+            type="date"
+            name="validade"
+            value={form.validade}
+            onChange={handleChange}
+            error={erros.validade}
+          />
           <div className="md:col-span-5 flex justify-end">
             <Button type="submit" variant="primary">Registrar Produção</Button>
           </div>
         </form>
       </Card>
       <Card title="Histórico de Produções">
-        <Table headers={["Data", "Ficha", "Quantidade", "Unidades", "Ações"]} emptyMessage="Nenhuma produção registrada">
+        <Table headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Ações"]} emptyMessage="Nenhuma produção registrada">
           {producoes.map((p: ProducaoInfo) => {
             const ficha = fichasTecnicas.find(f => f.id === p.fichaId);
             return (
               <TableRow key={p.id}>
                 <TableCell>{formatarData(p.data)}</TableCell>
+                <TableCell>{formatarData(p.validade)}</TableCell>
                 <TableCell>{ficha?.nome || 'Ficha removida'}</TableCell>
                 <TableCell>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
+                <TableCell>{p.pesoUnitario}{p.unidadePeso}</TableCell>
                 <TableCell>{p.unidadesGeradas}</TableCell>
                 <TableCell className="flex space-x-2">
                   <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(p)}>Editar</Button>
@@ -212,6 +230,7 @@ export default function ProducaoPage() {
             />
             <Input label="Unidades Geradas" name="unidadesGeradas" value={String(edit.unidadesGeradas)} onChange={e => setEdit({ ...edit, unidadesGeradas: Number(e.target.value) })} />
             <Input label="Data" type="date" name="data" value={edit.data} onChange={e => setEdit({ ...edit, data: e.target.value })} />
+            <Input label="Validade" type="date" name="validade" value={edit.validade} onChange={e => setEdit({ ...edit, validade: e.target.value })} />
             <div className="md:col-span-6 flex justify-end space-x-2">
               <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
               <Button type="submit" variant="primary">Salvar</Button>

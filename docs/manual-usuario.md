@@ -1,8 +1,8 @@
-# Documentação do Sistema de Gestão Gastronômica
+# Documentação do Sistema de Controle - Fichas Técnicas
 
 ## Visão Geral
 
-O Sistema de Gestão Gastronômica é uma aplicação web completa desenvolvida para auxiliar estabelecimentos gastronômicos no gerenciamento de produtos, fichas técnicas (receitas) e relatórios. O sistema permite o controle eficiente de insumos, cálculo automático de custos e informações nutricionais, além de fornecer relatórios detalhados para tomada de decisões.
+O Sistema de Controle - Fichas Técnicas é uma aplicação web completa desenvolvida para auxiliar estabelecimentos gastronômicos no gerenciamento de produtos, fichas técnicas (receitas) e relatórios. O sistema permite o controle eficiente de insumos, cálculo automático de custos e informações nutricionais, além de fornecer relatórios detalhados para tomada de decisões.
 
 ## Estrutura do Sistema
 

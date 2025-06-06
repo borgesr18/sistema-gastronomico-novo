@@ -1,4 +1,4 @@
-# Sistema de Gestão Gastronômica
+# Sistema de Controle - Fichas Técnicas
 
 Sistema completo para gestão de produtos, fichas técnicas e relatórios para estabelecimentos gastronômicos.
 
@@ -38,7 +38,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
    - Clique em "Add New..."
    - Selecione "Project"
    - Conecte sua conta GitHub se ainda não estiver conectada
-   - Selecione o repositório do Sistema de Gestão Gastronômica
+   - Selecione o repositório do Sistema de Controle - Fichas Técnicas
 
 3. **Configure o projeto**:
    - O Vercel detectará automaticamente que é um projeto Next.js

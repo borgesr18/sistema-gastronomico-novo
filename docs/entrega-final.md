@@ -1,8 +1,8 @@
-# Entrega Final - Sistema de Gestão Gastronômica
+# Entrega Final - Sistema de Controle - Fichas Técnicas
 
 ## Resumo do Projeto
 
-O Sistema de Gestão Gastronômica foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
+O Sistema de Controle - Fichas Técnicas foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
 
 ## Arquivos Entregues
 
@@ -85,7 +85,7 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
 
 ## Conclusão
 
-O Sistema de Gestão Gastronômica está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
+O Sistema de Controle - Fichas Técnicas está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
 
 ---
 

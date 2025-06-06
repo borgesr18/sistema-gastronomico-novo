@@ -34,7 +34,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
         {!hideLayout && (
           <footer className="bg-white p-4 text-center text-sm text-gray-500 border-t">
-            Sistema de Gestão Gastronômica &copy; {new Date().getFullYear()}
+            Sistema de Controle - Fichas Técnicas &copy; {new Date().getFullYear()}
           </footer>
         )}
       </div>

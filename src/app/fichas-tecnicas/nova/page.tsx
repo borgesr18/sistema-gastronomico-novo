@@ -7,11 +7,25 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
-import { useFichasTecnicas, categoriasReceitas, unidadesRendimento } from '@/lib/fichasTecnicasService';
+import { useFichasTecnicas, categoriasReceitas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import { useModal } from '@/components/ui/Modal';
 import Modal from '@/components/ui/Modal';
+
+type Ingrediente = Omit<IngredienteFicha, 'id' | 'custo'>;
+
+interface FichaTecnicaForm {
+  nome: string;
+  descricao: string;
+  categoria: string;
+  ingredientes: Ingrediente[];
+  modoPreparo: string;
+  tempoPreparo: string;
+  rendimentoTotal: string;
+  unidadeRendimento: string;
+  observacoes: string;
+}
 
 export default function NovaFichaTecnicaPage() {
   const router = useRouter();
@@ -23,13 +37,13 @@ export default function NovaFichaTecnicaPage() {
   const { isOpen, openModal, closeModal } = useModal();
   
   // Estado para o ingrediente sendo adicionado
-  const [ingredienteAtual, setIngredienteAtual] = useState({
+  const [ingredienteAtual, setIngredienteAtual] = useState<{ produtoId: string; quantidade: string }>({
     produtoId: '',
     quantidade: '',
   });
   
   // Estado para a ficha técnica
-  const [fichaTecnica, setFichaTecnica] = useState({
+  const [fichaTecnica, setFichaTecnica] = useState<FichaTecnicaForm>({
     nome: '',
     descricao: '',
     categoria: '',
@@ -162,7 +176,7 @@ export default function NovaFichaTecnicaPage() {
         ...fichaTecnica,
         tempoPreparo: Number(fichaTecnica.tempoPreparo),
         rendimentoTotal: Number(fichaTecnica.rendimentoTotal),
-      };
+      } as unknown as Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'>;
       
       adicionarFichaTecnica(fichaTecnicaFormatada);
       router.push('/fichas-tecnicas');

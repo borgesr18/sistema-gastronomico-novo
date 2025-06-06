@@ -17,7 +17,7 @@ const Sidebar: React.FC = () => {
     >
       <div className="p-4 flex items-center justify-between">
         {!isCollapsed && (
-          <h1 className="text-xl font-bold">Sistema de Controle</h1>
+          <h1 className="text-xl font-bold">CustoChef</h1>
         )}
         <button 
           onClick={toggleSidebar}

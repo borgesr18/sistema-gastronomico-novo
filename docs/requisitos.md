@@ -1,4 +1,4 @@
-# Requisitos do Sistema de Controle - Fichas Técnicas
+# Requisitos do CustoChef
 
 ## 1. Cadastro de Produtos (Insumos)
 

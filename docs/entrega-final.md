@@ -1,8 +1,8 @@
-# Entrega Final - Sistema de Controle - Fichas Técnicas
+# Entrega Final - CustoChef
 
 ## Resumo do Projeto
 
-O Sistema de Controle - Fichas Técnicas foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
+O CustoChef foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
 
 ## Arquivos Entregues
 
@@ -88,7 +88,7 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
 
 ## Conclusão
 
-O Sistema de Controle - Fichas Técnicas está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
+O CustoChef está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
 
 ---
 

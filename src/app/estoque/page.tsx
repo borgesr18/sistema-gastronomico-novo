@@ -6,11 +6,19 @@ import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
+import Modal, { useModal } from '@/components/ui/Modal';
 import { useEstoque } from '@/lib/estoqueService';
 import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
 
 export default function EstoquePage() {
-  const { movimentacoes, isLoading, registrarEntrada, registrarSaida } = useEstoque();
+  const {
+    movimentacoes,
+    isLoading,
+    registrarEntrada,
+    registrarSaida,
+    atualizarMovimentacao,
+    removerMovimentacao,
+  } = useEstoque();
   const { produtos } = useProdutos();
 
   const [form, setForm] = useState({
@@ -22,6 +30,12 @@ export default function EstoquePage() {
     marca: ''
   });
   const [erros, setErros] = useState<Record<string, string>>({});
+  const [edit, setEdit] = useState<any>(null);
+  const {
+    isOpen: isEditOpen,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -58,6 +72,29 @@ export default function EstoquePage() {
       });
     }
     setForm({ tipo: 'entrada', produtoId: '', quantidade: '', preco: '', fornecedor: '', marca: '' });
+  };
+
+  const iniciarEdicao = (m: any) => {
+    setEdit({
+      id: m.id,
+      quantidade: String(Math.abs(m.quantidade)),
+      preco: m.preco?.toString() || '',
+      fornecedor: m.fornecedor || '',
+      marca: m.marca || '',
+    });
+    openEditModal();
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!edit) return;
+    atualizarMovimentacao(edit.id, {
+      quantidade: Number(edit.quantidade),
+      preco: edit.preco ? Number(edit.preco.replace(',', '.')) : undefined,
+      fornecedor: edit.fornecedor,
+      marca: edit.marca,
+    });
+    closeEditModal();
   };
 
   const formatarData = (d: string) => new Date(d).toLocaleDateString();
@@ -100,7 +137,7 @@ export default function EstoquePage() {
 
       <Card>
         <Table
-          headers={["Data", "Produto", "Qtd", "Preço", "Fornecedor", "Marca", "Tipo"]}
+          headers={["Data", "Produto", "Qtd", "Preço", "Fornecedor", "Marca", "Tipo", "Ações"]}
           isLoading={isLoading}
           emptyMessage="Nenhuma movimentação registrada"
         >
@@ -115,11 +152,37 @@ export default function EstoquePage() {
                 <TableCell>{m.fornecedor || '-'}</TableCell>
                 <TableCell>{m.marca || '-'}</TableCell>
                 <TableCell>{m.tipo === 'entrada' ? 'Entrada' : 'Saída'}</TableCell>
+                <TableCell className="space-x-2">
+                  <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(m)}>
+                    Editar
+                  </Button>
+                  <Button size="sm" variant="danger" onClick={() => removerMovimentacao(m.id)}>
+                    Excluir
+                  </Button>
+                </TableCell>
               </TableRow>
             );
           })}
         </Table>
       </Card>
+      <Modal isOpen={isEditOpen} onClose={closeEditModal} title="Editar Movimentação">
+        {edit && (
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            <Input label="Quantidade" value={edit.quantidade} onChange={e => setEdit({ ...edit, quantidade: e.target.value })} required />
+            {movimentacoes.find(m => m.id === edit.id)?.tipo === 'entrada' && (
+              <>
+                <Input label="Preço Unitário" value={edit.preco} onChange={e => setEdit({ ...edit, preco: e.target.value })} />
+                <Input label="Fornecedor" value={edit.fornecedor} onChange={e => setEdit({ ...edit, fornecedor: e.target.value })} />
+                <Input label="Marca" value={edit.marca} onChange={e => setEdit({ ...edit, marca: e.target.value })} />
+              </>
+            )}
+            <div className="flex justify-end space-x-2">
+              <Button type="button" variant="secondary" onClick={closeEditModal}>Cancelar</Button>
+              <Button type="submit" variant="primary">Salvar</Button>
+            </div>
+          </form>
+        )}
+      </Modal>
     </div>
   );
 }

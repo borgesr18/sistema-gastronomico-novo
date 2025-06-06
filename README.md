@@ -1,4 +1,4 @@
-# Sistema de Controle - Fichas Técnicas
+# CustoChef
 
 Sistema completo para gestão de produtos, fichas técnicas e relatórios para estabelecimentos gastronômicos.
 
@@ -61,7 +61,7 @@ A tipografia principal utiliza a fonte **Inter** com peso 400‑600.
    - Clique em "Add New..."
    - Selecione "Project"
    - Conecte sua conta GitHub se ainda não estiver conectada
-   - Selecione o repositório do Sistema de Controle - Fichas Técnicas
+   - Selecione o repositório do CustoChef
 
 3. **Configure o projeto**:
    - O Vercel detectará automaticamente que é um projeto Next.js

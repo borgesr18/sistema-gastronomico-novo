@@ -1,6 +1,6 @@
 # Guia de Desenvolvimento e Manutenção
 
-Este documento fornece informações técnicas sobre a estrutura do código, arquitetura e práticas de desenvolvimento do Sistema de Controle - Fichas Técnicas.
+Este documento fornece informações técnicas sobre a estrutura do código, arquitetura e práticas de desenvolvimento do CustoChef.
 
 ## Arquitetura do Sistema
 

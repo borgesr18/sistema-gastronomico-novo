@@ -90,17 +90,10 @@ export const useFichasTecnicas = () => {
   const [fichasTecnicas, setFichasTecnicas] = useState<FichaTecnicaInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Carregar fichas técnicas do localStorage ao inicializar
-  useEffect(() => {
-    const fichasArmazenadas = obterFichasTecnicas();
-    setFichasTecnicas(fichasArmazenadas);
-    setIsLoading(false);
-  }, []);
-
   // Calcular custo dos ingredientes
-  const calcularCustoIngredientes = (
+  function calcularCustoIngredientes(
     ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]
-  ) => {
+  ) {
     const todosProdutos = obterProdutos();
     return ingredientes.map((ingrediente: Omit<IngredienteFicha, 'custo' | 'id'>) => {
       const produto = todosProdutos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
@@ -140,10 +133,13 @@ export const useFichasTecnicas = () => {
         custo
       };
     });
-  };
+  }
 
   // Calcular informações nutricionais
-  const calcularInfoNutricional = (ingredientes: IngredienteFicha[], rendimentoTotal: number) => {
+  function calcularInfoNutricional(
+    ingredientes: IngredienteFicha[],
+    rendimentoTotal: number
+  ) {
     // Inicializar com zeros
     const infoTotal: InfoNutricionalFicha = {
       calorias: 0,
@@ -205,7 +201,44 @@ export const useFichasTecnicas = () => {
     };
 
     return { infoTotal, infoPorcao };
-  };
+  }
+
+  // Carregar fichas técnicas do localStorage ao inicializar e atualizar custos
+  useEffect(() => {
+    const armazenadas = obterFichasTecnicas();
+    const atualizadas = armazenadas.map((f: FichaTecnicaInfo) => {
+      const baseIngredientes = f.ingredientes.map((i) => ({
+        produtoId: i.produtoId,
+        quantidade: i.quantidade,
+        unidade: (i as any).unidade || '',
+      })) as Omit<IngredienteFicha, 'custo' | 'id'>[];
+
+      const ingredientesComCusto = calcularCustoIngredientes(baseIngredientes);
+      const custoTotal = ingredientesComCusto.reduce(
+        (total: number, ing: IngredienteFicha) => total + ing.custo,
+        0
+      );
+      const custoPorcao =
+        f.rendimentoTotal > 0 ? custoTotal / f.rendimentoTotal : 0;
+
+      const { infoTotal, infoPorcao } = calcularInfoNutricional(
+        ingredientesComCusto,
+        f.rendimentoTotal
+      );
+
+      return {
+        ...f,
+        ingredientes: ingredientesComCusto,
+        custoTotal,
+        custoPorcao,
+        infoNutricional: infoTotal,
+        infoNutricionalPorcao: infoPorcao,
+      } as FichaTecnicaInfo;
+    });
+    setFichasTecnicas(atualizadas);
+    salvarFichasTecnicas(atualizadas);
+    setIsLoading(false);
+  }, []);
 
   // Adicionar nova ficha técnica
   const adicionarFichaTecnica = (ficha: Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'>) => {

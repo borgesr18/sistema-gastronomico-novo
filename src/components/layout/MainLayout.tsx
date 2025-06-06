@@ -24,7 +24,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     }
   }, [usuarioAtual, pathname, router]);
 
-  const hideLayout = pathname === '/login' || pathname === '/usuarios/novo';
+  const hideLayout =
+    pathname === '/login' ||
+    pathname === '/usuarios/novo' ||
+    pathname.includes('/imprimir');
 
   return (
     <div className="flex h-screen" style={{ backgroundColor: 'var(--cor-fundo)' }}>

@@ -111,7 +111,9 @@ export default function EstoquePage() {
             name="produtoId"
             value={form.produtoId}
             onChange={handleChange}
-            options={produtos.map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))}
+            options={produtos
+              .map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))
+              .sort((a, b) => a.label.localeCompare(b.label))}
             error={erros.produtoId}
           />
           <Select
@@ -152,7 +154,7 @@ export default function EstoquePage() {
                 <TableCell>{m.fornecedor || '-'}</TableCell>
                 <TableCell>{m.marca || '-'}</TableCell>
                 <TableCell>{m.tipo === 'entrada' ? 'Entrada' : 'Saída'}</TableCell>
-                <TableCell className="space-x-2">
+                <TableCell className="flex items-center space-x-2">
                   <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(m)}>
                     Editar
                   </Button>

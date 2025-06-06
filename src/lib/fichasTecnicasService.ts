@@ -344,22 +344,8 @@ export const useFichasTecnicas = () => {
 };
 
 // Dados iniciais para categorias de receitas
-export const categoriasReceitas = [
-  { value: 'entrada', label: 'Entrada' },
-  { value: 'prato-principal', label: 'Prato Principal' },
-  { value: 'acompanhamento', label: 'Acompanhamento' },
-  { value: 'sobremesa', label: 'Sobremesa' },
-  { value: 'bebida', label: 'Bebida' },
-  { value: 'molho', label: 'Molho/Condimento' },
-  { value: 'outro', label: 'Outro' },
-];
-
-// Obter rótulo legível da categoria de receita
-export const obterLabelCategoriaReceita = (valor: string) => {
-  if (!valor) return 'Não informado';
-  const encontrada = categoriasReceitas.find(c => c.value === valor);
-  return encontrada ? encontrada.label : valor;
-};
+// Categorias de receitas são gerenciadas em categoriasReceitasService
+export { obterLabelCategoriaReceita } from './categoriasReceitasService';
 
 // Dados iniciais para unidades de rendimento
 export const unidadesRendimento = [

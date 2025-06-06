@@ -74,7 +74,9 @@ export default function ProducaoPage() {
             name="fichaId"
             value={form.fichaId}
             onChange={handleChange}
-            options={fichasTecnicas.map((f: FichaTecnicaInfo) => ({ value: f.id, label: f.nome }))}
+            options={fichasTecnicas
+              .map((f: FichaTecnicaInfo) => ({ value: f.id, label: f.nome }))
+              .sort((a, b) => a.label.localeCompare(b.label))}
             error={erros.fichaId}
           />
           <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} />
@@ -83,7 +85,9 @@ export default function ProducaoPage() {
             name="produtoFinalId"
             value={form.produtoFinalId}
             onChange={handleChange}
-            options={produtos.map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))}
+            options={produtos
+              .map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))
+              .sort((a, b) => a.label.localeCompare(b.label))}
             error={erros.produtoFinalId}
           />
           <Input label="Peso por unidade" name="pesoUnitario" value={form.pesoUnitario} onChange={handleChange} />

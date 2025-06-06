@@ -7,7 +7,8 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
-import { useFichasTecnicas, categoriasReceitas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha } from '@/lib/fichasTecnicasService';
+import { useFichasTecnicas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha } from '@/lib/fichasTecnicasService';
+import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
@@ -38,6 +39,7 @@ export default function EditarFichaTecnicaPage() {
   } = useFichasTecnicas();
   const { produtos } = useProdutos();
   const { unidades } = useUnidadesMedida();
+  const { categorias } = useCategoriasReceita();
   const [isSaving, setIsSaving] = useState(false);
   
   const fichaId = params.id as string;
@@ -287,7 +289,9 @@ export default function EditarFichaTecnicaPage() {
                   name="categoria"
                   value={fichaTecnica.categoria}
                   onChange={handleChange}
-                  options={categoriasReceitas}
+                  options={categorias
+                    .map(c => ({ value: c.id, label: c.nome }))
+                    .sort((a, b) => a.label.localeCompare(b.label))}
                   error={erros.categoria}
                 />
               </div>
@@ -442,7 +446,9 @@ export default function EditarFichaTecnicaPage() {
             value={ingredienteAtual.produtoId}
             onChange={handleIngredienteChange}
             error={erros.produtoId}
-            options={produtos.map(p => ({ value: p.id, label: `${p.nome} (${p.unidadeMedida})` }))}
+            options={produtos
+              .map(p => ({ value: p.id, label: `${p.nome} (${p.unidadeMedida})` }))
+              .sort((a, b) => a.label.localeCompare(b.label))}
           />
           
           <Input
@@ -463,7 +469,9 @@ export default function EditarFichaTecnicaPage() {
             value={ingredienteAtual.unidade}
             onChange={handleIngredienteChange}
             error={erros.unidade}
-            options={unidades.map(u => ({ value: u.id, label: u.nome }))}
+            options={unidades
+              .map(u => ({ value: u.id, label: u.nome }))
+              .sort((a, b) => a.label.localeCompare(b.label))}
           />
         </div>
       </Modal>

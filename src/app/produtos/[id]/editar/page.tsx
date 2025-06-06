@@ -199,7 +199,9 @@ export default function EditarProdutoPage() {
                 name="categoria"
                 value={produto.categoria}
                 onChange={handleChange}
-                options={categorias.map(c => ({ value: c.id, label: c.nome }))}
+                options={categorias
+                  .map(c => ({ value: c.id, label: c.nome }))
+                  .sort((a, b) => a.label.localeCompare(b.label))}
                 error={erros.categoria}
               />
 
@@ -218,7 +220,9 @@ export default function EditarProdutoPage() {
                 name="unidadeMedida"
                 value={produto.unidadeMedida}
                 onChange={handleChange}
-                options={unidades.map(u => ({ value: u.id, label: u.nome }))}
+                options={unidades
+                  .map(u => ({ value: u.id, label: u.nome }))
+                  .sort((a, b) => a.label.localeCompare(b.label))}
                 error={erros.unidadeMedida}
               />
               

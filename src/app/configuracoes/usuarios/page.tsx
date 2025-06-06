@@ -53,7 +53,7 @@ export default function UsuariosConfigPage() {
           <TableRow key={u.id}>
             <TableCell>{u.nome}</TableCell>
             <TableCell>{u.email}</TableCell>
-            <TableCell className="space-x-2">
+            <TableCell className="flex items-center space-x-2">
               <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>
                 Alterar Senha
               </Button>

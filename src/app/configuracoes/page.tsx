@@ -5,23 +5,32 @@ export default function ConfiguracoesPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Configurações</h1>
-      <ul className="list-disc pl-6 space-y-2 text-blue-600">
-        <li>
-          <Link href="/configuracoes/usuarios" className="hover:underline">
-            Controle de Usuários
-          </Link>
-        </li>
-        <li>
-          <Link href="/configuracoes/categorias" className="hover:underline">
-            Categorias de Produtos
-          </Link>
-        </li>
-        <li>
-          <Link href="/configuracoes/unidades" className="hover:underline">
-            Unidades de Medida
-          </Link>
-        </li>
-      </ul>
+      <div className="space-y-2">
+        <Link
+          href="/configuracoes/usuarios"
+          className="block bg-[var(--cor-acao)] text-white px-4 py-2 rounded-md hover:brightness-90"
+        >
+          Controle de Usuários
+        </Link>
+        <Link
+          href="/configuracoes/categorias"
+          className="block bg-[var(--cor-acao)] text-white px-4 py-2 rounded-md hover:brightness-90"
+        >
+          Categorias de Produtos
+        </Link>
+        <Link
+          href="/configuracoes/categorias-receitas"
+          className="block bg-[var(--cor-acao)] text-white px-4 py-2 rounded-md hover:brightness-90"
+        >
+          Categorias de Receitas
+        </Link>
+        <Link
+          href="/configuracoes/unidades"
+          className="block bg-[var(--cor-acao)] text-white px-4 py-2 rounded-md hover:brightness-90"
+        >
+          Unidades de Medida
+        </Link>
+      </div>
     </div>
   );
 }

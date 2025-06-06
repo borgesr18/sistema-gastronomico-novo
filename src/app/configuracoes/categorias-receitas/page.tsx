@@ -5,10 +5,10 @@ import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Modal, { useModal } from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
-import { useCategorias } from '@/lib/categoriasService';
+import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
 
-export default function CategoriasConfigPage() {
-  const { categorias, adicionarCategoria, atualizarCategoria, removerCategoria } = useCategorias();
+export default function CategoriasReceitasConfigPage() {
+  const { categorias, adicionar, atualizar, remover } = useCategoriasReceita();
   const { isOpen, openModal, closeModal } = useModal();
   const { isOpen: isEditOpen, openModal: openEdit, closeModal: closeEdit } = useModal();
   const [nova, setNova] = useState('');
@@ -16,7 +16,7 @@ export default function CategoriasConfigPage() {
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    adicionarCategoria(nova.trim());
+    adicionar(nova.trim());
     setNova('');
     closeModal();
   };
@@ -28,21 +28,21 @@ export default function CategoriasConfigPage() {
 
   const handleEdit = (e: React.FormEvent) => {
     e.preventDefault();
-    atualizarCategoria(editar.id, editar.nome.trim());
+    atualizar(editar.id, editar.nome.trim());
     closeEdit();
   };
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-800">Categorias de Produtos</h1>
-      <Button onClick={openModal} variant="primary">Nova Categoria</Button>
+      <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
+      <Button onClick={openModal} variant="primary" className="mt-2">Nova Categoria</Button>
       <Table headers={["Nome", "Ações"]}>
         {categorias.map(cat => (
           <TableRow key={cat.id}>
             <TableCell>{cat.nome}</TableCell>
             <TableCell className="flex items-center space-x-2">
               <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>Editar</Button>
-              <Button size="sm" variant="danger" onClick={() => removerCategoria(cat.id)}>Excluir</Button>
+              <Button size="sm" variant="danger" onClick={() => remover(cat.id)}>Excluir</Button>
             </TableCell>
           </TableRow>
         ))}

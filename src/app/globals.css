@@ -61,6 +61,9 @@ body {
 }
 
 @media print {
+  body {
+    font-size: 11px;
+  }
   @page {
     size: A4;
     margin: 20mm;

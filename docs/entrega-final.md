@@ -69,7 +69,7 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
    - Implementar sincronização entre dispositivos
 
 2. **Sistema de Autenticação**
-   - Adicionar login e controle de acesso
+   - Login básico com senha implementado utilizando localStorage
    - Definir diferentes níveis de usuário
 
 3. **Funcionalidades Adicionais**

@@ -46,6 +46,12 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 
 ## Guia de Uso
 
+### Acesso ao Sistema
+
+1. Acesse a página de login (`/login`).
+2. Caso seja o primeiro acesso, clique em "Cadastre-se" para criar um usuário.
+3. Informe seu email e senha para entrar no sistema. As credenciais ficam armazenadas somente no navegador.
+
 ### Produtos/Insumos
 
 1. **Listagem de Produtos**:
@@ -114,14 +120,14 @@ O sistema utiliza localStorage para persistência de dados, o que significa que:
 
 ### Limitações Atuais
 
-- O sistema não possui autenticação de usuários
-- Não há sincronização de dados entre dispositivos
+- O sistema conta com autenticação básica de usuários, mas as credenciais ficam armazenadas localmente
+- Não há sincronização de dados entre diferentes dispositivos
 - A exportação de relatórios para PDF e Excel está planejada para versões futuras
 
 ### Próximas Versões
 
 Estão planejadas para versões futuras:
-- Autenticação de usuários
+- Diferentes níveis de permissão para usuários
 - Banco de dados remoto para sincronização entre dispositivos
 - Exportação de relatórios em diferentes formatos
 - Controle de estoque

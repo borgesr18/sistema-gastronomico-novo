@@ -12,10 +12,11 @@ export interface MovimentacaoEstoque {
   id: string;
   produtoId: string;
   quantidade: number;
-  preco: number;
-  fornecedor: string;
+  preco?: number;
+  fornecedor?: string;
   marca?: string;
   data: string;
+  tipo: 'entrada' | 'saida';
 }
 
 const gerarId = () => {
@@ -48,19 +49,25 @@ export const useEstoque = () => {
     setIsLoading(false);
   }, []);
 
-  const registrarCompra = (dados: Omit<MovimentacaoEstoque, 'id' | 'data'>) => {
-    const nova = { ...dados, id: gerarId(), data: new Date().toISOString() };
+  const registrarEntrada = (dados: {
+    produtoId: string;
+    quantidade: number;
+    preco: number;
+    fornecedor: string;
+    marca?: string;
+  }) => {
+    const nova: MovimentacaoEstoque = { ...dados, id: gerarId(), data: new Date().toISOString(), tipo: 'entrada' };
     const novas = [...movimentacoes, nova];
     setMovimentacoes(novas);
     salvarMovimentacoes(novas);
 
     // Atualizar produto com novo preco/fornecedor/marca
     const produtos = obterProdutos();
-    const atualizados = produtos.map((p: ProdutoInfo) =>
-      p.id === nova.produtoId
-        ? { ...p, preco: nova.preco, fornecedor: nova.fornecedor, marca: nova.marca || p.marca }
-        : p
-    );
+      const atualizados = produtos.map((p: ProdutoInfo) =>
+        p.id === nova.produtoId
+          ? { ...p, preco: nova.preco as number, fornecedor: nova.fornecedor as string, marca: nova.marca || p.marca }
+          : p
+      );
     salvarProdutos(atualizados);
 
     // Atualizar fichas tecnicas que utilizam este produto
@@ -91,6 +98,20 @@ export const useEstoque = () => {
     return nova;
   };
 
+  const registrarSaida = (dados: { produtoId: string; quantidade: number }) => {
+    const nova: MovimentacaoEstoque = {
+      id: gerarId(),
+      data: new Date().toISOString(),
+      tipo: 'saida',
+      produtoId: dados.produtoId,
+      quantidade: -Math.abs(dados.quantidade)
+    };
+    const novas = [...movimentacoes, nova];
+    setMovimentacoes(novas);
+    salvarMovimentacoes(novas);
+    return nova;
+  };
+
   const obterHistoricoPorProduto = (produtoId: string) =>
     movimentacoes.filter((m: MovimentacaoEstoque) => m.produtoId === produtoId);
 
@@ -99,5 +120,5 @@ export const useEstoque = () => {
       .filter((m: MovimentacaoEstoque) => m.produtoId === produtoId)
       .reduce((total: number, m: MovimentacaoEstoque) => total + m.quantidade, 0);
 
-  return { movimentacoes, isLoading, registrarCompra, obterHistoricoPorProduto, calcularEstoqueAtual };
+  return { movimentacoes, isLoading, registrarEntrada, registrarSaida, obterHistoricoPorProduto, calcularEstoqueAtual };
 };

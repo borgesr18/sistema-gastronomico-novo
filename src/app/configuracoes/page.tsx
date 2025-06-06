@@ -11,6 +11,11 @@ export default function ConfiguracoesPage() {
             Controle de Usuários
           </Link>
         </li>
+        <li>
+          <Link href="/configuracoes/categorias" className="hover:underline">
+            Categorias de Produtos
+          </Link>
+        </li>
       </ul>
     </div>
   );

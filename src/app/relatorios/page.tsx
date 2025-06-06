@@ -11,9 +11,10 @@ import Link from 'next/link';
 export default function RelatoriosPage() {
   const { 
     gerarRelatorioCompleto, 
-    gerarRelatorioCustos, 
-    gerarRelatorioIngredientes, 
-    gerarRelatorioReceitas 
+    gerarRelatorioCustos,
+    gerarRelatorioIngredientes,
+    gerarRelatorioReceitas,
+    gerarRelatorioEstoque
   } = useRelatorios();
   
   const [tipoRelatorio, setTipoRelatorio] = useState('completo');
@@ -43,6 +44,8 @@ export default function RelatoriosPage() {
         return renderizarRelatorioIngredientes();
       case 'receitas':
         return renderizarRelatorioReceitas();
+      case 'estoque':
+        return renderizarRelatorioEstoque();
       default:
         return renderizarRelatorioCompleto();
     }
@@ -298,6 +301,31 @@ export default function RelatoriosPage() {
       </div>
     );
   };
+
+  const renderizarRelatorioEstoque = () => {
+    const relatorio = gerarRelatorioEstoque();
+    return (
+      <div className="space-y-6">
+        <Card title="Estoque Atual">
+          {relatorio.itens.length > 0 ? (
+            <Table headers={['Produto', 'Quantidade', 'Preço', 'Valor Total']}>
+              {relatorio.itens.map(item => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.nome}</TableCell>
+                  <TableCell>{item.quantidade}</TableCell>
+                  <TableCell>{formatarPreco(item.preco)}</TableCell>
+                  <TableCell>{formatarPreco(item.valorTotal)}</TableCell>
+                </TableRow>
+              ))}
+            </Table>
+          ) : (
+            <p className="text-gray-500 text-center py-4">Nenhum produto cadastrado</p>
+          )}
+          <p className="text-right font-medium mt-4">Total em estoque: {formatarPreco(relatorio.valorTotalEstoque)}</p>
+        </Card>
+      </div>
+    );
+  };
   
   const renderizarRelatorioReceitas = () => {
     const relatorio = gerarRelatorioReceitas();
@@ -360,6 +388,7 @@ export default function RelatoriosPage() {
                 { value: 'custos', label: 'Relatório de Custos' },
                 { value: 'ingredientes', label: 'Relatório de Ingredientes' },
                 { value: 'receitas', label: 'Relatório de Receitas' },
+                { value: 'estoque', label: 'Relatório de Estoque' },
               ]}
             />
           </div>

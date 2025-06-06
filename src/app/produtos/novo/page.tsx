@@ -6,12 +6,14 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
-import { useProdutos, unidadesMedida, categoriasProdutos } from '@/lib/produtosService';
+import { useProdutos, unidadesMedida } from '@/lib/produtosService';
+import { useCategorias } from '@/lib/categoriasService';
 import { useState } from 'react';
 
 export default function NovoProdutoPage() {
   const router = useRouter();
   const { adicionarProduto } = useProdutos();
+  const { categorias } = useCategorias();
   const [isLoading, setIsLoading] = useState(false);
   const [mostrarInfoNutricional, setMostrarInfoNutricional] = useState(false);
   
@@ -155,7 +157,7 @@ export default function NovoProdutoPage() {
                 name="categoria"
                 value={produto.categoria}
                 onChange={handleChange}
-                options={categoriasProdutos}
+                options={categorias.map(c => ({ value: c.id, label: c.nome }))}
                 error={erros.categoria}
               />
 

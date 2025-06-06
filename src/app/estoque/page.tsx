@@ -10,10 +10,11 @@ import { useEstoque } from '@/lib/estoqueService';
 import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
 
 export default function EstoquePage() {
-  const { movimentacoes, isLoading, registrarCompra } = useEstoque();
+  const { movimentacoes, isLoading, registrarEntrada, registrarSaida } = useEstoque();
   const { produtos } = useProdutos();
 
   const [form, setForm] = useState({
+    tipo: 'entrada',
     produtoId: '',
     quantidade: '',
     preco: '',
@@ -31,8 +32,10 @@ export default function EstoquePage() {
     const errs: Record<string, string> = {};
     if (!form.produtoId) errs.produtoId = 'Produto é obrigatório';
     if (!form.quantidade || isNaN(Number(form.quantidade))) errs.quantidade = 'Qtd inválida';
-    if (!form.preco || isNaN(Number(form.preco))) errs.preco = 'Preço inválido';
-    if (!form.fornecedor) errs.fornecedor = 'Fornecedor obrigatório';
+    if (form.tipo === 'entrada') {
+      if (!form.preco || isNaN(Number(form.preco.replace(',', '.')))) errs.preco = 'Preço inválido';
+      if (!form.fornecedor) errs.fornecedor = 'Fornecedor obrigatório';
+    }
     setErros(errs);
     return Object.keys(errs).length === 0;
   };
@@ -40,14 +43,21 @@ export default function EstoquePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validar()) return;
-    registrarCompra({
-      produtoId: form.produtoId,
-      quantidade: Number(form.quantidade),
-      preco: Number(form.preco),
-      fornecedor: form.fornecedor,
-      marca: form.marca
-    });
-    setForm({ produtoId: '', quantidade: '', preco: '', fornecedor: '', marca: '' });
+    if (form.tipo === 'entrada') {
+      registrarEntrada({
+        produtoId: form.produtoId,
+        quantidade: Number(form.quantidade),
+        preco: Number(form.preco.replace(',', '.')),
+        fornecedor: form.fornecedor,
+        marca: form.marca
+      });
+    } else {
+      registrarSaida({
+        produtoId: form.produtoId,
+        quantidade: Number(form.quantidade)
+      });
+    }
+    setForm({ tipo: 'entrada', produtoId: '', quantidade: '', preco: '', fornecedor: '', marca: '' });
   };
 
   const formatarData = (d: string) => new Date(d).toLocaleDateString();
@@ -58,7 +68,7 @@ export default function EstoquePage() {
       <h1 className="text-2xl font-bold text-gray-800">Controle de Estoque</h1>
 
       <Card>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-4">
           <Select
             label="Produto *"
             name="produtoId"
@@ -67,19 +77,30 @@ export default function EstoquePage() {
             options={produtos.map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))}
             error={erros.produtoId}
           />
+          <Select
+            label="Tipo *"
+            name="tipo"
+            value={form.tipo}
+            onChange={handleChange}
+            options={[{ value: 'entrada', label: 'Entrada' }, { value: 'saida', label: 'Saída' }]}
+          />
           <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} />
-          <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange} error={erros.preco} />
-          <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange} error={erros.fornecedor} />
-          <Input label="Marca" name="marca" value={form.marca} onChange={handleChange} />
-          <div className="md:col-span-5 flex justify-end">
-            <Button type="submit" variant="primary">Registrar Entrada</Button>
+          {form.tipo === 'entrada' && (
+            <>
+              <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange} error={erros.preco} />
+              <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange} error={erros.fornecedor} />
+              <Input label="Marca" name="marca" value={form.marca} onChange={handleChange} />
+            </>
+          )}
+          <div className="md:col-span-6 flex justify-end">
+            <Button type="submit" variant="primary">Registrar {form.tipo === 'entrada' ? 'Entrada' : 'Saída'}</Button>
           </div>
         </form>
       </Card>
 
       <Card>
         <Table
-          headers={["Data", "Produto", "Quantidade", "Preço", "Fornecedor", "Marca"]}
+          headers={["Data", "Produto", "Qtd", "Preço", "Fornecedor", "Marca", "Tipo"]}
           isLoading={isLoading}
           emptyMessage="Nenhuma movimentação registrada"
         >
@@ -90,9 +111,10 @@ export default function EstoquePage() {
                 <TableCell>{formatarData(m.data)}</TableCell>
                 <TableCell>{prod?.nome || 'Produto removido'}</TableCell>
                 <TableCell>{m.quantidade}</TableCell>
-                <TableCell>{formatarPreco(m.preco)}</TableCell>
-                <TableCell>{m.fornecedor}</TableCell>
+                <TableCell>{m.preco ? formatarPreco(m.preco) : '-'}</TableCell>
+                <TableCell>{m.fornecedor || '-'}</TableCell>
                 <TableCell>{m.marca || '-'}</TableCell>
+                <TableCell>{m.tipo === 'entrada' ? 'Entrada' : 'Saída'}</TableCell>
               </TableRow>
             );
           })}

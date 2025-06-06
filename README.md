@@ -11,6 +11,9 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Controle de Usuários**: Gerencie contas na seção de configurações
 - **Alteração de Senhas**: Atualize as senhas dos usuários a qualquer momento
 - **Controle de Estoque**: Registre compras de produtos e mantenha histórico
+- **Saídas de Estoque**: Lance baixas de produtos diretamente pelo estoque
+- **Categorias Personalizadas**: Cadastre e edite categorias de produtos nas configurações
+- **Relatório de Estoque**: Consulte o balanço completo de itens armazenados
 - **Relatórios e Dashboard**: Visualizações e métricas para tomada de decisão
 - **Interface Responsiva**: Acesso em qualquer dispositivo
 

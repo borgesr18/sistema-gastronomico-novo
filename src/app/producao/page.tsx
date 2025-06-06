@@ -34,14 +34,22 @@ export default function ProducaoPage() {
   const formatarMoeda = (valor: number) =>
     valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  const calcularCusto = () => {
-    if (!form.fichaId || !form.quantidade) return '';
+  const calcularCustoNumero = () => {
+    if (!form.fichaId || !form.quantidade) return 0;
     const ficha = fichasTecnicas.find(f => f.id === form.fichaId);
-    if (!ficha) return '';
+    if (!ficha) return 0;
     const qtdTotalG = converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g');
     const fichaRendG = converterUnidade(ficha.rendimentoTotal, ficha.unidadeRendimento, 'g');
     const fator = qtdTotalG / fichaRendG;
-    return formatarMoeda(ficha.custoTotal * fator);
+    return ficha.custoTotal * fator;
+  };
+  const calcularCusto = () => formatarMoeda(calcularCustoNumero());
+
+  const calcularUnidades = () => {
+    if (!form.pesoUnitario || !form.quantidade) return 0;
+    const qtdTotalG = converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g');
+    const pesoUnitG = converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g');
+    return Math.round(qtdTotalG / pesoUnitG);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -78,6 +86,7 @@ export default function ProducaoPage() {
     const unidades = Math.round(qtdTotalG / pesoUnitG);
     const precoUnit = (ficha.custoPorKg / 1000) * pesoUnitG;
     const custoTotal = ficha.custoTotal * fator;
+    const custoUnitario = custoTotal / unidades;
     registrarEntrada({
       produtoId: form.fichaId,
       quantidade: unidades,
@@ -93,6 +102,7 @@ export default function ProducaoPage() {
       unidadePeso: form.unidadePeso,
       unidadesGeradas: unidades,
       custoTotal,
+      custoUnitario,
       validade: form.validade,
       data: form.data,
     });
@@ -114,10 +124,16 @@ export default function ProducaoPage() {
     const pesoUnitG = converterUnidade(edit.pesoUnitario, edit.unidadePeso, 'g');
     const unidades = Math.round(qtdTotalG / pesoUnitG);
     const custoTotal = ficha.custoTotal * fator;
+    const custoUnitario = unidades ? custoTotal / unidades : 0;
     setEdit(prev => {
       if (!prev) return prev;
-      if (prev.unidadesGeradas === unidades && prev.custoTotal === custoTotal) return prev;
-      return { ...prev, unidadesGeradas: unidades, custoTotal };
+      if (
+        prev.unidadesGeradas === unidades &&
+        prev.custoTotal === custoTotal &&
+        prev.custoUnitario === custoUnitario
+      )
+        return prev;
+      return { ...prev, unidadesGeradas: unidades, custoTotal, custoUnitario };
     });
   }, [edit?.quantidadeTotal, edit?.unidadeQuantidade, edit?.pesoUnitario, edit?.unidadePeso, edit?.fichaId, fichasTecnicas]);
 
@@ -132,6 +148,7 @@ export default function ProducaoPage() {
       unidadePeso: edit.unidadePeso,
       unidadesGeradas: Number(edit.unidadesGeradas),
       custoTotal: edit.custoTotal,
+      custoUnitario: edit.custoUnitario,
       validade: edit.validade,
       data: edit.data,
     });
@@ -191,13 +208,19 @@ export default function ProducaoPage() {
             label="Unidades Geradas"
             name="unidadesGeradas"
             readOnly
-            value={form.pesoUnitario && form.quantidade ? String(Math.round(converterUnidade(Number(form.quantidade), form.unidadeQtd, 'g') / converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g'))) : ''}
+            value={form.pesoUnitario && form.quantidade ? String(calcularUnidades()) : ''}
           />
           <Input
             label="Custo"
             name="custo"
             readOnly
             value={calcularCusto()}
+          />
+          <Input
+            label="Custo por Unidade"
+            name="custoUnitario"
+            readOnly
+            value={form.pesoUnitario && form.quantidade && form.fichaId ? formatarMoeda(calcularCustoNumero() / calcularUnidades()) : ''}
           />
          <Input
             label="Data *"
@@ -221,7 +244,7 @@ export default function ProducaoPage() {
         </form>
       </Card>
       <Card title="Histórico de Produções">
-        <Table headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Custo", "Ações"]} emptyMessage="Nenhuma produção registrada">
+        <Table headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Custo", "Custo/Unid.", "Ações"]} emptyMessage="Nenhuma produção registrada">
           {producoes.map((p: ProducaoInfo) => {
             const ficha = fichasTecnicas.find(f => f.id === p.fichaId);
             return (
@@ -233,6 +256,7 @@ export default function ProducaoPage() {
                 <TableCell>{p.pesoUnitario}{p.unidadePeso}</TableCell>
                 <TableCell>{p.unidadesGeradas}</TableCell>
                 <TableCell>{formatarMoeda(p.custoTotal)}</TableCell>
+                <TableCell>{formatarMoeda(p.custoUnitario)}</TableCell>
                 <TableCell className="flex space-x-2">
                   <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(p)}>Editar</Button>
                   <Button size="sm" variant="danger" onClick={() => removerProducao(p.id)}>Excluir</Button>
@@ -270,6 +294,7 @@ export default function ProducaoPage() {
             />
             <Input label="Unidades Geradas" name="unidadesGeradas" value={String(edit.unidadesGeradas)} readOnly />
             <Input label="Custo Total" name="custoTotal" value={formatarMoeda(edit.custoTotal)} readOnly />
+            <Input label="Custo por Unidade" name="custoUnitario" value={formatarMoeda(edit.custoUnitario)} readOnly />
             <Input label="Data" type="date" name="data" value={edit.data} onChange={e => setEdit({ ...edit, data: e.target.value })} />
             <Input label="Validade" type="date" name="validade" value={edit.validade} onChange={e => setEdit({ ...edit, validade: e.target.value })} />
             <div className="md:col-span-6 flex justify-end space-x-2">

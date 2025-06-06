@@ -12,6 +12,8 @@ export interface ProducaoInfo {
   unidadesGeradas: number;
   /** Custo total do lote produzido */
   custoTotal: number;
+  /** Custo por unidade produzida */
+  custoUnitario: number;
   validade: string;
   data: string;
 }
@@ -31,6 +33,7 @@ const obterProducoes = (): ProducaoInfo[] => {
     const arr = str ? JSON.parse(str) : [];
     return arr.map((p: any) => ({
       custoTotal: 0,
+      custoUnitario: 0,
       validade: '',
       ...p,
     }));

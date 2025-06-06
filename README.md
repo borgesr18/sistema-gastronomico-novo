@@ -6,6 +6,9 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 
 - **Cadastro de Produtos/Insumos**: Gerenciamento de insumos com informações nutricionais
 - **Fichas Técnicas**: Criação e gestão de receitas com cálculos automáticos de custos
+- **Impressão de Fichas**: Gere uma versão pronta para imprimir das fichas técnicas
+- **Autenticação de Usuários**: Acesso ao sistema mediante login e senha
+- **Controle de Usuários**: Gerencie contas na seção de configurações
 - **Relatórios e Dashboard**: Visualizações e métricas para tomada de decisão
 - **Interface Responsiva**: Acesso em qualquer dispositivo
 

@@ -113,12 +113,23 @@ export const useFichasTecnicas = () => {
       }
 
       const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
-      const quantidadeConvertida = converterUnidade(
-        ingrediente.quantidade,
-        unidadeIng,
-        produto.unidadeMedida
-      );
-      const custo = quantidadeConvertida * produto.preco;
+      const tipoUso = infoUnidades[unidadeIng]?.tipo;
+      let custo = 0;
+
+      if (tipoUso === 'peso' || tipoUso === 'volume') {
+        const base = tipoUso === 'peso' ? 'g' : 'ml';
+        const qtdBase = converterUnidade(ingrediente.quantidade, unidadeIng, base);
+        const pesoEmbalagem = produto.pesoEmbalagem || infoUnidades[produto.unidadeMedida]?.fator || 1;
+        const custoUnitario = produto.preco / pesoEmbalagem;
+        custo = qtdBase * custoUnitario;
+      } else {
+        const quantidadeConvertida = converterUnidade(
+          ingrediente.quantidade,
+          unidadeIng,
+          produto.unidadeMedida
+        );
+        custo = quantidadeConvertida * produto.preco;
+      }
       
       return {
         ...ingrediente,
@@ -147,13 +158,22 @@ export const useFichasTecnicas = () => {
       const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
       if (produto?.infoNutricional) {
         const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
-        const base = infoUnidades[produto.unidadeMedida]?.tipo === 'peso'
-          ? 'g'
-          : infoUnidades[produto.unidadeMedida]?.tipo === 'volume'
-            ? 'ml'
-            : 'un';
-        const qtdBase = converterUnidade(ingrediente.quantidade, unidadeIng, base);
-        const proporcao = base === 'un' ? qtdBase : qtdBase / 100;
+        const tipoIng = infoUnidades[unidadeIng]?.tipo;
+        let qtdBase = ingrediente.quantidade;
+        let base: string = 'un';
+
+        if (tipoIng === 'peso' || tipoIng === 'volume') {
+          base = tipoIng === 'peso' ? 'g' : 'ml';
+          qtdBase = converterUnidade(ingrediente.quantidade, unidadeIng, base);
+        } else {
+          // unidade para peso/volume usando pesoEmbalagem
+          const pesoEmb = produto.pesoEmbalagem || infoUnidades[produto.unidadeMedida]?.fator || 1;
+          const qtdUn = converterUnidade(ingrediente.quantidade, unidadeIng, produto.unidadeMedida);
+          base = infoUnidades[produto.unidadeMedida]?.tipo === 'volume' ? 'ml' : 'g';
+          qtdBase = qtdUn * pesoEmb;
+        }
+
+        const proporcao = qtdBase / 100;
         
         infoTotal.calorias += produto.infoNutricional.calorias * proporcao;
         infoTotal.carboidratos += produto.infoNutricional.carboidratos * proporcao;

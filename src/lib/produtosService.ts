@@ -11,6 +11,7 @@ export interface ProdutoInfo {
   unidadeMedida: string;
   preco: number;
   fornecedor: string;
+  pesoEmbalagem?: number;
   imagem?: string;
   infoNutricional?: {
     calorias: number;
@@ -46,6 +47,7 @@ export const obterProdutos = (): ProdutoInfo[] => {
         ...p,
         categoria: p.categoria ?? '',
         preco: Number(p.preco) || 0,
+        pesoEmbalagem: p.pesoEmbalagem ? Number(p.pesoEmbalagem) : undefined,
         infoNutricional: p.infoNutricional
           ? {
               calorias: Number(p.infoNutricional.calorias) || 0,

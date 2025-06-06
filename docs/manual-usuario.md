@@ -10,8 +10,8 @@ O sistema está organizado em três módulos principais:
 
 ### 1. Módulo de Produtos/Insumos
 
-Este módulo permite o cadastro e gerenciamento de todos os insumos utilizados nas receitas, incluindo:
-- Cadastro de produtos com nome, marca, categoria, unidade de medida e preço
+ Este módulo permite o cadastro e gerenciamento de todos os insumos utilizados nas receitas, incluindo:
+ - Cadastro de produtos com nome, marca, categoria, unidade de medida, preço e peso por embalagem
 - Registro de informações nutricionais
 - Listagem, edição e exclusão de produtos
 - Filtros e busca para localização rápida de produtos

@@ -14,6 +14,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Saídas de Estoque**: Lance baixas de produtos diretamente pelo estoque
 - **Categorias Personalizadas**: Cadastre e edite categorias de produtos nas configurações
 - **Unidades de Medida**: Gerencie siglas de unidades usadas nos produtos
+- **Peso por Embalagem**: Defina quantos gramas ou mililitros cada unidade comprada possui
 - **Relatório de Estoque**: Consulte o balanço completo de itens armazenados
 - **Relatórios e Dashboard**: Visualizações e métricas para tomada de decisão
 - **Interface Responsiva**: Acesso em qualquer dispositivo

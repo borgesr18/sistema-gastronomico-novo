@@ -58,6 +58,7 @@ Gerencia o estado e operações relacionadas aos produtos:
 
 - `useProdutos()`: Hook que fornece acesso aos produtos e funções para manipulá-los
 - Funções: `adicionarProduto`, `atualizarProduto`, `removerProduto`, `obterProdutoPorId`
+- Cada produto armazena também o campo `pesoEmbalagem`, usado para calcular o custo real por grama ou mililitro.
 - Persistência em localStorage
 
 ### fichasTecnicasService.ts

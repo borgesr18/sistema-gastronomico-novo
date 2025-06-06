@@ -26,6 +26,7 @@ export default function NovoProdutoPage() {
     unidadeMedida: '',
     preco: '',
     fornecedor: '',
+    pesoEmbalagem: '',
     infoNutricional: {
       calorias: '',
       carboidratos: '',
@@ -67,9 +68,11 @@ export default function NovoProdutoPage() {
     if (!produto.categoria) novosErros.categoria = 'Categoria é obrigatória';
     if (!produto.unidadeMedida) novosErros.unidadeMedida = 'Unidade de medida é obrigatória';
     if (!produto.preco) novosErros.preco = 'Preço é obrigatório';
-    else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0) 
+    else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0)
       novosErros.preco = 'Preço deve ser um número positivo';
     if (!produto.fornecedor) novosErros.fornecedor = 'Fornecedor é obrigatório';
+    if (!produto.pesoEmbalagem || isNaN(Number(produto.pesoEmbalagem)) || Number(produto.pesoEmbalagem) <= 0)
+      novosErros.pesoEmbalagem = 'Informe o peso por embalagem';
     
     if (mostrarInfoNutricional) {
       const infoNutricional = produto.infoNutricional;
@@ -115,6 +118,7 @@ export default function NovoProdutoPage() {
       const produtoFormatado = {
         ...produto,
         preco: Number(produto.preco),
+        pesoEmbalagem: Number(produto.pesoEmbalagem),
         infoNutricional: mostrarInfoNutricional ? {
           calorias: Number(produto.infoNutricional.calorias) || 0,
           carboidratos: Number(produto.infoNutricional.carboidratos) || 0,
@@ -201,6 +205,17 @@ export default function NovoProdutoPage() {
                 onChange={handleChange}
                 error={erros.fornecedor}
                 placeholder="Ex: Distribuidora Alimentos"
+              />
+
+              <Input
+                label="Peso/Volume por Embalagem (g ou ml) *"
+                name="pesoEmbalagem"
+                type="number"
+                min="0"
+                value={produto.pesoEmbalagem}
+                onChange={handleChange}
+                error={erros.pesoEmbalagem}
+                placeholder="Ex: 1000"
               />
             </div>
             

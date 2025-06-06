@@ -47,12 +47,12 @@ const gerarId = () => {
 };
 
 // Função para salvar fichas técnicas no localStorage
-const salvarFichasTecnicas = (fichas: FichaTecnicaInfo[]) => {
+export const salvarFichasTecnicas = (fichas: FichaTecnicaInfo[]) => {
   localStorage.setItem('fichasTecnicas', JSON.stringify(fichas));
 };
 
 // Função para obter fichas técnicas do localStorage com fallback
-const obterFichasTecnicas = (): FichaTecnicaInfo[] => {
+export const obterFichasTecnicas = (): FichaTecnicaInfo[] => {
   if (typeof window === 'undefined') return [];
 
   try {

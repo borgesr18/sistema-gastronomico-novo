@@ -10,6 +10,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Autenticação de Usuários**: Acesso ao sistema mediante login e senha
 - **Controle de Usuários**: Gerencie contas na seção de configurações
 - **Alteração de Senhas**: Atualize as senhas dos usuários a qualquer momento
+- **Controle de Estoque**: Registre compras de produtos e mantenha histórico
 - **Relatórios e Dashboard**: Visualizações e métricas para tomada de decisão
 - **Interface Responsiva**: Acesso em qualquer dispositivo
 

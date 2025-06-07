@@ -63,19 +63,19 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 
 ### Produtos/Insumos
 
-1. **Listagem de Produtos**:
-   - Acesse a página "Produtos" no menu lateral
-   - Visualize todos os produtos cadastrados
+1. **Listagem de Insumos**:
+   - Acesse a página "Insumos" no menu lateral
+   - Visualize todos os insumos cadastrados em ordem alfabética
    - Utilize os filtros para encontrar produtos específicos
 
-2. **Cadastro de Novo Produto**:
-   - Clique no botão "Novo Produto"
+2. **Cadastro de Novo Insumo**:
+   - Clique no botão "Novo Insumo"
    - Preencha todos os campos obrigatórios (nome, categoria, unidade de medida, preço)
    - Adicione informações nutricionais se necessário
    - Clique em "Salvar"
 
-3. **Edição de Produto**:
-   - Na listagem de produtos, clique no botão de edição
+3. **Edição de Insumo**:
+   - Na listagem de insumos, clique no botão de edição
    - Atualize as informações necessárias
    - Clique em "Salvar"
 

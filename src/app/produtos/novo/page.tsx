@@ -11,7 +11,7 @@ import { useUnidadesMedida } from '@/lib/unidadesService';
 import { useCategorias } from '@/lib/categoriasService';
 import { useState } from 'react';
 
-export default function NovoProdutoPage() {
+export default function NovoInsumoPage() {
   const router = useRouter();
   const { adicionarProduto } = useProdutos();
   const { categorias } = useCategorias();
@@ -143,14 +143,14 @@ export default function NovoProdutoPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Novo Produto</h1>
+      <h1 className="text-2xl font-bold text-gray-800">Novo Insumo</h1>
       
       <form onSubmit={handleSubmit}>
         <Card>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Input
-                label="Nome do Produto *"
+                label="Nome do Insumo *"
                 name="nome"
                 value={produto.nome}
                 onChange={handleChange}
@@ -343,7 +343,7 @@ export default function NovoProdutoPage() {
               variant="primary"
               isLoading={isLoading}
             >
-              Salvar Produto
+              Salvar Insumo
             </Button>
           </div>
         </Card>

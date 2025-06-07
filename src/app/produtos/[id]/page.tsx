@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { useProdutos, obterLabelCategoria } from '@/lib/produtosService';
 
-export default function DetalheProdutoPage() {
+export default function DetalheInsumoPage() {
   const params = useParams();
   const router = useRouter();
   const { obterProdutoPorId, removerProduto } = useProdutos();
@@ -17,10 +17,10 @@ export default function DetalheProdutoPage() {
   if (!produto) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Produto não encontrado</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Insumo não encontrado</h2>
         <p className="text-gray-600 mb-6">O produto que você está procurando não existe ou foi removido.</p>
         <Button variant="primary" onClick={() => router.push('/produtos')}>
-          Voltar para Produtos
+          Voltar para Insumos
         </Button>
       </div>
     );
@@ -43,7 +43,7 @@ export default function DetalheProdutoPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Detalhes do Produto</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Detalhes do Insumo</h1>
         <div className="flex space-x-3">
           <Button 
             variant="outline" 
@@ -70,7 +70,7 @@ export default function DetalheProdutoPage() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <h3 className="text-sm font-medium text-gray-500">Nome do Produto</h3>
+              <h3 className="text-sm font-medium text-gray-500">Nome do Insumo</h3>
               <p className="mt-1 text-lg font-medium text-gray-900">{produto.nome}</p>
             </div>
 

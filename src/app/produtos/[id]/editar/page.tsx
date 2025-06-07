@@ -10,7 +10,7 @@ import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 import { useCategorias } from '@/lib/categoriasService';
 
-export default function EditarProdutoPage() {
+export default function EditarInsumoPage() {
   const params = useParams();
   const router = useRouter();
   const { obterProdutoPorId, atualizarProduto, isLoading: produtosLoading } = useProdutos();
@@ -179,14 +179,14 @@ export default function EditarProdutoPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Editar Produto</h1>
+      <h1 className="text-2xl font-bold text-gray-800">Editar Insumo</h1>
       
       <form onSubmit={handleSubmit}>
         <Card>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Input
-                label="Nome do Produto *"
+                label="Nome do Insumo *"
                 name="nome"
                 value={produto.nome}
                 onChange={handleChange}
@@ -379,7 +379,7 @@ export default function EditarProdutoPage() {
               variant="primary"
               isLoading={isLoading}
             >
-              Atualizar Produto
+              Atualizar Insumo
             </Button>
           </div>
         </Card>

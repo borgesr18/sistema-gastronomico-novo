@@ -4,17 +4,19 @@ import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
+import SlideOver from '@/components/ui/SlideOver';
 import { useProdutos, ProdutoInfo, obterLabelCategoria } from '@/lib/produtosService';
 import Link from 'next/link';
 
 export default function ProdutosPage() {
   const { produtos, isLoading, removerProduto } = useProdutos();
 
-  const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [selecionado, setSelecionado] = useState<ProdutoInfo | null>(null);
 
   const handleRemover = (id: string) => {
-    if (confirm('Tem certeza que deseja remover este produto?')) {
+    if (confirm('Tem certeza que deseja remover este insumo?')) {
       removerProduto(id);
+      setSelecionado(null);
     }
   };
 
@@ -28,69 +30,57 @@ export default function ProdutosPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Produtos</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Insumos</h1>
         <Link href="/produtos/novo">
           <Button variant="primary">
             <span className="material-icons mr-1 text-sm">add</span>
-            Novo Produto
+            Novo Insumo
           </Button>
         </Link>
       </div>
 
       <Card>
         <Table
-          headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor', '']}
+          headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor']}
           isLoading={isLoading}
-          emptyMessage="Nenhum produto cadastrado. Clique em 'Novo Produto' para adicionar."
+          emptyMessage="Nenhum insumo cadastrado. Clique em 'Novo Insumo' para adicionar."
           className="text-sm"
         >
-          {produtos.map((produto: ProdutoInfo) => (
-            <TableRow key={produto.id} className="relative">
-              <TableCell className="font-medium text-gray-700">{produto.nome}</TableCell>
-              <TableCell>{obterLabelCategoria(produto.categoria)}</TableCell>
-              <TableCell>{produto.unidadeMedida}</TableCell>
-              <TableCell>{formatarPreco(produto.preco)}</TableCell>
-              <TableCell>{produto.fornecedor}</TableCell>
-              <TableCell className="text-right">
-                <button
-                  className="p-1 rounded hover:bg-gray-100"
-                  onClick={() => setMenuOpen(menuOpen === produto.id ? null : produto.id)}
-                >
-                  <span className="material-icons text-gray-600">more_vert</span>
-                </button>
-                {menuOpen === produto.id && (
-                  <div className="absolute right-4 mt-2 w-32 bg-white border rounded shadow z-10">
-                    <Link
-                      href={`/produtos/${produto.id}`}
-                      className="block px-3 py-2 hover:bg-gray-50 flex items-center"
-                    >
-                      <span className="material-icons mr-1 text-black text-sm">visibility</span>
-                      Ver
-                    </Link>
-                    <Link
-                      href={`/produtos/${produto.id}/editar`}
-                      className="block px-3 py-2 hover:bg-gray-50 flex items-center"
-                    >
-                      <span className="material-icons mr-1 text-black text-sm">edit</span>
-                      Editar
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(null);
-                        handleRemover(produto.id);
-                      }}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center text-red-600"
-                    >
-                      <span className="material-icons mr-1 text-black text-sm">delete</span>
-                      Excluir
-                    </button>
-                  </div>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+          {produtos
+            .slice()
+            .sort((a, b) => a.nome.localeCompare(b.nome))
+            .map((produto: ProdutoInfo) => (
+              <TableRow
+                key={produto.id}
+                className="relative cursor-pointer"
+                onClick={() => setSelecionado(produto)}
+              >
+                <TableCell className="font-medium text-gray-700">{produto.nome}</TableCell>
+                <TableCell>{obterLabelCategoria(produto.categoria)}</TableCell>
+                <TableCell>{produto.unidadeMedida}</TableCell>
+                <TableCell>{formatarPreco(produto.preco)}</TableCell>
+                <TableCell>{produto.fornecedor}</TableCell>
+              </TableRow>
+            ))}
         </Table>
       </Card>
+      <SlideOver
+        isOpen={!!selecionado}
+        onClose={() => setSelecionado(null)}
+        title={selecionado?.nome}
+      >
+        {selecionado && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">Categoria: {obterLabelCategoria(selecionado.categoria)}</p>
+            <p className="text-sm text-gray-600">Preço: {formatarPreco(selecionado.preco)}</p>
+            <div className="flex flex-col space-y-2">
+              <Link href={`/produtos/${selecionado.id}`}> <Button variant="secondary" fullWidth>Ver</Button> </Link>
+              <Link href={`/produtos/${selecionado.id}/editar`}> <Button variant="primary" fullWidth>Editar</Button> </Link>
+              <Button variant="danger" fullWidth onClick={() => handleRemover(selecionado.id)}>Excluir</Button>
+            </div>
+          </div>
+        )}
+      </SlideOver>
     </div>
   );
 }

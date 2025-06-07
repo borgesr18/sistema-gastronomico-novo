@@ -34,6 +34,13 @@ export default function LoginPage() {
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <Card className="w-96">
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex justify-center">
+            <img
+              src="/logoCustoChef.png"
+              alt="Logo CustoChef"
+              className="h-12 w-auto"
+            />
+          </div>
           <h1 className="text-xl font-bold text-gray-800">Entrar</h1>
           {erro && <p className="text-sm text-red-600">{erro}</p>}
           <Input

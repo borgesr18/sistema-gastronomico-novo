@@ -9,6 +9,7 @@ import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
 import { useFichasTecnicas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha, calcularRendimentoTotal } from '@/lib/fichasTecnicasService';
 import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
+import { useFichasTecnicas, categoriasReceitas, unidadesRendimento, FichaTecnicaInfo, IngredienteFicha } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
@@ -47,6 +48,7 @@ export default function NovaFichaTecnicaPage() {
     quantidade: string;
     unidade: string;
   }>({
+  const [ingredienteAtual, setIngredienteAtual] = useState<{ produtoId: string; quantidade: string }>({
     produtoId: '',
     quantidade: '',
     unidade: '',
@@ -205,6 +207,7 @@ export default function NovaFichaTecnicaPage() {
         tempoPreparo: Number(fichaTecnica.tempoPreparo),
         rendimentoTotal: Number(fichaTecnica.rendimentoTotal),
       } as unknown as Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'>;
+      } as unknown as Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'>;
       
       adicionarFichaTecnica(fichaTecnicaFormatada);
       router.push('/fichas-tecnicas');

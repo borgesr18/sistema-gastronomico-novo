@@ -18,6 +18,11 @@ const gerarId = () => {
 const hashSenha = (senha: string) => {
   return createHash('sha256').update(senha).digest('hex');
 };
+}
+
+const gerarId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
+
+const hashSenha = (senha: string) => createHash('sha256').update(senha).digest('hex');
 
 const salvarUsuarios = (usuarios: UsuarioInfo[]) => {
   localStorage.setItem('usuarios', JSON.stringify(usuarios));
@@ -29,6 +34,7 @@ const obterUsuarios = (): UsuarioInfo[] => {
     const usuariosString = localStorage.getItem('usuarios');
     const lista = usuariosString ? JSON.parse(usuariosString) : [];
     return lista.map((u: any) => ({ role: 'viewer', ...u }));
+    return usuariosString ? JSON.parse(usuariosString) : [];
   } catch (err) {
     console.error('Erro ao ler usuarios do localStorage', err);
     return [];
@@ -43,6 +49,8 @@ export const useUsuarios = () => {
     const idLogado = localStorage.getItem('usuarioLogado');
     return idLogado ? armazenados.find(u => u.id === idLogado) || null : null;
   });
+  const [usuarios, setUsuarios] = useState<UsuarioInfo[]>([]);
+  const [usuarioAtual, setUsuarioAtual] = useState<UsuarioInfo | null>(null);
 
   useEffect(() => {
     const armazenados = obterUsuarios();
@@ -55,6 +63,11 @@ export const useUsuarios = () => {
   }, []);
 
   const registrarUsuario = (dados: { nome: string; email: string; senha: string; role?: 'admin' | 'viewer' }) => {
+      setUsuarioAtual(armazenados.find(u => u.id === idLogado) || null);
+    }
+  }, []);
+
+  const registrarUsuario = (dados: { nome: string; email: string; senha: string }) => {
     const novo = {
       id: gerarId(),
       nome: dados.nome,
@@ -74,6 +87,7 @@ export const useUsuarios = () => {
     salvarUsuarios(filtrados);
     const idLogado = localStorage.getItem('usuarioLogado');
     if (idLogado === id) {
+    if (localStorage.getItem('usuarioLogado') === id) {
       logout();
     }
   };
@@ -87,6 +101,7 @@ export const useUsuarios = () => {
     if (usuarioAtual?.id === id) {
       const atualizado = atualizados.find(u => u.id === id) || null;
       setUsuarioAtual(atualizado);
+      setUsuarioAtual(atualizados.find(u => u.id === id) || null);
     }
   };
 
@@ -106,4 +121,5 @@ export const useUsuarios = () => {
   };
 
   return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha };
+  return { usuarios, usuarioAtual, registrarUsuario, removerUsuario, alterarSenha, login, logout };
 };

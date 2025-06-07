@@ -12,6 +12,7 @@ export default function UsuariosConfigPage() {
   const { isOpen, openModal, closeModal } = useModal();
   const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
   const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'viewer' }>({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
+  const [novo, setNovo] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
   const [erro, setErro] = useState('');
   const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [erroSenha, setErroSenha] = useState('');
@@ -24,6 +25,8 @@ export default function UsuariosConfigPage() {
     }
     registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role });
     setNovo({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
+    registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha });
+    setNovo({ nome: '', email: '', senha: '', confirmarSenha: '' });
     setErro('');
     closeModal();
   };
@@ -49,12 +52,14 @@ export default function UsuariosConfigPage() {
       <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
       <Button onClick={openModal} variant="primary">Novo Usuário</Button>
       <Table headers={["Nome", "Email", "Perfil", "Ações"]}>
+      <Table headers={["Nome", "Email", "Ações"]}>
         {usuarios.map(u => (
           <TableRow key={u.id}>
             <TableCell>{u.nome}</TableCell>
             <TableCell>{u.email}</TableCell>
             <TableCell>{u.role === 'admin' ? 'Administrador' : 'Visualizador'}</TableCell>
             <TableCell className="flex items-center space-x-2">
+            <TableCell className="space-x-2">
               <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>
                 Alterar Senha
               </Button>

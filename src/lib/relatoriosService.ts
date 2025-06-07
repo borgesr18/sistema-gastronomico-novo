@@ -3,6 +3,7 @@
 import { useProdutos, ProdutoInfo } from './produtosService';
 import { obterLabelCategoria } from './categoriasService';
 import { useEstoque } from './estoqueService';
+import { useProdutos, obterLabelCategoria, ProdutoInfo } from './produtosService';
 import {
   useFichasTecnicas,
   obterLabelCategoriaReceita,

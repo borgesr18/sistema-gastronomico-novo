@@ -113,6 +113,12 @@ Controla o histórico de produções realizadas:
  - `usePrecosVenda()`: Hook para salvar, alterar e listar estratégias
  - Função `salvarEstrategia` calcula e armazena preços de venda a partir do custo unitário
  - Persistência em localStorage
+- `useEstoque()`: Hook para registrar entradas de produtos
+- Funções: `registrarCompra`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
+- Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas
+- Persistência em localStorage
+- Funções: `registrarUsuario`, `login`, `logout`, `removerUsuario`
+- Persistência em localStorage
 
 ## Padrões de Código
 

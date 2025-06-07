@@ -87,8 +87,14 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 
 1. **Registrar Compras**:
    - Acesse a página "Estoque de Insumos" no menu lateral
+
+### Controle de Estoque
+
+1. **Registrar Compras**:
+   - Acesse a página "Estoque" no menu lateral
    - Selecione o produto comprado e informe quantidade, preço e fornecedor
    - Clique em "Registrar Entrada" para salvar
+
 2. **Histórico**:
    - A tabela abaixo do formulário mostra todas as entradas realizadas
   - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
@@ -121,9 +127,11 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Informe apenas as porcentagens de lucro para até três estratégias
    - Os preços calculados ficam ocultos no formulário e são mostrados somente na lista
    - Clique em "Salvar Estratégia" para registrar ou atualizar
+
 2. **Histórico de Estratégias**:
    - Abaixo do formulário é exibida a lista de estratégias salvas com data no formato `dd/mm/aaaa`
    - Utilize o botão **Alterar** para carregar os valores novamente e ajustá-los
+   - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
 
 ### Fichas Técnicas
 
@@ -173,6 +181,7 @@ O sistema utiliza localStorage para persistência de dados, o que significa que:
 
 - O sistema conta com autenticação básica de usuários, mas as credenciais ficam armazenadas localmente
 - Não há sincronização de dados entre diferentes dispositivos
+- A exportação de relatórios para PDF e Excel está planejada para versões futuras
 
 ### Próximas Versões
 

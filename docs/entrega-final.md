@@ -52,6 +52,9 @@ O CustoChef foi completamente reconstruído e está pronto para uso. Este docume
 7. **Preços de Venda**
   - Cálculo de preços de venda com base nas margens informadas
   - Lista de estratégias permite alterar valores posteriormente
+5. **Controle de Estoque**
+   - Registro de compras com atualização de preços de produtos
+   - Histórico de movimentações para acompanhar evolução de custos
 
 ## Tecnologias Utilizadas
 
@@ -89,6 +92,7 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
    - Definir diferentes níveis de usuário
 
 3. **Funcionalidades Adicionais**
+   - Exportação de relatórios em PDF/Excel
    - Planejamento de produção
 
 ## Conclusão

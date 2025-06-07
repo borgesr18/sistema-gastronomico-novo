@@ -17,6 +17,10 @@ export interface MovimentacaoEstoque {
   marca?: string;
   data: string;
   tipo: 'entrada' | 'saida';
+  preco: number;
+  fornecedor: string;
+  marca?: string;
+  data: string;
 }
 
 const gerarId = () => {
@@ -111,6 +115,14 @@ export const useEstoque = () => {
     marca?: string;
   }) => {
     const nova: MovimentacaoEstoque = { ...dados, id: gerarId(), data: new Date().toISOString(), tipo: 'entrada' };
+  useEffect(() => {
+    const armaz = obterMovimentacoes();
+    setMovimentacoes(armaz);
+    setIsLoading(false);
+  }, []);
+
+  const registrarCompra = (dados: Omit<MovimentacaoEstoque, 'id' | 'data'>) => {
+    const nova = { ...dados, id: gerarId(), data: new Date().toISOString() };
     const novas = [...movimentacoes, nova];
     setMovimentacoes(novas);
     salvarMovimentacoes(novas);
@@ -129,6 +141,11 @@ export const useEstoque = () => {
         marca: nova.marca || p.marca,
       };
     });
+    const atualizados = produtos.map((p: ProdutoInfo) =>
+      p.id === nova.produtoId
+        ? { ...p, preco: nova.preco, fornecedor: nova.fornecedor, marca: nova.marca || p.marca }
+        : p
+    );
     salvarProdutos(atualizados);
 
     // Atualizar fichas tecnicas que utilizam este produto
@@ -147,6 +164,7 @@ export const useEstoque = () => {
               quantidade: i.quantidade,
               unidade: i.unidade,
             })
+            (i: IngredienteFicha) => ({ produtoId: i.produtoId, quantidade: i.quantidade })
           ) as Omit<IngredienteFicha, 'custo' | 'id'>[],
           modoPreparo: f.modoPreparo,
           tempoPreparo: f.tempoPreparo,
@@ -156,6 +174,7 @@ export const useEstoque = () => {
         } as Omit<
           FichaTecnicaInfo,
           'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'
+          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'
         >;
         atualizarFichaTecnica(f.id, dadosFicha);
       });
@@ -214,4 +233,5 @@ export const useEstoque = () => {
     obterHistoricoPorProduto,
     calcularEstoqueAtual,
   };
+  return { movimentacoes, isLoading, registrarCompra, obterHistoricoPorProduto, calcularEstoqueAtual };
 };

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
@@ -26,6 +27,14 @@ export default function EstoquePage() {
 
   const [form, setForm] = useState({
     tipo: 'entrada',
+import { useEstoque } from '@/lib/estoqueService';
+import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
+
+export default function EstoquePage() {
+  const { movimentacoes, isLoading, registrarCompra } = useEstoque();
+  const { produtos } = useProdutos();
+
+  const [form, setForm] = useState({
     produtoId: '',
     quantidade: '',
     preco: '',
@@ -63,6 +72,8 @@ export default function EstoquePage() {
       if (!form.preco || isNaN(Number(form.preco.replace(',', '.')))) errs.preco = 'Preço inválido';
       if (!form.fornecedor) errs.fornecedor = 'Fornecedor obrigatório';
     }
+    if (!form.preco || isNaN(Number(form.preco))) errs.preco = 'Preço inválido';
+    if (!form.fornecedor) errs.fornecedor = 'Fornecedor obrigatório';
     setErros(errs);
     return Object.keys(errs).length === 0;
   };
@@ -110,6 +121,14 @@ export default function EstoquePage() {
       marca: edit.marca,
     });
     closeEditModal();
+    registrarCompra({
+      produtoId: form.produtoId,
+      quantidade: Number(form.quantidade),
+      preco: Number(form.preco),
+      fornecedor: form.fornecedor,
+      marca: form.marca
+    });
+    setForm({ produtoId: '', quantidade: '', preco: '', fornecedor: '', marca: '' });
   };
 
   const formatarData = (d: string) => new Date(d).toLocaleDateString();
@@ -122,6 +141,10 @@ export default function EstoquePage() {
 
       <Card>
         <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-4">
+      <h1 className="text-2xl font-bold text-gray-800">Controle de Estoque</h1>
+
+      <Card>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Select
             label="Produto *"
             name="produtoId"
@@ -151,6 +174,15 @@ export default function EstoquePage() {
           )}
           <div className="flex justify-end flex-1">
             <Button type="submit" variant="primary">Registrar {form.tipo === 'entrada' ? 'Entrada' : 'Saída'}</Button>
+            options={produtos.map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))}
+            error={erros.produtoId}
+          />
+          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} />
+          <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange} error={erros.preco} />
+          <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange} error={erros.fornecedor} />
+          <Input label="Marca" name="marca" value={form.marca} onChange={handleChange} />
+          <div className="md:col-span-5 flex justify-end">
+            <Button type="submit" variant="primary">Registrar Entrada</Button>
           </div>
         </form>
       </Card>
@@ -158,6 +190,7 @@ export default function EstoquePage() {
       <Card>
         <Table
           headers={["Data", "Produto", "Qtd", "Preço", "Fornecedor", "Marca", "Tipo", "Ações"]}
+          headers={["Data", "Produto", "Quantidade", "Preço", "Fornecedor", "Marca"]}
           isLoading={isLoading}
           emptyMessage="Nenhuma movimentação registrada"
         >
@@ -195,6 +228,14 @@ export default function EstoquePage() {
                     </div>
                   )}
                 </TableCell>
+            return (
+              <TableRow key={m.id}>
+                <TableCell>{formatarData(m.data)}</TableCell>
+                <TableCell>{prod?.nome || 'Produto removido'}</TableCell>
+                <TableCell>{m.quantidade}</TableCell>
+                <TableCell>{formatarPreco(m.preco)}</TableCell>
+                <TableCell>{m.fornecedor}</TableCell>
+                <TableCell>{m.marca || '-'}</TableCell>
               </TableRow>
             );
           })}

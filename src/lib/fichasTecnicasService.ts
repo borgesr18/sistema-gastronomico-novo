@@ -145,6 +145,9 @@ export const useFichasTecnicas = () => {
     const todosProdutos = obterProdutos();
     return ingredientes.map((ingrediente: Omit<IngredienteFicha, 'custo' | 'id'>) => {
       const produto = todosProdutos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
+  const calcularCustoIngredientes = (ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]) => {
+    return ingredientes.map((ingrediente: Omit<IngredienteFicha, 'custo' | 'id'>) => {
+      const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
       if (!produto) {
         return {
           ...ingrediente,
@@ -205,6 +208,8 @@ export const useFichasTecnicas = () => {
     const todosProdutos = obterProdutos();
     ingredientes.forEach((ingrediente: IngredienteFicha) => {
       const produto = todosProdutos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
+    ingredientes.forEach((ingrediente: IngredienteFicha) => {
+      const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
       if (produto?.infoNutricional) {
         const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
         const tipoIng = infoUnidades[unidadeIng]?.tipo;

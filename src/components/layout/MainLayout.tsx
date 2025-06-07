@@ -31,6 +31,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen" style={{ backgroundColor: 'var(--cor-fundo)' }}>
+  const hideLayout = pathname === '/login' || pathname === '/usuarios/novo';
+
+  return (
+    <div className="flex h-screen bg-gray-100">
       {!hideLayout && <Sidebar />}
       <div className="flex flex-col flex-1 overflow-hidden">
         {!hideLayout && <Header />}
@@ -38,6 +42,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {!hideLayout && (
           <footer className="p-4 text-center text-sm border-t" style={{ backgroundColor: 'white', color: 'var(--cor-texto-secundario)', borderColor: 'var(--cor-borda)' }}>
             CustoChef &copy; {new Date().getFullYear()}
+          <footer className="bg-white p-4 text-center text-sm text-gray-500 border-t">
+            Sistema de Gestão Gastronômica &copy; {new Date().getFullYear()}
           </footer>
         )}
       </div>

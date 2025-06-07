@@ -29,6 +29,7 @@ const Header: React.FC = () => {
                 <span className="text-sm font-medium text-gray-700">U</span>
               </div>
               <span className="hidden md:block text-sm font-medium text-white">{usuarioAtual?.nome || 'Usuário'}</span>
+              <span className="hidden md:block text-sm font-medium text-gray-700">{usuarioAtual?.nome || 'Usuário'}</span>
             </button>
 
             {isProfileOpen && (
@@ -46,6 +47,7 @@ const Header: React.FC = () => {
                   Configurações
                 </Link>
                 <div className="border-t" style={{ borderColor: 'var(--cor-borda)' }}></div>
+                <div className="border-t border-gray-100"></div>
                 <button
                   onClick={logout}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

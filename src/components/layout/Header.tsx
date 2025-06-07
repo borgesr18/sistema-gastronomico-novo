@@ -16,7 +16,11 @@ const Header: React.FC = () => {
     <header className="border-b shadow-sm" style={{ backgroundColor: 'var(--cor-primaria)', color: 'white', borderColor: 'var(--cor-borda)' }}>
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center">
-          <h2 className="text-xl font-semibold">CustoChef</h2>
+          <img
+            src="/logoCustoChef.png"
+            alt="Logo CustoChef"
+            className="h-8 w-auto"
+          />
         </div>
 
         <div className="flex items-center space-x-4">

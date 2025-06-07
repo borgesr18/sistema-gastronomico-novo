@@ -17,13 +17,13 @@ const Sidebar: React.FC = () => {
       } min-h-screen`}
     >
       <div className="p-4 flex items-center justify-between">
-        {!isCollapsed && (
-          <img
-            src="/logoCustoChef.png"
-            alt="Logo do CustoChef"
-            className="h-10 w-auto"
-          />
+     {!isCollapsed && (
+          <h1 className="text-xl font-bold">Gestão Gastro</h1>
         )}
+        <button 
+          onClick={toggleSidebar}
+          className="p-1 rounded-full hover:bg-gray-700"
+        >
         <button
           onClick={toggleSidebar}
           className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"

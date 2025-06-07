@@ -17,7 +17,7 @@ const Table: React.FC<TableProps> = ({
 }) => {
   return (
     <div
-      className={`overflow-x-auto rounded-lg border ${className}`}
+      className={`overflow-x-hidden rounded-lg border ${className}`}
       style={{ borderColor: 'var(--cor-borda)' }}
     >
       <table className="min-w-full divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
@@ -75,7 +75,10 @@ export const TableRow: React.FC<{ children: ReactNode; className?: string } & Re
   ...props
 }) => {
   return (
-    <tr className={`odd:bg-gray-50 hover:bg-[var(--cor-secundaria)/10] ${className}`} {...props}>
+    <tr
+      className={`odd:bg-gray-50 hover:bg-[var(--cor-secundaria)/10] hover:shadow-sm rounded-lg ${className}`}
+      {...props}
+    >
       {children}
     </tr>
   );

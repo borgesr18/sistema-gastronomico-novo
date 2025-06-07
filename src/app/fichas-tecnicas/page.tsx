@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
+import SlideOver from '@/components/ui/SlideOver';
 import {
   useFichasTecnicas,
   FichaTecnicaInfo,
@@ -14,11 +15,12 @@ import Link from 'next/link';
 export default function FichasTecnicasPage() {
   const { fichasTecnicas, isLoading, removerFichaTecnica } = useFichasTecnicas();
 
-  const [menuRow, setMenuRow] = useState<string | null>(null);
+  const [selecionada, setSelecionada] = useState<FichaTecnicaInfo | null>(null);
 
   const handleRemover = (id: string) => {
     if (confirm('Tem certeza que deseja remover esta ficha técnica?')) {
       removerFichaTecnica(id);
+      setSelecionada(null);
     }
   };
 
@@ -57,58 +59,48 @@ export default function FichasTecnicasPage() {
             'Categoria',
             'Rendimento',
             'Custo Total',
-            'Data de Modificação',
-            ''
+            'Data de Modificação'
           ]}
           isLoading={isLoading}
           emptyMessage="Nenhuma ficha técnica cadastrada. Clique em 'Nova Ficha Técnica' para adicionar."
         >
           {fichasTecnicas.map((ficha: FichaTecnicaInfo) => (
-            <TableRow key={ficha.id} className="relative">
+            <TableRow
+              key={ficha.id}
+              className="relative cursor-pointer"
+              onClick={() => setSelecionada(ficha)}
+            >
               <TableCell className="font-medium text-gray-700">{ficha.nome}</TableCell>
               <TableCell>{obterLabelCategoriaReceita(ficha.categoria)}</TableCell>
               <TableCell>{ficha.rendimentoTotal} {ficha.unidadeRendimento}</TableCell>
               <TableCell>{formatarPreco(ficha.custoTotal)}</TableCell>
               <TableCell>{formatarData(ficha.dataModificacao)}</TableCell>
-              <TableCell className="w-10 text-right">
-                <button
-                  className="p-1 rounded hover:bg-gray-100"
-                  onClick={() => setMenuRow(menuRow === ficha.id ? null : ficha.id)}
-                >
-                  <span className="material-icons text-gray-600">more_vert</span>
-                </button>
-                {menuRow === ficha.id && (
-                  <div className="absolute right-2 mt-2 w-32 bg-white border rounded shadow z-10">
-                    <Link
-                      href={`/fichas-tecnicas/${ficha.id}`}
-                      className="block px-3 py-2 hover:bg-gray-50"
-                      onClick={() => setMenuRow(null)}
-                    >
-                      Ver
-                    </Link>
-                    <Link
-                      href={`/fichas-tecnicas/${ficha.id}/editar`}
-                      className="block px-3 py-2 hover:bg-gray-50"
-                      onClick={() => setMenuRow(null)}
-                    >
-                      Editar
-                    </Link>
-                    <button
-                      className="block w-full text-left px-3 py-2 hover:bg-gray-50 text-red-600"
-                      onClick={() => {
-                        setMenuRow(null);
-                        handleRemover(ficha.id);
-                      }}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                )}
-              </TableCell>
             </TableRow>
           ))}
         </Table>
       </Card>
+      <SlideOver
+        isOpen={!!selecionada}
+        onClose={() => setSelecionada(null)}
+        title={selecionada?.nome}
+      >
+        {selecionada && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Rendimento: {selecionada.rendimentoTotal} {selecionada.unidadeRendimento}
+            </p>
+            <p className="text-sm text-gray-600">Custo Total: {formatarPreco(selecionada.custoTotal)}</p>
+            <p className="text-sm text-gray-600">Data: {formatarData(selecionada.dataModificacao)}</p>
+            <div className="flex flex-col space-y-2">
+              <Link href={`/fichas-tecnicas/${selecionada.id}`}> <Button variant="secondary" fullWidth>Ver</Button> </Link>
+              <Link href={`/fichas-tecnicas/${selecionada.id}/editar`}> <Button variant="primary" fullWidth>Editar</Button> </Link>
+              <Button variant="danger" fullWidth onClick={() => handleRemover(selecionada.id)}>Excluir</Button>
+              <Link href={`/producao?ficha=${selecionada.id}`}><Button fullWidth>Produzir</Button></Link>
+              <Link href={`/precos?ficha=${selecionada.id}`}><Button fullWidth>Calcular Preço</Button></Link>
+            </div>
+          </div>
+        )}
+      </SlideOver>
     </div>
   );
 }

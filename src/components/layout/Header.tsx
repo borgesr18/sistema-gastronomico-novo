@@ -13,27 +13,24 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="border-b shadow-sm" style={{ backgroundColor: 'var(--cor-primaria)', color: 'white', borderColor: 'var(--cor-borda)' }}>
+    <header
+      className="border-b shadow-sm"
+      style={{ backgroundColor: 'var(--cor-primaria)', color: 'white', borderColor: 'var(--cor-borda)' }}
+    >
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center">
-          <img
-            src="/logoCustoChef.png"
-            alt="Logo CustoChef"
-            className="h-8 w-auto"
-          />
+          <img src="/logoCustoChef.png" alt="Logo CustoChef" className="h-8 w-auto" />
         </div>
 
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <button 
-              onClick={toggleProfile}
-              className="flex items-center space-x-2 focus:outline-none"
-              >
+            <button onClick={toggleProfile} className="flex items-center space-x-2 focus:outline-none">
               <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <span className="text-sm font-medium text-gray-700">U</span>
               </div>
-              <span className="hidden md:block text-sm font-medium text-white">{usuarioAtual?.nome || 'Usuário'}</span>
-              <span className="hidden md:block text-sm font-medium text-gray-700">{usuarioAtual?.nome || 'Usuário'}</span>
+              <span className="hidden md:block text-sm font-medium text-white">
+                {usuarioAtual?.nome || 'Usuário'}
+              </span>
             </button>
 
             {isProfileOpen && (
@@ -44,13 +41,12 @@ const Header: React.FC = () => {
                 >
                   Perfil
                 </Link>
-                <Link 
+                <Link
                   href="/configuracoes"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Configurações
                 </Link>
-                <div className="border-t" style={{ borderColor: 'var(--cor-borda)' }}></div>
                 <div className="border-t border-gray-100"></div>
                 <button
                   onClick={logout}

@@ -10,12 +10,14 @@ import Modal, { useModal } from '@/components/ui/Modal';
 import { useFichasTecnicas, FichaTecnicaInfo, converterUnidade } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useEstoque } from '@/lib/estoqueService';
+import { useEstoqueProducao } from '@/lib/estoqueProducaoService';
 import { useProducao, ProducaoInfo } from '@/lib/producaoService';
 
 export default function ProducaoPage() {
   const { fichasTecnicas } = useFichasTecnicas();
   const { produtos } = useProdutos();
-  const { registrarSaida, registrarEntrada } = useEstoque();
+  const { registrarSaida } = useEstoque();
+  const { registrarEntrada: registrarEntradaProducao } = useEstoqueProducao();
   const { producoes, registrarProducao, atualizarProducao, removerProducao } = useProducao();
 
   const [form, setForm] = useState({
@@ -85,15 +87,12 @@ export default function ProducaoPage() {
     });
     const pesoUnitG = converterUnidade(Number(form.pesoUnitario), form.unidadePeso, 'g');
     const unidades = Math.round(qtdTotalG / pesoUnitG);
-    const precoUnit = (ficha.custoPorKg / 1000) * pesoUnitG;
     const custoTotal = ficha.custoTotal * fator;
     const custoUnitario = custoTotal / unidades;
-    registrarEntrada({
-      produtoId: form.fichaId,
+    registrarEntradaProducao({
+      fichaId: form.fichaId,
       quantidade: unidades,
-      preco: precoUnit,
-      fornecedor: 'Producao',
-      marca: ficha.nome,
+      validade: form.validade,
     });
     registrarProducao({
       fichaId: form.fichaId,

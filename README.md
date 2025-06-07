@@ -12,7 +12,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Perfil do Usuário**: Consulte seus dados e altere a senha na página de perfil
 - **Níveis de Acesso**: Cadastre usuários como administradores ou somente visualizadores
 - **Alteração de Senhas**: Atualize as senhas dos usuários a qualquer momento
-- **Controle de Estoque**: Registre compras de produtos e mantenha histórico
+- **Estoque de Insumos**: Registre compras e mantenha histórico
 - **Saídas de Estoque**: Lance baixas de produtos diretamente pelo estoque
 - **Produção**: Calcule ingredientes e registre produções retirando do estoque
 - **Estoque de Produção**: Acompanhe o saldo de itens produzidos e registre entradas ou saídas

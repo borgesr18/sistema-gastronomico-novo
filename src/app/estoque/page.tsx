@@ -118,7 +118,7 @@ export default function EstoquePage() {
   return (
     <div className="space-y-6">
       <Toast message={toast} onClose={closeToast} />
-      <h1 className="text-2xl font-bold text-gray-800">Controle de Estoque</h1>
+      <h1 className="text-2xl font-bold text-gray-800">Estoque de Insumos</h1>
 
       <Card>
         <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-4">

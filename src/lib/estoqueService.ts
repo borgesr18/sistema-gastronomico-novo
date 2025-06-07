@@ -96,8 +96,10 @@ export const useEstoque = () => {
   };
 
   useEffect(() => {
-    const armaz = obterMovimentacoes();
-    setMovimentacoes(armaz);
+    const todas = obterMovimentacoes();
+    const filtradas = todas.filter(m => m.fornecedor !== 'Producao');
+    if (filtradas.length !== todas.length) salvarMovimentacoes(filtradas);
+    setMovimentacoes(filtradas);
     setIsLoading(false);
   }, []);
 

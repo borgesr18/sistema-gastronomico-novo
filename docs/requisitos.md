@@ -54,7 +54,7 @@
 - Exportáveis em PDF e Excel
 - Filtros por ingredientes, receitas e categorias
 
-### Controle de Estoque (opcional):
+### Estoque de Insumos:
 - Quantidade disponível de cada insumo
 
 ### Usuários:

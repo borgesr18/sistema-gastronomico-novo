@@ -41,10 +41,10 @@ O CustoChef foi completamente reconstruído e está pronto para uso. Este docume
    - Login e logout básico
    - Cadastro e exclusão de usuários na seção de configurações
    - Alteração de senha diretamente no controle de usuários
-5. **Controle de Estoque**
-   - Registro de compras com atualização de preços de produtos
- - Histórico de movimentações para acompanhar evolução de custos
- - Página "Estoque de Produção" para ajustes e consulta do saldo de produtos fabricados
+5. **Estoque de Insumos**
+   - Registro de compras com atualização de preços dos produtos
+   - Histórico de movimentações para acompanhar evolução de custos
+   - Página "Estoque de Produção" para ajustes e consulta do saldo de produtos fabricados
 6. **Produção**
   - Cálculo automático de insumos necessários
   - Baixa de ingredientes e entrada do produto final no estoque

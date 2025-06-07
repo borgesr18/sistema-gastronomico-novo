@@ -10,10 +10,10 @@ import { useEstoqueProducao } from '@/lib/estoqueProducaoService';
 import { useFichasTecnicas, FichaTecnicaInfo } from '@/lib/fichasTecnicasService';
 
 export default function EstoqueProducaoPage() {
-  const { calcularEstoqueAtual, registrarEntrada, registrarSaida } = useEstoqueProducao();
+  const { movimentacoes, calcularEstoqueAtual, registrarEntrada, registrarSaida } = useEstoqueProducao();
   const { fichasTecnicas } = useFichasTecnicas();
 
-  const [form, setForm] = useState({ fichaId: '', tipo: 'saida', quantidade: '' });
+  const [form, setForm] = useState({ fichaId: '', tipo: 'saida', quantidade: '', validade: '' });
   const [erro, setErro] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -28,11 +28,11 @@ export default function EstoqueProducaoPage() {
       return;
     }
     if (form.tipo === 'entrada') {
-      registrarEntrada({ fichaId: form.fichaId, quantidade: Number(form.quantidade) });
+      registrarEntrada({ fichaId: form.fichaId, quantidade: Number(form.quantidade), validade: form.validade });
     } else {
       registrarSaida({ fichaId: form.fichaId, quantidade: Number(form.quantidade) });
     }
-    setForm({ fichaId: '', tipo: 'saida', quantidade: '' });
+    setForm({ fichaId: '', tipo: 'saida', quantidade: '', validade: '' });
     setErro('');
   };
 
@@ -65,10 +65,46 @@ export default function EstoqueProducaoPage() {
             onChange={handleChange}
             error={erro && !form.quantidade ? erro : undefined}
           />
+          {form.tipo === 'entrada' && (
+            <Input
+              label="Validade"
+              type="date"
+              name="validade"
+              value={form.validade}
+              onChange={handleChange}
+            />
+          )}
           <div className="flex items-end">
             <Button type="submit" variant="primary">Registrar</Button>
           </div>
         </form>
+      </Card>
+      <Card title="Histórico de Produção">
+        <Table
+          headers={["Ficha Técnica", "Quantidade", "Data", "Validade", "Estoque Total"]}
+          emptyMessage="Nenhuma movimentação"
+        >
+          {(() => {
+            const acumulados: Record<string, number> = {};
+            return movimentacoes
+              .slice()
+              .sort((a, b) => a.data.localeCompare(b.data))
+              .map(m => {
+                acumulados[m.fichaId] = (acumulados[m.fichaId] || 0) + m.quantidade;
+                const total = acumulados[m.fichaId];
+                const ficha = fichasTecnicas.find(f => f.id === m.fichaId);
+                return (
+                  <TableRow key={m.id}>
+                    <TableCell>{ficha?.nome || 'Ficha removida'}</TableCell>
+                    <TableCell>{m.quantidade}</TableCell>
+                    <TableCell>{new Date(m.data).toLocaleDateString()}</TableCell>
+                    <TableCell>{m.validade ? new Date(m.validade).toLocaleDateString() : '-'}</TableCell>
+                    <TableCell>{total}</TableCell>
+                  </TableRow>
+                );
+              });
+          })()}
+        </Table>
       </Card>
       <Card title="Estoque Atual">
         <Table headers={["Ficha Técnica", "Quantidade"]} emptyMessage="Nenhum produto produzido">

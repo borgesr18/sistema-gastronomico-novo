@@ -83,10 +83,10 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Na listagem de produtos, clique no botão de exclusão
    - Confirme a exclusão
 
-### Controle de Estoque
+### Estoque de Insumos
 
 1. **Registrar Compras**:
-   - Acesse a página "Estoque" no menu lateral
+   - Acesse a página "Estoque de Insumos" no menu lateral
    - Selecione o produto comprado e informe quantidade, preço e fornecedor
    - Clique em "Registrar Entrada" para salvar
 2. **Histórico**:

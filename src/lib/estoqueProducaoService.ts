@@ -6,6 +6,7 @@ export interface MovimentacaoProducao {
   id: string;
   fichaId: string;
   quantidade: number;
+  validade?: string;
   data: string;
   tipo: 'entrada' | 'saida';
 }
@@ -36,12 +37,13 @@ export const useEstoqueProducao = () => {
     setIsLoading(false);
   }, []);
 
-  const registrarEntrada = (dados: { fichaId: string; quantidade: number }) => {
+  const registrarEntrada = (dados: { fichaId: string; quantidade: number; validade?: string }) => {
     const nova: MovimentacaoProducao = {
       ...dados,
       id: gerarId(),
       data: new Date().toISOString(),
       tipo: 'entrada',
+      validade: dados.validade,
     };
     const novas = [...movimentacoes, nova];
     setMovimentacoes(novas);

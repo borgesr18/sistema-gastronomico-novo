@@ -67,8 +67,9 @@ export default function ProdutosPage() {
                     </Link>
                     <Link
                       href={`/produtos/${produto.id}/editar`}
-                      className="block px-3 py-2 hover:bg-gray-50"
+                      className="block px-3 py-2 hover:bg-gray-50 flex items-center"
                     >
+                      <span className="material-icons mr-1 text-black text-sm">edit</span>
                       Editar
                     </Link>
                     <button
@@ -76,8 +77,9 @@ export default function ProdutosPage() {
                         setMenuOpen(null);
                         handleRemover(produto.id);
                       }}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-50 text-red-600"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center text-red-600"
                     >
+                      <span className="material-icons mr-1 text-black text-sm">delete</span>
                       Excluir
                     </button>
                   </div>

@@ -17,10 +17,10 @@ const Table: React.FC<TableProps> = ({
 }) => {
   return (
     <div
-      className={`overflow-x-hidden rounded-lg border ${className}`}
+      className={`w-full overflow-x-hidden rounded-lg border ${className}`}
       style={{ borderColor: 'var(--cor-borda)' }}
     >
-      <table className="min-w-full divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
+      <table className="w-full table-auto divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
         <thead className="bg-gray-100">
           <tr>
             {headers.map((header, index) => (

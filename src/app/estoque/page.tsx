@@ -183,11 +183,13 @@ export default function EstoquePage() {
                     <span className="material-icons text-gray-600">more_vert</span>
                   </button>
                   {menuRow === m.id && (
-                    <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10">
-                      <button className="block w-full text-left px-3 py-2 hover:bg-gray-50" onClick={() => { setMenuRow(null); iniciarEdicao(m); }}>
+                    <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow z-10">
+                      <button className="block w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center" onClick={() => { setMenuRow(null); iniciarEdicao(m); }}>
+                        <span className="material-icons mr-1 text-black text-sm">edit</span>
                         Editar
                       </button>
-                      <button className="block w-full text-left px-3 py-2 hover:bg-gray-50 text-red-600" onClick={() => { setMenuRow(null); removerMovimentacao(m.id); }}>
+                      <button className="block w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center text-red-600" onClick={() => { setMenuRow(null); removerMovimentacao(m.id); }}>
+                        <span className="material-icons mr-1 text-black text-sm">delete</span>
                         Excluir
                       </button>
                     </div>

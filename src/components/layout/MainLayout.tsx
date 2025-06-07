@@ -24,6 +24,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     }
   }, [usuarioAtual, pathname, router]);
 
+  const hideLayout =
+    pathname === '/login' ||
+    pathname === '/usuarios/novo' ||
+    pathname.includes('/imprimir');
+
+  return (
+    <div className="flex h-screen" style={{ backgroundColor: 'var(--cor-fundo)' }}>
   const hideLayout = pathname === '/login' || pathname === '/usuarios/novo';
 
   return (
@@ -33,6 +40,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {!hideLayout && <Header />}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
         {!hideLayout && (
+          <footer className="p-4 text-center text-sm border-t" style={{ backgroundColor: 'white', color: 'var(--cor-texto-secundario)', borderColor: 'var(--cor-borda)' }}>
+            CustoChef &copy; {new Date().getFullYear()}
           <footer className="bg-white p-4 text-center text-sm text-gray-500 border-t">
             Sistema de Gestão Gastronômica &copy; {new Date().getFullYear()}
           </footer>

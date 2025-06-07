@@ -1,8 +1,8 @@
-# Entrega Final - Sistema de Gestão Gastronômica
+# Entrega Final - CustoChef
 
 ## Resumo do Projeto
 
-O Sistema de Gestão Gastronômica foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
+O CustoChef foi completamente reconstruído e está pronto para uso. Este documento resume o trabalho realizado e os arquivos entregues.
 
 ## Arquivos Entregues
 
@@ -36,10 +36,22 @@ O Sistema de Gestão Gastronômica foi completamente reconstruído e está pront
    - Relatórios específicos (custos, ingredientes, receitas)
    - Análises de distribuição por categoria
    - Identificação de itens mais utilizados
+   - Exportação de relatórios em PDF e Excel
 4. **Controle de Usuários**
    - Login e logout básico
    - Cadastro e exclusão de usuários na seção de configurações
    - Alteração de senha diretamente no controle de usuários
+5. **Estoque de Insumos**
+   - Registro de compras com atualização de preços dos produtos
+   - Histórico de movimentações para acompanhar evolução de custos
+   - Página "Estoque de Produção" para ajustes e consulta do saldo de produtos fabricados
+6. **Produção**
+  - Cálculo automático de insumos necessários
+  - Baixa de ingredientes e entrada do produto final no estoque
+  - Registro do custo total de cada lote produzido
+7. **Preços de Venda**
+  - Cálculo de preços de venda com base nas margens informadas
+  - Lista de estratégias permite alterar valores posteriormente
 5. **Controle de Estoque**
    - Registro de compras com atualização de preços de produtos
    - Histórico de movimentações para acompanhar evolução de custos
@@ -85,7 +97,7 @@ O sistema está configurado para ser implantado no Vercel, conforme detalhado no
 
 ## Conclusão
 
-O Sistema de Gestão Gastronômica está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
+O CustoChef está pronto para uso e foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno. A documentação fornecida permite tanto o uso imediato por usuários finais quanto a manutenção e evolução por desenvolvedores.
 
 ---
 

@@ -12,6 +12,11 @@ export interface MovimentacaoEstoque {
   id: string;
   produtoId: string;
   quantidade: number;
+  preco?: number;
+  fornecedor?: string;
+  marca?: string;
+  data: string;
+  tipo: 'entrada' | 'saida';
   preco: number;
   fornecedor: string;
   marca?: string;
@@ -42,6 +47,74 @@ export const useEstoque = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { fichasTecnicas, atualizarFichaTecnica } = useFichasTecnicas();
 
+  const atualizarProdutoDeEntrada = (mov: MovimentacaoEstoque) => {
+    if (!mov.preco) return;
+    const produtos = obterProdutos();
+    const atualizados = produtos.map((p: ProdutoInfo) => {
+      if (p.id !== mov.produtoId) return p;
+      const pesoEmb = p.pesoEmbalagem || 1;
+      const precoUnitario = pesoEmb > 0 ? (mov.preco || p.preco) / pesoEmb : 0;
+      return {
+        ...p,
+        preco: mov.preco || p.preco,
+        precoUnitario,
+        fornecedor: mov.fornecedor || p.fornecedor,
+        marca: mov.marca || p.marca,
+      };
+    });
+    salvarProdutos(atualizados);
+
+    fichasTecnicas
+      .filter((f: FichaTecnicaInfo) =>
+        f.ingredientes.some((i: IngredienteFicha) => i.produtoId === mov.produtoId)
+      )
+      .forEach((f: FichaTecnicaInfo) => {
+        const dadosFicha = {
+          nome: f.nome,
+          descricao: f.descricao,
+          categoria: f.categoria,
+          ingredientes: f.ingredientes.map(
+            (i: IngredienteFicha) => ({
+              produtoId: i.produtoId,
+              quantidade: i.quantidade,
+              unidade: i.unidade,
+            })
+          ) as Omit<IngredienteFicha, 'custo' | 'id'>[],
+          modoPreparo: f.modoPreparo,
+          tempoPreparo: f.tempoPreparo,
+          rendimentoTotal: f.rendimentoTotal,
+          unidadeRendimento: f.unidadeRendimento,
+          observacoes: f.observacoes || ''
+        } as Omit<
+          FichaTecnicaInfo,
+          | 'id'
+          | 'custoTotal'
+          | 'custoPorcao'
+          | 'infoNutricional'
+          | 'infoNutricionalPorcao'
+          | 'dataCriacao'
+          | 'dataModificacao'
+        >;
+        atualizarFichaTecnica(f.id, dadosFicha);
+      });
+  };
+
+  useEffect(() => {
+    const todas = obterMovimentacoes();
+    const filtradas = todas.filter(m => m.fornecedor !== 'Producao');
+    if (filtradas.length !== todas.length) salvarMovimentacoes(filtradas);
+    setMovimentacoes(filtradas);
+    setIsLoading(false);
+  }, []);
+
+  const registrarEntrada = (dados: {
+    produtoId: string;
+    quantidade: number;
+    preco: number;
+    fornecedor: string;
+    marca?: string;
+  }) => {
+    const nova: MovimentacaoEstoque = { ...dados, id: gerarId(), data: new Date().toISOString(), tipo: 'entrada' };
   useEffect(() => {
     const armaz = obterMovimentacoes();
     setMovimentacoes(armaz);
@@ -56,6 +129,18 @@ export const useEstoque = () => {
 
     // Atualizar produto com novo preco/fornecedor/marca
     const produtos = obterProdutos();
+    const atualizados = produtos.map((p: ProdutoInfo) => {
+      if (p.id !== nova.produtoId) return p;
+      const pesoEmb = p.pesoEmbalagem || 1;
+      const precoUnitario = pesoEmb > 0 ? dados.preco / pesoEmb : 0;
+      return {
+        ...p,
+        preco: dados.preco,
+        precoUnitario,
+        fornecedor: nova.fornecedor as string,
+        marca: nova.marca || p.marca,
+      };
+    });
     const atualizados = produtos.map((p: ProdutoInfo) =>
       p.id === nova.produtoId
         ? { ...p, preco: nova.preco, fornecedor: nova.fornecedor, marca: nova.marca || p.marca }
@@ -74,6 +159,11 @@ export const useEstoque = () => {
           descricao: f.descricao,
           categoria: f.categoria,
           ingredientes: f.ingredientes.map(
+            (i: IngredienteFicha) => ({
+              produtoId: i.produtoId,
+              quantidade: i.quantidade,
+              unidade: i.unidade,
+            })
             (i: IngredienteFicha) => ({ produtoId: i.produtoId, quantidade: i.quantidade })
           ) as Omit<IngredienteFicha, 'custo' | 'id'>[],
           modoPreparo: f.modoPreparo,
@@ -83,12 +173,46 @@ export const useEstoque = () => {
           observacoes: f.observacoes || ''
         } as Omit<
           FichaTecnicaInfo,
+          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'
           'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'
         >;
         atualizarFichaTecnica(f.id, dadosFicha);
       });
 
     return nova;
+  };
+
+  const registrarSaida = (dados: { produtoId: string; quantidade: number }) => {
+    const nova: MovimentacaoEstoque = {
+      id: gerarId(),
+      data: new Date().toISOString(),
+      tipo: 'saida',
+      produtoId: dados.produtoId,
+      quantidade: -Math.abs(dados.quantidade)
+    };
+    const novas = [...movimentacoes, nova];
+    setMovimentacoes(novas);
+    salvarMovimentacoes(novas);
+    return nova;
+  };
+
+  const atualizarMovimentacao = (id: string, dados: Partial<MovimentacaoEstoque>) => {
+    const index = movimentacoes.findIndex(m => m.id === id);
+    if (index === -1) return;
+    const atualizado = { ...movimentacoes[index], ...dados } as MovimentacaoEstoque;
+    const novas = [...movimentacoes];
+    novas[index] = atualizado;
+    setMovimentacoes(novas);
+    salvarMovimentacoes(novas);
+    if (atualizado.tipo === 'entrada') {
+      atualizarProdutoDeEntrada(atualizado);
+    }
+  };
+
+  const removerMovimentacao = (id: string) => {
+    const novas = movimentacoes.filter(m => m.id !== id);
+    setMovimentacoes(novas);
+    salvarMovimentacoes(novas);
   };
 
   const obterHistoricoPorProduto = (produtoId: string) =>
@@ -99,5 +223,15 @@ export const useEstoque = () => {
       .filter((m: MovimentacaoEstoque) => m.produtoId === produtoId)
       .reduce((total: number, m: MovimentacaoEstoque) => total + m.quantidade, 0);
 
+  return {
+    movimentacoes,
+    isLoading,
+    registrarEntrada,
+    registrarSaida,
+    atualizarMovimentacao,
+    removerMovimentacao,
+    obterHistoricoPorProduto,
+    calcularEstoqueAtual,
+  };
   return { movimentacoes, isLoading, registrarCompra, obterHistoricoPorProduto, calcularEstoqueAtual };
 };

@@ -1,6 +1,6 @@
 # Guia de Deploy no Vercel
 
-Este documento fornece instruções detalhadas para realizar o deploy do Sistema de Gestão Gastronômica no Vercel.
+Este documento fornece instruções detalhadas para realizar o deploy do CustoChef no Vercel.
 
 ## Por que o Vercel?
 
@@ -32,7 +32,7 @@ Certifique-se de que seu repositório contém os seguintes arquivos de configura
 
 1. No dashboard do Vercel, clique em "Add New..." > "Project"
 2. Conecte sua conta GitHub se ainda não estiver conectada
-3. Selecione o repositório do Sistema de Gestão Gastronômica
+3. Selecione o repositório do CustoChef
 4. O Vercel detectará automaticamente que é um projeto Next.js
 
 ### 4. Configuração do Deploy

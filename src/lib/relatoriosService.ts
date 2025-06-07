@@ -1,5 +1,8 @@
 'use client';
 
+import { useProdutos, ProdutoInfo } from './produtosService';
+import { obterLabelCategoria } from './categoriasService';
+import { useEstoque } from './estoqueService';
 import { useProdutos, obterLabelCategoria, ProdutoInfo } from './produtosService';
 import {
   useFichasTecnicas,
@@ -31,6 +34,7 @@ export interface DadosRelatorio {
 export const useRelatorios = () => {
   const { produtos } = useProdutos();
   const { fichasTecnicas } = useFichasTecnicas();
+  const { calcularEstoqueAtual } = useEstoque();
   
   // Gerar relatório completo
   const gerarRelatorioCompleto = (): DadosRelatorio => {
@@ -185,6 +189,21 @@ export const useRelatorios = () => {
       distribuicaoCategoriasProdutos: relatorioCompleto.distribuicaoCategoriasProdutos
     };
   };
+
+  const gerarRelatorioEstoque = () => {
+    const itens = produtos.map((p: ProdutoInfo) => {
+      const qtd = calcularEstoqueAtual(p.id);
+      return {
+        id: p.id,
+        nome: p.nome,
+        quantidade: qtd,
+        preco: p.preco,
+        valorTotal: qtd * p.preco
+      };
+    });
+    const valorTotalEstoque = itens.reduce((t, i) => t + i.valorTotal, 0);
+    return { itens, valorTotalEstoque };
+  };
   
   // Gerar relatório de receitas
   const gerarRelatorioReceitas = () => {
@@ -200,6 +219,7 @@ export const useRelatorios = () => {
     gerarRelatorioCompleto,
     gerarRelatorioCustos,
     gerarRelatorioIngredientes,
-    gerarRelatorioReceitas
+    gerarRelatorioReceitas,
+    gerarRelatorioEstoque
   };
 };

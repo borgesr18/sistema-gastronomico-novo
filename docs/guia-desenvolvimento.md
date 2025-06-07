@@ -1,6 +1,6 @@
 # Guia de Desenvolvimento e Manutenção
 
-Este documento fornece informações técnicas sobre a estrutura do código, arquitetura e práticas de desenvolvimento do Sistema de Gestão Gastronômica.
+Este documento fornece informações técnicas sobre a estrutura do código, arquitetura e práticas de desenvolvimento do CustoChef.
 
 ## Arquitetura do Sistema
 
@@ -58,6 +58,7 @@ Gerencia o estado e operações relacionadas aos produtos:
 
 - `useProdutos()`: Hook que fornece acesso aos produtos e funções para manipulá-los
 - Funções: `adicionarProduto`, `atualizarProduto`, `removerProduto`, `obterProdutoPorId`
+- Cada produto armazena também o campo `pesoEmbalagem`, usado para calcular o custo real por grama ou mililitro.
 - Persistência em localStorage
 
 ### fichasTecnicasService.ts
@@ -89,6 +90,29 @@ Gerencia autenticação e cadastro de usuários:
 
 Gerencia o histórico de compras e a quantidade em estoque:
 
+- `useEstoque()`: Hook para registrar entradas e saídas de produtos
+- Funções: `registrarEntrada`, `registrarSaida`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
+- Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas
+- Persistência em localStorage
+- `/estoque-producao` lista o saldo de cada ficha técnica utilizando `calcularEstoqueAtual`
+
+### producaoService.ts
+
+Controla o histórico de produções realizadas:
+
+- `useProducao()`: Hook para registrar novas produções
+- Função: `registrarProducao`
+- Cada registro armazena `custoTotal` com o valor calculado do lote
+- O custo é calculado multiplicando `custoTotal` da ficha pelo fator da quantidade produzida
+- Persistência em localStorage
+
+### precosService.ts
+
+ Gerencia estratégias de precificação baseadas em produções:
+
+ - `usePrecosVenda()`: Hook para salvar, alterar e listar estratégias
+ - Função `salvarEstrategia` calcula e armazena preços de venda a partir do custo unitário
+ - Persistência em localStorage
 - `useEstoque()`: Hook para registrar entradas de produtos
 - Funções: `registrarCompra`, `obterHistoricoPorProduto`, `calcularEstoqueAtual`
 - Atualiza automaticamente o preço dos produtos e os custos das fichas técnicas

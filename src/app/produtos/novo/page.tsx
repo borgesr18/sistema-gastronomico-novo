@@ -6,12 +6,16 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
-import { useProdutos, unidadesMedida, categoriasProdutos } from '@/lib/produtosService';
+import { useProdutos } from '@/lib/produtosService';
+import { useUnidadesMedida } from '@/lib/unidadesService';
+import { useCategorias } from '@/lib/categoriasService';
 import { useState } from 'react';
 
-export default function NovoProdutoPage() {
+export default function NovoInsumoPage() {
   const router = useRouter();
   const { adicionarProduto } = useProdutos();
+  const { categorias } = useCategorias();
+  const { unidades } = useUnidadesMedida();
   const [isLoading, setIsLoading] = useState(false);
   const [mostrarInfoNutricional, setMostrarInfoNutricional] = useState(false);
   
@@ -22,6 +26,7 @@ export default function NovoProdutoPage() {
     unidadeMedida: '',
     preco: '',
     fornecedor: '',
+    pesoEmbalagem: '',
     infoNutricional: {
       calorias: '',
       carboidratos: '',
@@ -63,9 +68,11 @@ export default function NovoProdutoPage() {
     if (!produto.categoria) novosErros.categoria = 'Categoria é obrigatória';
     if (!produto.unidadeMedida) novosErros.unidadeMedida = 'Unidade de medida é obrigatória';
     if (!produto.preco) novosErros.preco = 'Preço é obrigatório';
-    else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0) 
+    else if (isNaN(Number(produto.preco)) || Number(produto.preco) <= 0)
       novosErros.preco = 'Preço deve ser um número positivo';
     if (!produto.fornecedor) novosErros.fornecedor = 'Fornecedor é obrigatório';
+    if (!produto.pesoEmbalagem || isNaN(Number(produto.pesoEmbalagem)) || Number(produto.pesoEmbalagem) <= 0)
+      novosErros.pesoEmbalagem = 'Informe o peso por embalagem';
     
     if (mostrarInfoNutricional) {
       const infoNutricional = produto.infoNutricional;
@@ -111,6 +118,7 @@ export default function NovoProdutoPage() {
       const produtoFormatado = {
         ...produto,
         preco: Number(produto.preco),
+        pesoEmbalagem: Number(produto.pesoEmbalagem),
         infoNutricional: mostrarInfoNutricional ? {
           calorias: Number(produto.infoNutricional.calorias) || 0,
           carboidratos: Number(produto.infoNutricional.carboidratos) || 0,
@@ -135,14 +143,14 @@ export default function NovoProdutoPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Novo Produto</h1>
+      <h1 className="text-2xl font-bold text-gray-800">Novo Insumo</h1>
       
       <form onSubmit={handleSubmit}>
         <Card>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Input
-                label="Nome do Produto *"
+                label="Nome do Insumo *"
                 name="nome"
                 value={produto.nome}
                 onChange={handleChange}
@@ -155,7 +163,9 @@ export default function NovoProdutoPage() {
                 name="categoria"
                 value={produto.categoria}
                 onChange={handleChange}
-                options={categoriasProdutos}
+                options={categorias
+                  .map(c => ({ value: c.id, label: c.nome }))
+                  .sort((a, b) => a.label.localeCompare(b.label))}
                 error={erros.categoria}
               />
 
@@ -174,7 +184,9 @@ export default function NovoProdutoPage() {
                 name="unidadeMedida"
                 value={produto.unidadeMedida}
                 onChange={handleChange}
-                options={unidadesMedida}
+                options={unidades
+                  .map(u => ({ value: u.id, label: u.nome }))
+                  .sort((a, b) => a.label.localeCompare(b.label))}
                 error={erros.unidadeMedida}
               />
               
@@ -197,6 +209,17 @@ export default function NovoProdutoPage() {
                 onChange={handleChange}
                 error={erros.fornecedor}
                 placeholder="Ex: Distribuidora Alimentos"
+              />
+
+              <Input
+                label="Peso/Volume por Embalagem (g ou ml) *"
+                name="pesoEmbalagem"
+                type="number"
+                min="0"
+                value={produto.pesoEmbalagem}
+                onChange={handleChange}
+                error={erros.pesoEmbalagem}
+                placeholder="Ex: 1000"
               />
             </div>
             
@@ -320,7 +343,7 @@ export default function NovoProdutoPage() {
               variant="primary"
               isLoading={isLoading}
             >
-              Salvar Produto
+              Salvar Insumo
             </Button>
           </div>
         </Card>

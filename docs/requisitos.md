@@ -1,4 +1,4 @@
-# Requisitos do Sistema de Gestão Gastronômica
+# Requisitos do CustoChef
 
 ## 1. Cadastro de Produtos (Insumos)
 
@@ -54,7 +54,7 @@
 - Exportáveis em PDF e Excel
 - Filtros por ingredientes, receitas e categorias
 
-### Controle de Estoque (opcional):
+### Estoque de Insumos:
 - Quantidade disponível de cada insumo
 
 ### Usuários:

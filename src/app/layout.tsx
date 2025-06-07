@@ -6,7 +6,7 @@ import MainLayout from "@/components/layout/MainLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestão Gastronômica",
+  title: "CustoChef",
   description: "Sistema para gerenciamento de fichas técnicas e produtos gastronômicos",
 };
 

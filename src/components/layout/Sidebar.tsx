@@ -12,6 +12,12 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
+      className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen`}
+      style={{ backgroundColor: 'var(--cor-primaria)' }}
+    >
+      <div className="p-4 flex items-center justify-between">
+        {!isCollapsed && (
+          <h1 className="text-xl font-bold">CustoChef</h1>
       className={`bg-gray-800 text-white transition-all duration-300 ${
         isCollapsed ? 'w-16' : 'w-64'
       } min-h-screen`}
@@ -22,7 +28,7 @@ const Sidebar: React.FC = () => {
         )}
         <button 
           onClick={toggleSidebar}
-          className="p-1 rounded-full hover:bg-gray-700"
+          className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"
         >
         <button
           onClick={toggleSidebar}
@@ -35,18 +41,75 @@ const Sidebar: React.FC = () => {
       <nav className="mt-6">
         <ul>
           <li>
+            <Link 
+              href="/"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
             <Link href="/" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">dashboard</span>
               {!isCollapsed && <span>Dashboard</span>}
             </Link>
           </li>
           <li>
-            <Link href="/produtos" className="flex items-center p-4 hover:bg-gray-700">
-              <span className="material-icons mr-3">inventory</span>
-              {!isCollapsed && <span>Produtos</span>}
+            <Link
+              href="/fichas-tecnicas"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">receipt</span>
+              {!isCollapsed && <span>Fichas Técnicas</span>}
             </Link>
           </li>
           <li>
+            <Link
+              href="/produtos"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+            <Link href="/produtos" className="flex items-center p-4 hover:bg-gray-700">
+              <span className="material-icons mr-3">inventory</span>
+              {!isCollapsed && <span>Insumos</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/estoque"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">store</span>
+              {!isCollapsed && <span>Estoque de Insumos</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/producao"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">factory</span>
+              {!isCollapsed && <span>Produção</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/estoque-producao"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">warehouse</span>
+              {!isCollapsed && <span>Estoque de Produção</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/precos"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
+              <span className="material-icons mr-3">attach_money</span>
+              {!isCollapsed && <span>Preços de Venda</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/relatorios"
+              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
+            >
             <Link href="/estoque" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">store</span>
               {!isCollapsed && <span>Estoque</span>}

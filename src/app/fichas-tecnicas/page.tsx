@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
+import SlideOver from '@/components/ui/SlideOver';
 import {
   useFichasTecnicas,
   FichaTecnicaInfo,
@@ -14,9 +15,12 @@ import Link from 'next/link';
 export default function FichasTecnicasPage() {
   const { fichasTecnicas, isLoading, removerFichaTecnica } = useFichasTecnicas();
 
+  const [selecionada, setSelecionada] = useState<FichaTecnicaInfo | null>(null);
+
   const handleRemover = (id: string) => {
     if (confirm('Tem certeza que deseja remover esta ficha técnica?')) {
       removerFichaTecnica(id);
+      setSelecionada(null);
     }
   };
 
@@ -49,44 +53,54 @@ export default function FichasTecnicasPage() {
       </div>
 
       <Card>
-        <Table 
-          headers={['Nome', 'Categoria', 'Rendimento', 'Custo Total', 'Custo por Porção', 'Última Atualização', 'Ações']}
+        <Table
+          headers={[
+            'Nome',
+            'Categoria',
+            'Rendimento',
+            'Custo Total',
+            'Data de Modificação'
+          ]}
           isLoading={isLoading}
           emptyMessage="Nenhuma ficha técnica cadastrada. Clique em 'Nova Ficha Técnica' para adicionar."
         >
           {fichasTecnicas.map((ficha: FichaTecnicaInfo) => (
-            <TableRow key={ficha.id}>
+            <TableRow
+              key={ficha.id}
+              className="relative cursor-pointer"
+              onClick={() => setSelecionada(ficha)}
+            >
               <TableCell className="font-medium text-gray-700">{ficha.nome}</TableCell>
               <TableCell>{obterLabelCategoriaReceita(ficha.categoria)}</TableCell>
               <TableCell>{ficha.rendimentoTotal} {ficha.unidadeRendimento}</TableCell>
               <TableCell>{formatarPreco(ficha.custoTotal)}</TableCell>
-              <TableCell>{formatarPreco(ficha.custoPorcao)}</TableCell>
-              <TableCell>{formatarData(ficha.ultimaAtualizacao)}</TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Link href={`/fichas-tecnicas/${ficha.id}`}>
-                    <Button variant="outline" size="sm">
-                      <span className="material-icons text-sm">visibility</span>
-                    </Button>
-                  </Link>
-                  <Link href={`/fichas-tecnicas/${ficha.id}/editar`}>
-                    <Button variant="outline" size="sm">
-                      <span className="material-icons text-sm">edit</span>
-                    </Button>
-                  </Link>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleRemover(ficha.id)}
-                  >
-                    <span className="material-icons text-sm text-red-500">delete</span>
-                  </Button>
-                </div>
-              </TableCell>
+              <TableCell>{formatarData(ficha.dataModificacao)}</TableCell>
             </TableRow>
           ))}
         </Table>
       </Card>
+      <SlideOver
+        isOpen={!!selecionada}
+        onClose={() => setSelecionada(null)}
+        title={selecionada?.nome}
+      >
+        {selecionada && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Rendimento: {selecionada.rendimentoTotal} {selecionada.unidadeRendimento}
+            </p>
+            <p className="text-sm text-gray-600">Custo Total: {formatarPreco(selecionada.custoTotal)}</p>
+            <p className="text-sm text-gray-600">Data: {formatarData(selecionada.dataModificacao)}</p>
+            <div className="flex flex-col space-y-2">
+              <Link href={`/fichas-tecnicas/${selecionada.id}`}> <Button variant="secondary" fullWidth>Ver</Button> </Link>
+              <Link href={`/fichas-tecnicas/${selecionada.id}/editar`}> <Button variant="primary" fullWidth>Editar</Button> </Link>
+              <Button variant="danger" fullWidth onClick={() => handleRemover(selecionada.id)}>Excluir</Button>
+              <Link href={`/producao?ficha=${selecionada.id}`}><Button fullWidth>Produzir</Button></Link>
+              <Link href={`/precos?ficha=${selecionada.id}`}><Button fullWidth>Calcular Preço</Button></Link>
+            </div>
+          </div>
+        )}
+      </SlideOver>
     </div>
   );
 }

@@ -16,22 +16,26 @@ const Table: React.FC<TableProps> = ({
   isLoading = false,
 }) => {
   return (
-    <div className={`overflow-x-auto rounded-lg border border-gray-200 ${className}`}>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div
+      className={`w-full overflow-x-hidden rounded-lg border ${className}`}
+      style={{ borderColor: 'var(--cor-borda)' }}
+    >
+      <table className="w-full table-fixed divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
+        <thead className="bg-gray-100">
           <tr>
             {headers.map((header, index) => (
               <th
                 key={index}
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: 'var(--cor-texto-secundario)' }}
               >
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
           {isLoading ? (
             <tr>
               <td
@@ -65,18 +69,32 @@ const Table: React.FC<TableProps> = ({
   );
 };
 
-export const TableRow: React.FC<{ children: ReactNode; className?: string }> = ({
+export const TableRow: React.FC<{ children: ReactNode; className?: string } & React.HTMLAttributes<HTMLTableRowElement>> = ({
   children,
   className = '',
+  ...props
 }) => {
-  return <tr className={`hover:bg-gray-50 ${className}`}>{children}</tr>;
+  return (
+    <tr
+      className={`odd:bg-gray-50 hover:bg-[var(--cor-secundaria)/10] hover:shadow-sm rounded-lg ${className}`}
+      {...props}
+    >
+      {children}
+    </tr>
+  );
 };
 
-export const TableCell: React.FC<{ children: ReactNode; className?: string }> = ({
+export const TableCell: React.FC<{ children: ReactNode; className?: string; compact?: boolean }> = ({
   children,
   className = '',
+  compact = false,
 }) => {
-  return <td className={`px-6 py-4 text-sm text-gray-500 ${className}`}>{children}</td>;
+  const padding = compact ? 'px-2 py-2' : 'px-6 py-4';
+  return (
+    <td className={`${padding} text-sm ${className}`} style={{ color: 'var(--cor-texto-secundario)' }}>
+      {children}
+    </td>
+  );
 };
 
 export default Table;

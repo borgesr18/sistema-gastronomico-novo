@@ -1,8 +1,8 @@
-# Documentação do Sistema de Gestão Gastronômica
+# Documentação do CustoChef
 
 ## Visão Geral
 
-O Sistema de Gestão Gastronômica é uma aplicação web completa desenvolvida para auxiliar estabelecimentos gastronômicos no gerenciamento de produtos, fichas técnicas (receitas) e relatórios. O sistema permite o controle eficiente de insumos, cálculo automático de custos e informações nutricionais, além de fornecer relatórios detalhados para tomada de decisões.
+O CustoChef é uma aplicação web completa desenvolvida para auxiliar estabelecimentos gastronômicos no gerenciamento de produtos, fichas técnicas (receitas) e relatórios. O sistema permite o controle eficiente de insumos, cálculo automático de custos e informações nutricionais, além de fornecer relatórios detalhados para tomada de decisões.
 
 ## Estrutura do Sistema
 
@@ -10,8 +10,8 @@ O sistema está organizado em três módulos principais:
 
 ### 1. Módulo de Produtos/Insumos
 
-Este módulo permite o cadastro e gerenciamento de todos os insumos utilizados nas receitas, incluindo:
-- Cadastro de produtos com nome, marca, categoria, unidade de medida e preço
+ Este módulo permite o cadastro e gerenciamento de todos os insumos utilizados nas receitas, incluindo:
+ - Cadastro de produtos com nome, marca, categoria, unidade de medida, preço e peso por embalagem
 - Registro de informações nutricionais
 - Listagem, edição e exclusão de produtos
 - Filtros e busca para localização rápida de produtos
@@ -59,22 +59,23 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
 3. Utilize o botão "Novo Usuário" para cadastrar novas contas.
 4. Exclua usuários indesejados pelo botão "Excluir" na tabela.
 5. Altere senhas existentes clicando em "Alterar Senha" ao lado do usuário.
+6. Em "Unidades de Medida" é possível cadastrar, editar ou remover siglas utilizadas nos produtos.
 
 ### Produtos/Insumos
 
-1. **Listagem de Produtos**:
-   - Acesse a página "Produtos" no menu lateral
-   - Visualize todos os produtos cadastrados
+1. **Listagem de Insumos**:
+   - Acesse a página "Insumos" no menu lateral
+   - Visualize todos os insumos cadastrados em ordem alfabética
    - Utilize os filtros para encontrar produtos específicos
 
-2. **Cadastro de Novo Produto**:
-   - Clique no botão "Novo Produto"
+2. **Cadastro de Novo Insumo**:
+   - Clique no botão "Novo Insumo"
    - Preencha todos os campos obrigatórios (nome, categoria, unidade de medida, preço)
    - Adicione informações nutricionais se necessário
    - Clique em "Salvar"
 
-3. **Edição de Produto**:
-   - Na listagem de produtos, clique no botão de edição
+3. **Edição de Insumo**:
+   - Na listagem de insumos, clique no botão de edição
    - Atualize as informações necessárias
    - Clique em "Salvar"
 
@@ -82,14 +83,54 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Na listagem de produtos, clique no botão de exclusão
    - Confirme a exclusão
 
+### Estoque de Insumos
+
+1. **Registrar Compras**:
+   - Acesse a página "Estoque de Insumos" no menu lateral
+
 ### Controle de Estoque
 
 1. **Registrar Compras**:
    - Acesse a página "Estoque" no menu lateral
    - Selecione o produto comprado e informe quantidade, preço e fornecedor
    - Clique em "Registrar Entrada" para salvar
+
 2. **Histórico**:
    - A tabela abaixo do formulário mostra todas as entradas realizadas
+  - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
+
+### Produção
+
+1. **Registrar Produção**:
+   - Acesse a página "Produção" no menu lateral
+   - Escolha a ficha técnica desejada, a quantidade total e o peso de cada unidade
+ - O sistema calcula as unidades geradas e desconta os insumos do estoque
+  - Clique em "Registrar Produção" para registrar a entrada das unidades produzidas
+  - O valor de custo calculado é exibido no formulário e registrado no histórico
+2. **Histórico**:
+   - Abaixo do formulário é exibida a lista de produções já realizadas
+
+### Estoque de Produção
+
+1. **Ajustar Quantidades**:
+   - No menu lateral, acesse "Estoque de Produção"
+   - Escolha a ficha técnica desejada e indique se é entrada ou saída de unidades
+   - Informe a quantidade e clique em "Registrar" para atualizar o saldo
+2. **Consultar Saldo**:
+  - A tabela "Estoque Atual" mostra a quantidade disponível de cada ficha técnica produzida
+
+### Preços de Venda
+
+1. **Definir Margens de Lucro**:
+   - No menu lateral, acesse "Preços de Venda"
+   - Selecione o lote produzido desejado
+   - Informe apenas as porcentagens de lucro para até três estratégias
+   - Os preços calculados ficam ocultos no formulário e são mostrados somente na lista
+   - Clique em "Salvar Estratégia" para registrar ou atualizar
+
+2. **Histórico de Estratégias**:
+   - Abaixo do formulário é exibida a lista de estratégias salvas com data no formato `dd/mm/aaaa`
+   - Utilize o botão **Alterar** para carregar os valores novamente e ajustá-los
    - Os preços informados atualizam automaticamente o cadastro do produto e as fichas técnicas relacionadas
 
 ### Fichas Técnicas
@@ -125,7 +166,7 @@ O sistema foi desenvolvido utilizando tecnologias modernas:
    - Acesse a página "Relatórios" no menu lateral
    - Selecione o tipo de relatório desejado (Completo, Custos, Ingredientes, Receitas)
    - Visualize as informações detalhadas
-   - Utilize os botões de exportação para salvar os relatórios (funcionalidade futura)
+   - Utilize os botões de exportação para salvar os relatórios em PDF ou Excel
 
 ## Manutenção e Suporte
 

@@ -1,5 +1,8 @@
 'use client';
 import React, { useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Card from '@/components/ui/Card';
+import { useFichasTecnicas, obterLabelCategoriaReceita, obterLabelUnidadeRendimento } from '@/lib/fichasTecnicasService';
 import { useParams } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import { useFichasTecnicas, obterLabelCategoriaReceita } from '@/lib/fichasTecnicasService';
@@ -10,12 +13,23 @@ export default function ImprimirFichaTecnicaPage() {
   const params = useParams();
   const { obterFichaTecnicaPorId } = useFichasTecnicas();
   const { produtos } = useProdutos();
-
+  const router = useRouter();
   const fichaId = params.id as string;
   const ficha = obterFichaTecnicaPorId(fichaId);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const timer = setTimeout(() => {
+        window.print();
+      }, 300);
+      const handleAfterPrint = () => router.back();
+      window.addEventListener('afterprint', handleAfterPrint);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('afterprint', handleAfterPrint);
+      };
+    }
+  }, [router]);
       window.print();
     }
   }, []);
@@ -47,6 +61,8 @@ export default function ImprimirFichaTecnicaPage() {
     return produto ? produto.nome : 'Produto não encontrado';
   };
 
+  const formatarQuantidade = (unidade: string, quantidade: number) => {
+    return `${quantidade} ${unidade}`;
   const formatarQuantidade = (produtoId: string, quantidade: number) => {
     const produto = produtos.find(p => p.id === produtoId);
     return produto ? `${quantidade} ${produto.unidadeMedida}` : `${quantidade}`;
@@ -58,6 +74,17 @@ export default function ImprimirFichaTecnicaPage() {
 
   return (
     <div className="p-8 space-y-6">
+      <div className="flex justify-end print:hidden mb-4">
+        <button
+          className="px-4 py-2 bg-gray-200 rounded-md"
+          onClick={() => router.back()}
+        >
+          Voltar
+        </button>
+      </div>
+      <h1 className="text-2xl font-bold text-center mb-4">Ficha Técnica</h1>
+      <Card title="Informações Básicas">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-6">
       <h1 className="text-2xl font-bold text-center">Ficha Técnica</h1>
       <Card title="Informações Básicas">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -83,12 +110,27 @@ export default function ImprimirFichaTecnicaPage() {
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-500">Rendimento</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{ficha.rendimentoTotal} {obterLabelUnidadeRendimento(ficha.unidadeRendimento)}</p>
             <p className="mt-1 text-lg font-medium text-gray-900">{ficha.rendimentoTotal} {ficha.unidadeRendimento}</p>
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-500">Data de Criação</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataCriacao)}</p>
           </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500">Data de Modificação</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{formatarData(ficha.dataModificacao)}</p>
+          </div>
+        </div>
+        {ficha.descricao && (
+          <div className="mb-6">
+            <h3 className="text-sm font-medium text-gray-500">Descrição</h3>
+            <p className="mt-1 text-gray-700">{ficha.descricao}</p>
+          </div>
+        )}
+      </Card>
+      <Card title="Custos">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         </div>
       </Card>
       <Card title="Custos">
@@ -98,6 +140,8 @@ export default function ImprimirFichaTecnicaPage() {
             <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoTotal)}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-500">Custo por Kg</h3>
+            <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoPorKg)}</p>
             <h3 className="text-sm font-medium text-gray-500">Custo por Porção</h3>
             <p className="mt-1 text-xl font-medium text-gray-900">{formatarPreco(ficha.custoPorcao)}</p>
           </div>
@@ -108,6 +152,7 @@ export default function ImprimirFichaTecnicaPage() {
           {ficha.ingredientes.map((ingrediente, index) => (
             <TableRow key={index}>
               <TableCell>{getNomeProduto(ingrediente.produtoId)}</TableCell>
+              <TableCell>{formatarQuantidade(ingrediente.unidade, ingrediente.quantidade)}</TableCell>
               <TableCell>{formatarQuantidade(ingrediente.produtoId, ingrediente.quantidade)}</TableCell>
               <TableCell>{formatarPreco(ingrediente.custo)}</TableCell>
             </TableRow>

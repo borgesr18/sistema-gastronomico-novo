@@ -1,4 +1,4 @@
-# Sistema de Gestão Gastronômica
+# CustoChef
 
 Sistema completo para gestão de produtos, fichas técnicas e relatórios para estabelecimentos gastronômicos.
 
@@ -9,9 +9,23 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Impressão de Fichas**: Gere uma versão pronta para imprimir das fichas técnicas
 - **Autenticação de Usuários**: Acesso ao sistema mediante login e senha
 - **Controle de Usuários**: Gerencie contas na seção de configurações
+- **Perfil do Usuário**: Consulte seus dados e altere a senha na página de perfil
+- **Níveis de Acesso**: Cadastre usuários como administradores ou somente visualizadores
+- **Alteração de Senhas**: Atualize as senhas dos usuários a qualquer momento
+- **Estoque de Insumos**: Registre compras e mantenha histórico
+- **Saídas de Estoque**: Lance baixas de produtos diretamente pelo estoque
+- **Produção**: Calcule ingredientes e registre produções retirando do estoque
+- **Estoque de Produção**: Acompanhe o saldo de itens produzidos e registre entradas ou saídas
+- **Custo de Produção**: O formulário mostra o custo estimado e registra o valor total de cada lote
+- **Preços de Venda**: Defina margens de lucro para cada produção e ajuste estratégias já salvas
+- **Categorias Personalizadas**: Cadastre e edite categorias de produtos nas configurações
+- **Unidades de Medida**: Gerencie siglas de unidades usadas nos produtos
+- **Peso por Embalagem**: Defina quantos gramas ou mililitros cada unidade comprada possui
+- **Relatório de Estoque**: Consulte o balanço completo de itens armazenados
 - **Alteração de Senhas**: Atualize as senhas dos usuários a qualquer momento
 - **Controle de Estoque**: Registre compras de produtos e mantenha histórico
 - **Relatórios e Dashboard**: Visualizações e métricas para tomada de decisão
+- **Exportação de Relatórios**: Salve qualquer relatório em PDF ou Excel
 - **Interface Responsiva**: Acesso em qualquer dispositivo
 
 ## Tecnologias
@@ -19,7 +33,23 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - Next.js 14.1.0
 - React 18.2.0
 - TypeScript
-- Tailwind CSS
+ - Tailwind CSS
+
+## Identidade Visual
+
+O sistema adota um tema moderno com a seguinte paleta de cores:
+
+- **Primária:** `#1E2A38`
+- **Secundária:** `#00B0FF`
+- **Ação:** `#007BFF`
+- **Fundo:** `#F9FAFB`
+- **Texto Principal:** `#333333`
+- **Texto Secundário:** `#6B7280`
+- **Borda:** `#E5E7EB`
+- **Sucesso:** `#10B981`
+- **Erro:** `#EF4444`
+
+A tipografia principal utiliza a fonte **Inter** com peso 400‑600.
 
 ## Instruções para Deploy no Vercel
 
@@ -38,7 +68,7 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
    - Clique em "Add New..."
    - Selecione "Project"
    - Conecte sua conta GitHub se ainda não estiver conectada
-   - Selecione o repositório do Sistema de Gestão Gastronômica
+   - Selecione o repositório do CustoChef
 
 3. **Configure o projeto**:
    - O Vercel detectará automaticamente que é um projeto Next.js

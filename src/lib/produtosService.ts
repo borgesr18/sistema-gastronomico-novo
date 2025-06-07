@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useFichasTecnicas, FichaTecnicaInfo, IngredienteFicha } from './fichasTecnicasService';
 
 // Tipos para produtos
 export interface ProdutoInfo {
@@ -10,7 +11,10 @@ export interface ProdutoInfo {
   marca?: string;
   unidadeMedida: string;
   preco: number;
+  /** Preço real por grama ou mililitro calculado a partir do peso/volume da embalagem */
+  precoUnitario?: number;
   fornecedor: string;
+  pesoEmbalagem?: number;
   imagem?: string;
   infoNutricional?: {
     calorias: number;
@@ -46,6 +50,8 @@ export const obterProdutos = (): ProdutoInfo[] => {
         ...p,
         categoria: p.categoria ?? '',
         preco: Number(p.preco) || 0,
+        precoUnitario: p.precoUnitario ? Number(p.precoUnitario) : undefined,
+        pesoEmbalagem: p.pesoEmbalagem ? Number(p.pesoEmbalagem) : undefined,
         infoNutricional: p.infoNutricional
           ? {
               calorias: Number(p.infoNutricional.calorias) || 0,
@@ -71,6 +77,7 @@ export const obterProdutos = (): ProdutoInfo[] => {
 export const useProdutos = () => {
   const [produtos, setProdutos] = useState<ProdutoInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { fichasTecnicas, atualizarFichaTecnica } = useFichasTecnicas();
 
   // Carregar produtos do localStorage ao inicializar
   useEffect(() => {
@@ -84,6 +91,10 @@ export const useProdutos = () => {
     const novoProduto = {
       ...produto,
       id: gerarId(),
+      precoUnitario:
+        produto.pesoEmbalagem && produto.pesoEmbalagem > 0
+          ? produto.preco / produto.pesoEmbalagem
+          : undefined,
     };
     
     const novosProdutos = [...produtos, novoProduto];
@@ -97,6 +108,10 @@ export const useProdutos = () => {
     const produtoAtualizado = {
       ...produto,
       id,
+      precoUnitario:
+        produto.pesoEmbalagem && produto.pesoEmbalagem > 0
+          ? produto.preco / produto.pesoEmbalagem
+          : undefined,
     };
     
     const novosProdutos = produtos.map((p: ProdutoInfo) =>
@@ -105,6 +120,29 @@ export const useProdutos = () => {
     
     setProdutos(novosProdutos);
     salvarProdutos(novosProdutos);
+    fichasTecnicas
+      .filter(f => f.ingredientes.some(i => i.produtoId === id))
+      .forEach(f => {
+        const dados = {
+          nome: f.nome,
+          descricao: f.descricao,
+          categoria: f.categoria,
+          ingredientes: f.ingredientes.map(i => ({
+            produtoId: i.produtoId,
+            quantidade: i.quantidade,
+            unidade: i.unidade,
+          })) as Omit<IngredienteFicha, 'custo' | 'id'>[],
+          modoPreparo: f.modoPreparo,
+          tempoPreparo: f.tempoPreparo,
+          rendimentoTotal: f.rendimentoTotal,
+          unidadeRendimento: f.unidadeRendimento,
+          observacoes: f.observacoes || '',
+        } as Omit<
+          FichaTecnicaInfo,
+          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'
+        >;
+        atualizarFichaTecnica(f.id, dados);
+      });
     return produtoAtualizado;
   };
 
@@ -130,16 +168,6 @@ export const useProdutos = () => {
   };
 };
 
-// Dados iniciais para unidades de medida
-export const unidadesMedida = [
-  { value: 'g', label: 'Gramas (g)' },
-  { value: 'kg', label: 'Quilogramas (kg)' },
-  { value: 'ml', label: 'Mililitros (ml)' },
-  { value: 'l', label: 'Litros (l)' },
-  { value: 'un', label: 'Unidade' },
-  { value: 'cx', label: 'Caixa' },
-  { value: 'pct', label: 'Pacote' },
-];
 
 // Categorias de produtos para classificacao em relatorios
 export const categoriasProdutos = [

@@ -11,28 +11,23 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <aside 
+    <aside
       className={`bg-gray-800 text-white transition-all duration-300 ${
         isCollapsed ? 'w-16' : 'w-64'
       } min-h-screen`}
     >
       <div className="p-4 flex items-center justify-between">
-        <div className="p-4 flex items-center justify-between">
-  {!isCollapsed && (
-    <img
-      src="/logoCustoChef.png"
-      alt="Logo do CustoChef"
-      className="h-10 w-auto"
-    />
-  )}
-  <button
-    onClick={toggleSidebar}
-    className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"
-  >
-    {isCollapsed ? '→' : '←'}
-  </button>
-</div>
-
+        {!isCollapsed && (
+          <img
+            src="/logoCustoChef.png"
+            alt="Logo do CustoChef"
+            className="h-10 w-auto"
+          />
+        )}
+        <button
+          onClick={toggleSidebar}
+          className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"
+        >
           {isCollapsed ? '→' : '←'}
         </button>
       </div>
@@ -40,55 +35,37 @@ const Sidebar: React.FC = () => {
       <nav className="mt-6">
         <ul>
           <li>
-            <Link 
-              href="/"
-              className="flex items-center p-4 hover:bg-gray-700"
-            >
+            <Link href="/" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">dashboard</span>
               {!isCollapsed && <span>Dashboard</span>}
             </Link>
           </li>
           <li>
-            <Link
-              href="/produtos"
-              className="flex items-center p-4 hover:bg-gray-700"
-            >
+            <Link href="/produtos" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">inventory</span>
               {!isCollapsed && <span>Produtos</span>}
             </Link>
           </li>
           <li>
-            <Link
-              href="/estoque"
-              className="flex items-center p-4 hover:bg-gray-700"
-            >
+            <Link href="/estoque" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">store</span>
               {!isCollapsed && <span>Estoque</span>}
             </Link>
           </li>
           <li>
-            <Link 
-              href="/fichas-tecnicas"
-              className="flex items-center p-4 hover:bg-gray-700"
-            >
+            <Link href="/fichas-tecnicas" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">receipt</span>
               {!isCollapsed && <span>Fichas Técnicas</span>}
             </Link>
           </li>
           <li>
-            <Link 
-              href="/relatorios"
-              className="flex items-center p-4 hover:bg-gray-700"
-            >
+            <Link href="/relatorios" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">bar_chart</span>
               {!isCollapsed && <span>Relatórios</span>}
             </Link>
           </li>
           <li>
-            <Link 
-              href="/configuracoes"
-              className="flex items-center p-4 hover:bg-gray-700"
-            >
+            <Link href="/configuracoes" className="flex items-center p-4 hover:bg-gray-700">
               <span className="material-icons mr-3">settings</span>
               {!isCollapsed && <span>Configurações</span>}
             </Link>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Modal, { useModal } from '@/components/ui/Modal';
@@ -16,10 +15,6 @@ export default function UsuariosConfigPage() {
   const [erro, setErro] = useState('');
   const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [erroSenha, setErroSenha] = useState('');
-  const { usuarios, registrarUsuario, removerUsuario } = useUsuarios();
-  const { isOpen, openModal, closeModal } = useModal();
-  const [novo, setNovo] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
-  const [erro, setErro] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

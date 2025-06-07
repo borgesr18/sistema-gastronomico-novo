@@ -18,6 +18,7 @@ export default function PrecosPage() {
   const [selecionada, setSelecionada] = useState('');
   const [lucros, setLucros] = useState({ lucro1: '', lucro2: '', lucro3: '' });
   const [editId, setEditId] = useState<string | null>(null);
+  const [menuRow, setMenuRow] = useState<string | null>(null);
 
   const prod = producoes.find(p => p.id === selecionada);
   const custoUnit = prod?.custoUnitario || 0;
@@ -104,10 +105,37 @@ export default function PrecosPage() {
                 <TableCell>{formatar(e.preco1)}</TableCell>
                 <TableCell>{formatar(e.preco2)}</TableCell>
                 <TableCell>{formatar(e.preco3)}</TableCell>
-                <TableCell>
-                  <Button size="sm" variant="secondary" onClick={() => carregarEstrategia(e)}>Alterar</Button>
-                  <span className="px-1" />
-                  <Button size="sm" variant="danger" onClick={() => removerEstrategia(e.id)}>Excluir</Button>
+                <TableCell className="relative text-right">
+                  <button
+                    className="p-1 rounded hover:bg-gray-100"
+                    onClick={() => setMenuRow(menuRow === e.id ? null : e.id)}
+                  >
+                    <span className="material-icons text-gray-600">more_vert</span>
+                  </button>
+                  {menuRow === e.id && (
+                    <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow z-10">
+                      <button
+                        className="block w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center"
+                        onClick={() => {
+                          setMenuRow(null);
+                          carregarEstrategia(e);
+                        }}
+                      >
+                        <span className="material-icons mr-1 text-black text-sm">edit</span>
+                        Alterar
+                      </button>
+                      <button
+                        className="block w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center text-red-600"
+                        onClick={() => {
+                          setMenuRow(null);
+                          removerEstrategia(e.id);
+                        }}
+                      >
+                        <span className="material-icons mr-1 text-black text-sm">delete</span>
+                        Excluir
+                      </button>
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             );

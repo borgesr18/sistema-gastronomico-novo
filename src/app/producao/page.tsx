@@ -29,6 +29,7 @@ export default function ProducaoPage() {
   });
   const [erros, setErros] = useState<Record<string, string>>({});
   const [edit, setEdit] = useState<ProducaoInfo | null>(null);
+  const [menuRow, setMenuRow] = useState<string | null>(null);
   const { isOpen, openModal, closeModal } = useModal();
 
   const formatarMoeda = (valor: number) =>
@@ -204,24 +205,6 @@ export default function ProducaoPage() {
             onChange={handleChange}
             options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
           />
-          <Input
-            label="Unidades Geradas"
-            name="unidadesGeradas"
-            readOnly
-            value={form.pesoUnitario && form.quantidade ? String(calcularUnidades()) : ''}
-          />
-          <Input
-            label="Custo"
-            name="custo"
-            readOnly
-            value={calcularCusto()}
-          />
-          <Input
-            label="Custo por Unidade"
-            name="custoUnitario"
-            readOnly
-            value={form.pesoUnitario && form.quantidade && form.fichaId ? formatarMoeda(calcularCustoNumero() / calcularUnidades()) : ''}
-          />
          <Input
             label="Data *"
             type="date"
@@ -245,7 +228,7 @@ export default function ProducaoPage() {
       </Card>
       <Card title="Histórico de Produções">
         <Table
-          headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Custo", "Custo/Unid.", "Ações"]}
+          headers={["Data", "Validade", "Ficha", "Qtd.", "Peso/Unid.", "Unid.", "Custo", "Custo/Unid.", "Ações"]}
           emptyMessage="Nenhuma produção registrada"
           className="text-sm"
         >
@@ -261,9 +244,37 @@ export default function ProducaoPage() {
                 <TableCell compact>{p.unidadesGeradas}</TableCell>
                 <TableCell compact>{formatarMoeda(p.custoTotal)}</TableCell>
                 <TableCell compact>{formatarMoeda(p.custoUnitario)}</TableCell>
-                <TableCell className="flex space-x-2">
-                  <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(p)}>Editar</Button>
-                  <Button size="sm" variant="danger" onClick={() => removerProducao(p.id)}>Excluir</Button>
+                <TableCell className="relative text-right">
+                  <button
+                    className="p-1 rounded hover:bg-gray-100"
+                    onClick={() => setMenuRow(menuRow === p.id ? null : p.id)}
+                  >
+                    <span className="material-icons text-gray-600">more_vert</span>
+                  </button>
+                  {menuRow === p.id && (
+                    <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow z-10">
+                      <button
+                        className="block w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center"
+                        onClick={() => {
+                          setMenuRow(null);
+                          iniciarEdicao(p);
+                        }}
+                      >
+                        <span className="material-icons mr-1 text-black text-sm">edit</span>
+                        Editar
+                      </button>
+                      <button
+                        className="block w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center text-red-600"
+                        onClick={() => {
+                          setMenuRow(null);
+                          removerProducao(p.id);
+                        }}
+                      >
+                        <span className="material-icons mr-1 text-black text-sm">delete</span>
+                        Excluir
+                      </button>
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             );
@@ -296,9 +307,6 @@ export default function ProducaoPage() {
               onChange={e => setEdit({ ...edit, unidadePeso: e.target.value })}
               options={[{ value: 'g', label: 'g' }, { value: 'kg', label: 'kg' }]}
             />
-            <Input label="Unidades Geradas" name="unidadesGeradas" value={String(edit.unidadesGeradas)} readOnly />
-            <Input label="Custo Total" name="custoTotal" value={formatarMoeda(edit.custoTotal)} readOnly />
-            <Input label="Custo por Unidade" name="custoUnitario" value={formatarMoeda(edit.custoUnitario)} readOnly />
             <Input label="Data" type="date" name="data" value={edit.data} onChange={e => setEdit({ ...edit, data: e.target.value })} />
             <Input label="Validade" type="date" name="validade" value={edit.validade} onChange={e => setEdit({ ...edit, validade: e.target.value })} />
             <div className="md:col-span-6 flex justify-end space-x-2">

@@ -23,7 +23,7 @@ export default function NovoUsuarioPage() {
       setErro('Senhas não conferem');
       return;
     }
-    registrarUsuario({ nome: form.nome, email: form.email, senha: form.senha });
+    registrarUsuario({ nome: form.nome, email: form.email, senha: form.senha, role: 'viewer' });
     router.push('/login');
   };
 

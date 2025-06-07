@@ -8,6 +8,7 @@ export interface UsuarioInfo {
   nome: string;
   email: string;
   senhaHash: string;
+  role: 'admin' | 'viewer';
 }
 
 const gerarId = () => {
@@ -26,7 +27,8 @@ const obterUsuarios = (): UsuarioInfo[] => {
   if (typeof window === 'undefined') return [];
   try {
     const usuariosString = localStorage.getItem('usuarios');
-    return usuariosString ? JSON.parse(usuariosString) : [];
+    const lista = usuariosString ? JSON.parse(usuariosString) : [];
+    return lista.map((u: any) => ({ role: 'viewer', ...u }));
   } catch (err) {
     console.error('Erro ao ler usuarios do localStorage', err);
     return [];
@@ -52,12 +54,13 @@ export const useUsuarios = () => {
     }
   }, []);
 
-  const registrarUsuario = (dados: { nome: string; email: string; senha: string }) => {
+  const registrarUsuario = (dados: { nome: string; email: string; senha: string; role?: 'admin' | 'viewer' }) => {
     const novo = {
       id: gerarId(),
       nome: dados.nome,
       email: dados.email,
-      senhaHash: hashSenha(dados.senha)
+      senhaHash: hashSenha(dados.senha),
+      role: dados.role || 'viewer'
     };
     const novos = [...usuarios, novo];
     setUsuarios(novos);

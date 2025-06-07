@@ -9,6 +9,8 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Impressão de Fichas**: Gere uma versão pronta para imprimir das fichas técnicas
 - **Autenticação de Usuários**: Acesso ao sistema mediante login e senha
 - **Controle de Usuários**: Gerencie contas na seção de configurações
+- **Perfil do Usuário**: Consulte seus dados e altere a senha na página de perfil
+- **Níveis de Acesso**: Cadastre usuários como administradores ou somente visualizadores
 - **Alteração de Senhas**: Atualize as senhas dos usuários a qualquer momento
 - **Controle de Estoque**: Registre compras de produtos e mantenha histórico
 - **Saídas de Estoque**: Lance baixas de produtos diretamente pelo estoque

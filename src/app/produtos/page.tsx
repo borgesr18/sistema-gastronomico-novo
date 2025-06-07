@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
@@ -9,6 +9,8 @@ import Link from 'next/link';
 
 export default function ProdutosPage() {
   const { produtos, isLoading, removerProduto } = useProdutos();
+
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
   const handleRemover = (id: string) => {
     if (confirm('Tem certeza que deseja remover este produto?')) {
@@ -37,37 +39,49 @@ export default function ProdutosPage() {
 
       <Card>
         <Table
-          headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor', 'Ações']}
+          headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor', '']}
           isLoading={isLoading}
           emptyMessage="Nenhum produto cadastrado. Clique em 'Novo Produto' para adicionar."
         >
           {produtos.map((produto: ProdutoInfo) => (
-            <TableRow key={produto.id}>
+            <TableRow key={produto.id} className="relative">
               <TableCell className="font-medium text-gray-700">{produto.nome}</TableCell>
               <TableCell>{obterLabelCategoria(produto.categoria)}</TableCell>
               <TableCell>{produto.unidadeMedida}</TableCell>
               <TableCell>{formatarPreco(produto.preco)}</TableCell>
               <TableCell>{produto.fornecedor}</TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Link href={`/produtos/${produto.id}`}>
-                    <Button variant="outline" size="sm">
-                      <span className="material-icons text-sm">visibility</span>
-                    </Button>
-                  </Link>
-                  <Link href={`/produtos/${produto.id}/editar`}>
-                    <Button variant="outline" size="sm">
-                      <span className="material-icons text-sm">edit</span>
-                    </Button>
-                  </Link>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleRemover(produto.id)}
-                  >
-                    <span className="material-icons text-sm text-red-500">delete</span>
-                  </Button>
-                </div>
+              <TableCell className="text-right">
+                <button
+                  className="p-1 rounded hover:bg-gray-100"
+                  onClick={() => setMenuOpen(menuOpen === produto.id ? null : produto.id)}
+                >
+                  <span className="material-icons text-gray-600">more_vert</span>
+                </button>
+                {menuOpen === produto.id && (
+                  <div className="absolute right-4 mt-2 w-32 bg-white border rounded shadow z-10">
+                    <Link
+                      href={`/produtos/${produto.id}`}
+                      className="block px-3 py-2 hover:bg-gray-50"
+                    >
+                      Ver
+                    </Link>
+                    <Link
+                      href={`/produtos/${produto.id}/editar`}
+                      className="block px-3 py-2 hover:bg-gray-50"
+                    >
+                      Editar
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(null);
+                        handleRemover(produto.id);
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 text-red-600"
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}

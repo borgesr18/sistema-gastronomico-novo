@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
@@ -13,6 +13,8 @@ import Link from 'next/link';
 
 export default function FichasTecnicasPage() {
   const { fichasTecnicas, isLoading, removerFichaTecnica } = useFichasTecnicas();
+
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
   const handleRemover = (id: string) => {
     if (confirm('Tem certeza que deseja remover esta ficha técnica?')) {
@@ -50,37 +52,49 @@ export default function FichasTecnicasPage() {
 
       <Card>
         <Table
-          headers={['Nome', 'Categoria', 'Rendimento', 'Custo Total', 'Data de Modificação', 'Ações']}
+          headers={['Nome', 'Categoria', 'Rendimento', 'Custo Total', 'Data de Modificação', '']}
           isLoading={isLoading}
           emptyMessage="Nenhuma ficha técnica cadastrada. Clique em 'Nova Ficha Técnica' para adicionar."
         >
           {fichasTecnicas.map((ficha: FichaTecnicaInfo) => (
-            <TableRow key={ficha.id}>
+            <TableRow key={ficha.id} className="relative">
               <TableCell className="font-medium text-gray-700">{ficha.nome}</TableCell>
               <TableCell>{obterLabelCategoriaReceita(ficha.categoria)}</TableCell>
               <TableCell>{ficha.rendimentoTotal} {ficha.unidadeRendimento}</TableCell>
               <TableCell>{formatarPreco(ficha.custoTotal)}</TableCell>
               <TableCell>{formatarData(ficha.dataModificacao)}</TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Link href={`/fichas-tecnicas/${ficha.id}`}>
-                    <Button variant="outline" size="sm">
-                      <span className="material-icons text-sm">visibility</span>
-                    </Button>
-                  </Link>
-                  <Link href={`/fichas-tecnicas/${ficha.id}/editar`}>
-                    <Button variant="outline" size="sm">
-                      <span className="material-icons text-sm">edit</span>
-                    </Button>
-                  </Link>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleRemover(ficha.id)}
-                  >
-                    <span className="material-icons text-sm text-red-500">delete</span>
-                  </Button>
-                </div>
+              <TableCell className="text-right">
+                <button
+                  className="p-1 rounded hover:bg-gray-100"
+                  onClick={() => setMenuOpen(menuOpen === ficha.id ? null : ficha.id)}
+                >
+                  <span className="material-icons text-gray-600">more_vert</span>
+                </button>
+                {menuOpen === ficha.id && (
+                  <div className="absolute right-4 mt-2 w-32 bg-white border rounded shadow z-10">
+                    <Link
+                      href={`/fichas-tecnicas/${ficha.id}`}
+                      className="block px-3 py-2 hover:bg-gray-50"
+                    >
+                      Ver
+                    </Link>
+                    <Link
+                      href={`/fichas-tecnicas/${ficha.id}/editar`}
+                      className="block px-3 py-2 hover:bg-gray-50"
+                    >
+                      Editar
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(null);
+                        handleRemover(ficha.id);
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 text-red-600"
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}

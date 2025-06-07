@@ -20,10 +20,6 @@ const Sidebar: React.FC = () => {
      {!isCollapsed && (
           <h1 className="text-xl font-bold">Gestão Gastro</h1>
         )}
-        <button 
-          onClick={toggleSidebar}
-          className="p-1 rounded-full hover:bg-gray-700"
-        >
         <button
           onClick={toggleSidebar}
           className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"

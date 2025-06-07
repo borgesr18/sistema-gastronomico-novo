@@ -10,13 +10,9 @@ export interface UsuarioInfo {
   senhaHash: string;
 }
 
-const gerarId = () => {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-};
+const gerarId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
 
-const hashSenha = (senha: string) => {
-  return createHash('sha256').update(senha).digest('hex');
-};
+const hashSenha = (senha: string) => createHash('sha256').update(senha).digest('hex');
 
 const salvarUsuarios = (usuarios: UsuarioInfo[]) => {
   localStorage.setItem('usuarios', JSON.stringify(usuarios));
@@ -34,13 +30,6 @@ const obterUsuarios = (): UsuarioInfo[] => {
 };
 
 export const useUsuarios = () => {
-  const [usuarios, setUsuarios] = useState<UsuarioInfo[]>(() => obterUsuarios());
-  const [usuarioAtual, setUsuarioAtual] = useState<UsuarioInfo | null>(() => {
-    if (typeof window === 'undefined') return null;
-    const armazenados = obterUsuarios();
-    const idLogado = localStorage.getItem('usuarioLogado');
-    return idLogado ? armazenados.find(u => u.id === idLogado) || null : null;
-  });
   const [usuarios, setUsuarios] = useState<UsuarioInfo[]>([]);
   const [usuarioAtual, setUsuarioAtual] = useState<UsuarioInfo | null>(null);
 
@@ -49,8 +38,7 @@ export const useUsuarios = () => {
     setUsuarios(armazenados);
     const idLogado = localStorage.getItem('usuarioLogado');
     if (idLogado) {
-      const encontrado = armazenados.find(u => u.id === idLogado) || null;
-      setUsuarioAtual(encontrado);
+      setUsuarioAtual(armazenados.find(u => u.id === idLogado) || null);
     }
   }, []);
 
@@ -59,7 +47,7 @@ export const useUsuarios = () => {
       id: gerarId(),
       nome: dados.nome,
       email: dados.email,
-      senhaHash: hashSenha(dados.senha)
+      senhaHash: hashSenha(dados.senha),
     };
     const novos = [...usuarios, novo];
     setUsuarios(novos);
@@ -71,8 +59,7 @@ export const useUsuarios = () => {
     const filtrados = usuarios.filter(u => u.id !== id);
     setUsuarios(filtrados);
     salvarUsuarios(filtrados);
-    const idLogado = localStorage.getItem('usuarioLogado');
-    if (idLogado === id) {
+    if (localStorage.getItem('usuarioLogado') === id) {
       logout();
     }
   };
@@ -84,8 +71,7 @@ export const useUsuarios = () => {
     setUsuarios(atualizados);
     salvarUsuarios(atualizados);
     if (usuarioAtual?.id === id) {
-      const atualizado = atualizados.find(u => u.id === id) || null;
-      setUsuarioAtual(atualizado);
+      setUsuarioAtual(atualizados.find(u => u.id === id) || null);
     }
   };
 
@@ -104,7 +90,5 @@ export const useUsuarios = () => {
     localStorage.removeItem('usuarioLogado');
   };
 
-  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha };
-  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario };
-  return { usuarios, usuarioAtual, registrarUsuario, login, logout };
+  return { usuarios, usuarioAtual, registrarUsuario, removerUsuario, alterarSenha, login, logout };
 };

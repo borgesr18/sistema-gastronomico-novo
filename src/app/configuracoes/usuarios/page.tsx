@@ -11,10 +11,21 @@ export default function UsuariosConfigPage() {
   const { usuarios, registrarUsuario, removerUsuario, alterarSenha } = useUsuarios();
   const { isOpen, openModal, closeModal } = useModal();
   const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
-  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'viewer' }>({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
-  const [novo, setNovo] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
+
+  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'viewer' }>({
+    nome: '',
+    email: '',
+    senha: '',
+    confirmarSenha: '',
+    role: 'viewer',
+  });
   const [erro, setErro] = useState('');
-  const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
+
+  const [senhaForm, setSenhaForm] = useState<{ id: string; senha: string; confirmarSenha: string }>({
+    id: '',
+    senha: '',
+    confirmarSenha: '',
+  });
   const [erroSenha, setErroSenha] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,8 +36,6 @@ export default function UsuariosConfigPage() {
     }
     registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role });
     setNovo({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
-    registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha });
-    setNovo({ nome: '', email: '', senha: '', confirmarSenha: '' });
     setErro('');
     closeModal();
   };
@@ -50,16 +59,16 @@ export default function UsuariosConfigPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
-      <Button onClick={openModal} variant="primary">Novo Usuário</Button>
+      <Button onClick={openModal} variant="primary">
+        Novo Usuário
+      </Button>
       <Table headers={["Nome", "Email", "Perfil", "Ações"]}>
-      <Table headers={["Nome", "Email", "Ações"]}>
-        {usuarios.map(u => (
+        {usuarios.map((u) => (
           <TableRow key={u.id}>
             <TableCell>{u.nome}</TableCell>
             <TableCell>{u.email}</TableCell>
             <TableCell>{u.role === 'admin' ? 'Administrador' : 'Visualizador'}</TableCell>
             <TableCell className="flex items-center space-x-2">
-            <TableCell className="space-x-2">
               <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>
                 Alterar Senha
               </Button>
@@ -74,24 +83,28 @@ export default function UsuariosConfigPage() {
       <Modal isOpen={isOpen} onClose={closeModal} title="Novo Usuário">
         <form onSubmit={handleSubmit} className="space-y-4">
           {erro && <p className="text-sm text-red-600">{erro}</p>}
-          <Input label="Nome" value={novo.nome} onChange={e => setNovo({ ...novo, nome: e.target.value })} required />
-          <Input label="Email" type="email" value={novo.email} onChange={e => setNovo({ ...novo, email: e.target.value })} required />
-          <Input label="Senha" type="password" value={novo.senha} onChange={e => setNovo({ ...novo, senha: e.target.value })} required />
-          <Input label="Confirmar Senha" type="password" value={novo.confirmarSenha} onChange={e => setNovo({ ...novo, confirmarSenha: e.target.value })} required />
+          <Input label="Nome" value={novo.nome} onChange={(e) => setNovo({ ...novo, nome: e.target.value })} required />
+          <Input label="Email" type="email" value={novo.email} onChange={(e) => setNovo({ ...novo, email: e.target.value })} required />
+          <Input label="Senha" type="password" value={novo.senha} onChange={(e) => setNovo({ ...novo, senha: e.target.value })} required />
+          <Input label="Confirmar Senha" type="password" value={novo.confirmarSenha} onChange={(e) => setNovo({ ...novo, confirmarSenha: e.target.value })} required />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
             <select
               className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
               value={novo.role}
-              onChange={e => setNovo({ ...novo, role: e.target.value as 'admin' | 'viewer' })}
+              onChange={(e) => setNovo({ ...novo, role: e.target.value as 'admin' | 'viewer' })}
             >
               <option value="viewer">Visualizador</option>
               <option value="admin">Administrador</option>
             </select>
           </div>
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
-            <Button type="submit" variant="primary">Salvar</Button>
+            <Button type="button" variant="secondary" onClick={closeModal}>
+              Cancelar
+            </Button>
+            <Button type="submit" variant="primary">
+              Salvar
+            </Button>
           </div>
         </form>
       </Modal>
@@ -103,19 +116,23 @@ export default function UsuariosConfigPage() {
             label="Nova Senha"
             type="password"
             value={senhaForm.senha}
-            onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })}
+            onChange={(e) => setSenhaForm({ ...senhaForm, senha: e.target.value })}
             required
           />
           <Input
             label="Confirmar Senha"
             type="password"
             value={senhaForm.confirmarSenha}
-            onChange={e => setSenhaForm({ ...senhaForm, confirmarSenha: e.target.value })}
+            onChange={(e) => setSenhaForm({ ...senhaForm, confirmarSenha: e.target.value })}
             required
           />
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="secondary" onClick={closeSenhaModal}>Cancelar</Button>
-            <Button type="submit" variant="primary">Salvar</Button>
+            <Button type="button" variant="secondary" onClick={closeSenhaModal}>
+              Cancelar
+            </Button>
+            <Button type="submit" variant="primary">
+              Salvar
+            </Button>
           </div>
         </form>
       </Modal>

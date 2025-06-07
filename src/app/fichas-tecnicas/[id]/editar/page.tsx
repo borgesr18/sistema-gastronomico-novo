@@ -61,7 +61,6 @@ export default function EditarFichaTecnicaPage() {
     quantidade: string;
     unidade: string;
   }>({
-  const [ingredienteAtual, setIngredienteAtual] = useState<{ produtoId: string; quantidade: string }>({
     produtoId: '',
     quantidade: '',
     unidade: '',

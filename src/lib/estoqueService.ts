@@ -158,14 +158,11 @@ export const useEstoque = () => {
           nome: f.nome,
           descricao: f.descricao,
           categoria: f.categoria,
-          ingredientes: f.ingredientes.map(
-            (i: IngredienteFicha) => ({
-              produtoId: i.produtoId,
-              quantidade: i.quantidade,
-              unidade: i.unidade,
-            })
-            (i: IngredienteFicha) => ({ produtoId: i.produtoId, quantidade: i.quantidade })
-          ) as Omit<IngredienteFicha, 'custo' | 'id'>[],
+          ingredientes: f.ingredientes.map((i: IngredienteFicha) => ({
+            produtoId: i.produtoId,
+            quantidade: i.quantidade,
+            unidade: i.unidade,
+          })) as Omit<IngredienteFicha, 'custo' | 'id'>[],
           modoPreparo: f.modoPreparo,
           tempoPreparo: f.tempoPreparo,
           rendimentoTotal: f.rendimentoTotal,
@@ -173,8 +170,13 @@ export const useEstoque = () => {
           observacoes: f.observacoes || ''
         } as Omit<
           FichaTecnicaInfo,
-          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'
-          'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'ultimaAtualizacao'
+          | 'id'
+          | 'custoTotal'
+          | 'custoPorcao'
+          | 'infoNutricional'
+          | 'infoNutricionalPorcao'
+          | 'dataCriacao'
+          | 'dataModificacao'
         >;
         atualizarFichaTecnica(f.id, dadosFicha);
       });
@@ -233,5 +235,4 @@ export const useEstoque = () => {
     obterHistoricoPorProduto,
     calcularEstoqueAtual,
   };
-  return { movimentacoes, isLoading, registrarCompra, obterHistoricoPorProduto, calcularEstoqueAtual };
 };

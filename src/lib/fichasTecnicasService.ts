@@ -138,53 +138,48 @@ export const useFichasTecnicas = () => {
   const [fichasTecnicas, setFichasTecnicas] = useState<FichaTecnicaInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Calcular custo dos ingredientes
-  function calcularCustoIngredientes(
-    ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]
-  ) {
-    const todosProdutos = obterProdutos();
-    return ingredientes.map((ingrediente: Omit<IngredienteFicha, 'custo' | 'id'>) => {
-      const produto = todosProdutos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
-  const calcularCustoIngredientes = (ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]) => {
-    return ingredientes.map((ingrediente: Omit<IngredienteFicha, 'custo' | 'id'>) => {
-      const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
-      if (!produto) {
-        return {
-          ...ingrediente,
-          id: gerarId(),
-          custo: 0
-        };
-      }
-
-      const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
-      const tipoUso = infoUnidades[unidadeIng]?.tipo;
-      let custo = 0;
-
-      if (tipoUso === 'peso' || tipoUso === 'volume') {
-        const base = tipoUso === 'peso' ? 'g' : 'ml';
-        const qtdBase = converterUnidade(ingrediente.quantidade, unidadeIng, base);
-        const pesoEmbalagem = produto.pesoEmbalagem || infoUnidades[produto.unidadeMedida]?.fator || 1;
-        const custoUnitario =
-          produto.precoUnitario !== undefined
-            ? produto.precoUnitario
-            : produto.preco / pesoEmbalagem;
-        custo = qtdBase * custoUnitario;
-      } else {
-        const quantidadeConvertida = converterUnidade(
-          ingrediente.quantidade,
-          unidadeIng,
-          produto.unidadeMedida
-        );
-        custo = quantidadeConvertida * produto.preco;
-      }
-      
+// Calcular custo dos ingredientes
+const calcularCustoIngredientes = (
+  ingredientes: Omit<IngredienteFicha, 'custo' | 'id'>[]
+) => {
+  const produtos = obterProdutos();
+  return ingredientes.map((ingrediente: Omit<IngredienteFicha, 'custo' | 'id'>) => {
+    const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
+    if (!produto) {
       return {
         ...ingrediente,
         id: gerarId(),
-        custo
+        custo: 0,
       };
-    });
-  }
+    }
+
+    const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
+    const tipoUso = infoUnidades[unidadeIng]?.tipo;
+    let custo = 0;
+
+    if (tipoUso === 'peso' || tipoUso === 'volume') {
+      const base = tipoUso === 'peso' ? 'g' : 'ml';
+      const qtdBase = converterUnidade(ingrediente.quantidade, unidadeIng, base);
+      const pesoEmbalagem = produto.pesoEmbalagem || infoUnidades[produto.unidadeMedida]?.fator || 1;
+      const custoUnitario =
+        produto.precoUnitario !== undefined ? produto.precoUnitario : produto.preco / pesoEmbalagem;
+      custo = qtdBase * custoUnitario;
+    } else {
+      const quantidadeConvertida = converterUnidade(
+        ingrediente.quantidade,
+        unidadeIng,
+        produto.unidadeMedida
+      );
+      custo = quantidadeConvertida * produto.preco;
+    }
+
+    return {
+      ...ingrediente,
+      id: gerarId(),
+      custo,
+    };
+  });
+};
 
 
   // Calcular informações nutricionais
@@ -208,8 +203,6 @@ export const useFichasTecnicas = () => {
     const todosProdutos = obterProdutos();
     ingredientes.forEach((ingrediente: IngredienteFicha) => {
       const produto = todosProdutos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
-    ingredientes.forEach((ingrediente: IngredienteFicha) => {
-      const produto = produtos.find((p: ProdutoInfo) => p.id === ingrediente.produtoId);
       if (produto?.infoNutricional) {
         const unidadeIng: string = (ingrediente as any).unidade || produto.unidadeMedida;
         const tipoIng = infoUnidades[unidadeIng]?.tipo;

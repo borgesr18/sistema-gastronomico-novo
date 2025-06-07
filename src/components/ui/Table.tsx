@@ -21,7 +21,7 @@ const Table: React.FC<TableProps> = ({
       style={{ borderColor: 'var(--cor-borda)' }}
     >
       <table className="min-w-full divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
-        <thead className="bg-gray-50">
+        <thead className="bg-gray-100">
           <tr>
             {headers.map((header, index) => (
               <th
@@ -69,11 +69,16 @@ const Table: React.FC<TableProps> = ({
   );
 };
 
-export const TableRow: React.FC<{ children: ReactNode; className?: string }> = ({
+export const TableRow: React.FC<{ children: ReactNode; className?: string } & React.HTMLAttributes<HTMLTableRowElement>> = ({
   children,
   className = '',
+  ...props
 }) => {
-  return <tr className={`hover:bg-[var(--cor-secundaria)/10] ${className}`}>{children}</tr>;
+  return (
+    <tr className={`odd:bg-gray-50 hover:bg-[var(--cor-secundaria)/10] ${className}`} {...props}>
+      {children}
+    </tr>
+  );
 };
 
 export const TableCell: React.FC<{ children: ReactNode; className?: string }> = ({

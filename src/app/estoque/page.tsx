@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@/components/ui/Card';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Modal, { useModal } from '@/components/ui/Modal';
+import Toast from '@/components/ui/Toast';
 import { useEstoque } from '@/lib/estoqueService';
 import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
 import { useFichasTecnicas } from '@/lib/fichasTecnicasService';
@@ -33,11 +34,21 @@ export default function EstoquePage() {
   });
   const [erros, setErros] = useState<Record<string, string>>({});
   const [edit, setEdit] = useState<any>(null);
+  const [toast, setToast] = useState('');
+  const [menuRow, setMenuRow] = useState<string | null>(null);
   const {
     isOpen: isEditOpen,
     openModal: openEditModal,
     closeModal: closeEditModal,
   } = useModal();
+
+  const closeToast = () => setToast('');
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -67,11 +78,13 @@ export default function EstoquePage() {
         fornecedor: form.fornecedor,
         marca: form.marca
       });
+      setToast('Entrada registrada');
     } else {
       registrarSaida({
         produtoId: form.produtoId,
         quantidade: Number(form.quantidade)
       });
+      setToast('Saída registrada');
     }
     setForm({ tipo: 'entrada', produtoId: '', quantidade: '', preco: '', fornecedor: '', marca: '' });
   };
@@ -104,10 +117,11 @@ export default function EstoquePage() {
 
   return (
     <div className="space-y-6">
+      <Toast message={toast} onClose={closeToast} />
       <h1 className="text-2xl font-bold text-gray-800">Controle de Estoque</h1>
 
       <Card>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-4">
           <Select
             label="Produto *"
             name="produtoId"
@@ -117,6 +131,7 @@ export default function EstoquePage() {
               .map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}
             error={erros.produtoId}
+            className="flex-1 min-w-[150px]"
           />
           <Select
             label="Tipo *"
@@ -124,16 +139,17 @@ export default function EstoquePage() {
             value={form.tipo}
             onChange={handleChange}
             options={[{ value: 'entrada', label: 'Entrada' }, { value: 'saida', label: 'Saída' }]}
+            className="w-32"
           />
-          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} />
+          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} className="w-28" />
           {form.tipo === 'entrada' && (
             <>
-              <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange} error={erros.preco} />
-              <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange} error={erros.fornecedor} />
-              <Input label="Marca" name="marca" value={form.marca} onChange={handleChange} />
+              <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange} error={erros.preco} className="w-32" />
+              <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange} error={erros.fornecedor} className="flex-1 min-w-[150px]" />
+              <Input label="Marca" name="marca" value={form.marca} onChange={handleChange} className="flex-1 min-w-[120px]" />
             </>
           )}
-          <div className="md:col-span-6 flex justify-end">
+          <div className="flex justify-end flex-1">
             <Button type="submit" variant="primary">Registrar {form.tipo === 'entrada' ? 'Entrada' : 'Saída'}</Button>
           </div>
         </form>
@@ -156,14 +172,26 @@ export default function EstoquePage() {
                 <TableCell>{m.preco ? formatarPreco(m.preco) : '-'}</TableCell>
                 <TableCell>{m.fornecedor || '-'}</TableCell>
                 <TableCell>{m.marca || '-'}</TableCell>
-                <TableCell>{m.tipo === 'entrada' ? 'Entrada' : 'Saída'}</TableCell>
-                <TableCell className="flex items-center space-x-2">
-                  <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(m)}>
-                    Editar
-                  </Button>
-                  <Button size="sm" variant="danger" onClick={() => removerMovimentacao(m.id)}>
-                    Excluir
-                  </Button>
+                <TableCell>
+                  {m.tipo === 'entrada' ? '📥 Entrada' : '📤 Saída'}
+                </TableCell>
+                <TableCell className="relative text-right">
+                  <button
+                    className="p-1 rounded hover:bg-gray-100"
+                    onClick={() => setMenuRow(menuRow === m.id ? null : m.id)}
+                  >
+                    <span className="material-icons text-gray-600">more_vert</span>
+                  </button>
+                  {menuRow === m.id && (
+                    <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10">
+                      <button className="block w-full text-left px-3 py-2 hover:bg-gray-50" onClick={() => { setMenuRow(null); iniciarEdicao(m); }}>
+                        Editar
+                      </button>
+                      <button className="block w-full text-left px-3 py-2 hover:bg-gray-50 text-red-600" onClick={() => { setMenuRow(null); removerMovimentacao(m.id); }}>
+                        Excluir
+                      </button>
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             );

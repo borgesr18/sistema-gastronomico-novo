@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { useUsuarios } from '@/lib/usuariosService';
+import Logo from '@/components/ui/Logo';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,6 +34,9 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <Card className="w-96">
+        <div className="flex justify-center mb-4">
+          <Logo className="text-2xl" />
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <h1 className="text-xl font-bold text-gray-800">Entrar</h1>
           {erro && <p className="text-sm text-red-600">{erro}</p>}

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Logo from '../ui/Logo';
 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -16,10 +17,8 @@ const Sidebar: React.FC = () => {
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
       <div className="p-4 flex items-center justify-between">
-        {!isCollapsed && (
-          <h1 className="text-xl font-bold">CustoChef</h1>
-        )}
-        <button 
+        {!isCollapsed && <Logo className="text-xl" />}
+        <button
           onClick={toggleSidebar}
           className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"
         >

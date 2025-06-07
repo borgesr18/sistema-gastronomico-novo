@@ -42,6 +42,7 @@ export default function ProdutosPage() {
           headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor', '']}
           isLoading={isLoading}
           emptyMessage="Nenhum produto cadastrado. Clique em 'Novo Produto' para adicionar."
+          className="text-sm"
         >
           {produtos.map((produto: ProdutoInfo) => (
             <TableRow key={produto.id} className="relative">
@@ -61,8 +62,9 @@ export default function ProdutosPage() {
                   <div className="absolute right-4 mt-2 w-32 bg-white border rounded shadow z-10">
                     <Link
                       href={`/produtos/${produto.id}`}
-                      className="block px-3 py-2 hover:bg-gray-50"
+                      className="block px-3 py-2 hover:bg-gray-50 flex items-center"
                     >
+                      <span className="material-icons mr-1 text-black text-sm">visibility</span>
                       Ver
                     </Link>
                     <Link

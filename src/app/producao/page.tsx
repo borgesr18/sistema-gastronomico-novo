@@ -244,19 +244,23 @@ export default function ProducaoPage() {
         </form>
       </Card>
       <Card title="Histórico de Produções">
-        <Table headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Custo", "Custo/Unid.", "Ações"]} emptyMessage="Nenhuma produção registrada">
+        <Table
+          headers={["Data", "Validade", "Ficha", "Quantidade", "Peso/Unid.", "Unidades", "Custo", "Custo/Unid.", "Ações"]}
+          emptyMessage="Nenhuma produção registrada"
+          className="text-sm"
+        >
           {producoes.map((p: ProducaoInfo) => {
             const ficha = fichasTecnicas.find(f => f.id === p.fichaId);
             return (
               <TableRow key={p.id}>
-                <TableCell>{formatarData(p.data)}</TableCell>
-                <TableCell>{formatarData(p.validade)}</TableCell>
-                <TableCell>{ficha?.nome || 'Ficha removida'}</TableCell>
-                <TableCell>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
-                <TableCell>{p.pesoUnitario}{p.unidadePeso}</TableCell>
-                <TableCell>{p.unidadesGeradas}</TableCell>
-                <TableCell>{formatarMoeda(p.custoTotal)}</TableCell>
-                <TableCell>{formatarMoeda(p.custoUnitario)}</TableCell>
+                <TableCell compact>{formatarData(p.data)}</TableCell>
+                <TableCell compact>{formatarData(p.validade)}</TableCell>
+                <TableCell compact>{ficha?.nome || 'Ficha removida'}</TableCell>
+                <TableCell compact>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
+                <TableCell compact>{p.pesoUnitario}{p.unidadePeso}</TableCell>
+                <TableCell compact>{p.unidadesGeradas}</TableCell>
+                <TableCell compact>{formatarMoeda(p.custoTotal)}</TableCell>
+                <TableCell compact>{formatarMoeda(p.custoUnitario)}</TableCell>
                 <TableCell className="flex space-x-2">
                   <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(p)}>Editar</Button>
                   <Button size="sm" variant="danger" onClick={() => removerProducao(p.id)}>Excluir</Button>

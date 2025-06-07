@@ -20,7 +20,7 @@ const Table: React.FC<TableProps> = ({
       className={`w-full overflow-x-hidden rounded-lg border ${className}`}
       style={{ borderColor: 'var(--cor-borda)' }}
     >
-      <table className="w-full table-auto divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
+      <table className="w-full table-fixed divide-y" style={{ borderColor: 'var(--cor-borda)' }}>
         <thead className="bg-gray-100">
           <tr>
             {headers.map((header, index) => (
@@ -84,11 +84,17 @@ export const TableRow: React.FC<{ children: ReactNode; className?: string } & Re
   );
 };
 
-export const TableCell: React.FC<{ children: ReactNode; className?: string }> = ({
+export const TableCell: React.FC<{ children: ReactNode; className?: string; compact?: boolean }> = ({
   children,
   className = '',
+  compact = false,
 }) => {
-  return <td className={`px-6 py-4 text-sm ${className}`} style={{ color: 'var(--cor-texto-secundario)' }}>{children}</td>;
+  const padding = compact ? 'px-2 py-2' : 'px-6 py-4';
+  return (
+    <td className={`${padding} text-sm ${className}`} style={{ color: 'var(--cor-texto-secundario)' }}>
+      {children}
+    </td>
+  );
 };
 
 export default Table;

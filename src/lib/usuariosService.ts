@@ -8,7 +8,7 @@ export interface UsuarioInfo {
   nome: string;
   email: string;
   senhaHash: string;
-  role: 'admin' | 'viewer';
+  role: 'admin' | 'editor' | 'viewer';
 }
 
 const gerarId = () => {
@@ -54,14 +54,22 @@ export const useUsuarios = () => {
     }
   }, []);
 
-  const registrarUsuario = (dados: { nome: string; email: string; senha: string; role?: 'admin' | 'viewer' }) => {
+  const senhaForte = (senha: string) => /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/.test(senha);
+
+  const registrarUsuario = (dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' }) => {
+    if (usuarios.some(u => u.email === dados.email)) {
+      return null;
+    }
+    if (!senhaForte(dados.senha)) {
+      return null;
+    }
     const novo = {
       id: gerarId(),
       nome: dados.nome,
       email: dados.email,
       senhaHash: hashSenha(dados.senha),
       role: dados.role || 'viewer'
-    };
+    } as UsuarioInfo;
     const novos = [...usuarios, novo];
     setUsuarios(novos);
     salvarUsuarios(novos);

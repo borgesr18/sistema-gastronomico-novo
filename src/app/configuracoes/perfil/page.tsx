@@ -39,7 +39,14 @@ export default function PerfilPage() {
       <div className="space-y-2">
         <p><strong>Nome:</strong> {usuarioAtual.nome}</p>
         <p><strong>Email:</strong> {usuarioAtual.email}</p>
-        <p><strong>Perfil:</strong> {usuarioAtual.role === 'admin' ? 'Administrador' : 'Visualizador'}</p>
+        <p>
+          <strong>Perfil:</strong>{' '}
+          {usuarioAtual.role === 'admin'
+            ? 'Administrador'
+            : usuarioAtual.role === 'editor'
+            ? 'Editor'
+            : 'Visualizador'}
+        </p>
       </div>
       <form onSubmit={handleSenha} className="space-y-2 max-w-sm">
         {erro && <p className="text-sm text-red-600">{erro}</p>}

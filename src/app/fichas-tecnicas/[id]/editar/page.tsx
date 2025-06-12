@@ -14,6 +14,7 @@ import { useUnidadesMedida } from '@/lib/unidadesService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import { useModal } from '@/components/ui/Modal';
 import Modal from '@/components/ui/Modal';
+import Toast from '@/components/ui/Toast';
 
 type Ingrediente = Omit<IngredienteFicha, 'id' | 'custo'>;
 
@@ -41,6 +42,7 @@ export default function EditarFichaTecnicaPage() {
   const { unidades } = useUnidadesMedida();
   const { categorias } = useCategoriasReceita();
   const [isSaving, setIsSaving] = useState(false);
+  const [toast, setToast] = useState('');
   
   const fichaId = params.id as string;
   const fichaOriginal = obterFichaTecnicaPorId(fichaId);
@@ -79,6 +81,12 @@ export default function EditarFichaTecnicaPage() {
   });
 
   const [erros, setErros] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   useEffect(() => {
     if (!fichaTecnica.unidadeRendimento) return;
@@ -255,7 +263,7 @@ export default function EditarFichaTecnicaPage() {
       router.push(`/fichas-tecnicas/${fichaId}`);
     } catch (error) {
       console.error('Erro ao atualizar ficha técnica:', error);
-      alert('Ocorreu um erro ao atualizar a ficha técnica. Tente novamente.');
+      setToast('Erro ao atualizar ficha técnica');
     } finally {
       setIsSaving(false);
     }
@@ -275,6 +283,7 @@ export default function EditarFichaTecnicaPage() {
 
   return (
     <div className="space-y-6">
+      <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Editar Ficha Técnica</h1>
       
       <form onSubmit={handleSubmit}>

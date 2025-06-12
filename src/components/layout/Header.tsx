@@ -21,7 +21,7 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          <div className="relative" onMouseLeave={() => setIsProfileOpen(false)}>
             <button 
               onClick={toggleProfile}
               className="flex items-center space-x-2 focus:outline-none"

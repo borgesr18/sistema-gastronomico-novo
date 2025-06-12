@@ -8,7 +8,7 @@ export interface UsuarioInfo {
   nome: string;
   email: string;
   senhaHash: string;
-  role: 'admin' | 'viewer';
+  role: 'admin' | 'editor' | 'viewer';
 }
 
 const gerarId = () => {
@@ -54,14 +54,22 @@ export const useUsuarios = () => {
     }
   }, []);
 
-  const registrarUsuario = (dados: { nome: string; email: string; senha: string; role?: 'admin' | 'viewer' }) => {
+  const senhaForte = (senha: string) => /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/.test(senha);
+
+  const registrarUsuario = (dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' }) => {
+    if (usuarios.some(u => u.email === dados.email)) {
+      return null;
+    }
+    if (!senhaForte(dados.senha)) {
+      return null;
+    }
     const novo = {
       id: gerarId(),
       nome: dados.nome,
       email: dados.email,
       senhaHash: hashSenha(dados.senha),
       role: dados.role || 'viewer'
-    };
+    } as UsuarioInfo;
     const novos = [...usuarios, novo];
     setUsuarios(novos);
     salvarUsuarios(novos);
@@ -90,6 +98,25 @@ export const useUsuarios = () => {
     }
   };
 
+  const editarUsuario = (
+    id: string,
+    dados: { nome: string; email: string; role: 'admin' | 'editor' | 'viewer' }
+  ) => {
+    if (usuarios.some(u => u.email === dados.email && u.id !== id)) {
+      return false;
+    }
+    const atualizados = usuarios.map(u =>
+      u.id === id ? { ...u, nome: dados.nome, email: dados.email, role: dados.role } : u
+    );
+    setUsuarios(atualizados);
+    salvarUsuarios(atualizados);
+    if (usuarioAtual?.id === id) {
+      const atualizado = atualizados.find(u => u.id === id) || null;
+      setUsuarioAtual(atualizado);
+    }
+    return true;
+  };
+
   const login = (email: string, senha: string) => {
     const usuario = usuarios.find(u => u.email === email && u.senhaHash === hashSenha(senha));
     if (usuario) {
@@ -105,5 +132,5 @@ export const useUsuarios = () => {
     localStorage.removeItem('usuarioLogado');
   };
 
-  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha };
+  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha, editarUsuario };
 };

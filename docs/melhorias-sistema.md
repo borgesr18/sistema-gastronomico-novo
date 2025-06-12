@@ -58,11 +58,11 @@ Trecho da página atual do Dashboard【F:src/app/page.tsx†L1-L117】.
 
 - Páginas como `Unidades de Medida` e `Categorias` se repetem em layout e podem
   compartilhar componentes reutilizáveis para formulários.
-- O uso de `alert()` para feedback (ex.: troca de senha em
-  `PerfilPage`) pode ser substituído por um sistema de notificações.
+- O feedback por `alert()` (ex.: troca de senha em
+  `PerfilPage`) foi substituído por toasts utilizando o componente `Toast`.
 - Incluir mensagens de erro ou carregamento consistentes em todas as telas.
 
-Exemplo de uso de `alert()` no perfil【F:src/app/configuracoes/perfil/page.tsx†L21-L24】.
+Exemplo do novo sistema de notificação【F:src/app/configuracoes/perfil/page.tsx†L36-L47】.
 
 ## Conclusão
 

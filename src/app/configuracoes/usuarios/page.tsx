@@ -11,9 +11,13 @@ export default function UsuariosConfigPage() {
   const { usuarios, registrarUsuario, removerUsuario, alterarSenha, editarUsuario } = useUsuarios();
   const { isOpen, openModal, closeModal } = useModal();
   const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
+<<<<<<< HEAD
   const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal();
   const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' }>({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
   const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' }>({ id: '', nome: '', email: '', role: 'viewer' });
+=======
+  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' }>({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
+>>>>>>> origin/main
   const [erro, setErro] = useState('');
   const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [erroSenha, setErroSenha] = useState('');

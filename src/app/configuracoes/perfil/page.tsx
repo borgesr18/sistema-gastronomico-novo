@@ -14,12 +14,15 @@ export default function PerfilPage() {
   const [toast, setToast] = useState('');
 
   useEffect(() => {
+<<<<<<< HEAD
     if (usuarioAtual) {
       setPerfilForm({ nome: usuarioAtual.nome, email: usuarioAtual.email, role: usuarioAtual.role });
     }
   }, [usuarioAtual]);
 
   useEffect(() => {
+=======
+>>>>>>> origin/main
     if (!toast) return;
     const t = setTimeout(() => setToast(''), 3000);
     return () => clearTimeout(t);
@@ -37,6 +40,7 @@ export default function PerfilPage() {
     setSenhaForm({ senha: '', confirmar: '' });
     setErro('');
     setToast('Senha alterada');
+<<<<<<< HEAD
   };
 
   const handlePerfil = (e: React.FormEvent) => {
@@ -47,12 +51,15 @@ export default function PerfilPage() {
     } else {
       setErro('Email já cadastrado');
     }
+=======
+>>>>>>> origin/main
   };
 
   return (
     <div className="space-y-4">
       <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Perfil</h1>
+<<<<<<< HEAD
       <form onSubmit={handlePerfil} className="space-y-2 max-w-sm">
         <Input label="Nome" value={perfilForm.nome} onChange={e => setPerfilForm({ ...perfilForm, nome: e.target.value })} required />
         <Input label="Email" type="email" value={perfilForm.email} onChange={e => setPerfilForm({ ...perfilForm, email: e.target.value })} required />
@@ -68,6 +75,21 @@ export default function PerfilPage() {
             <option value="admin">Administrador</option>
           </select>
         </div>
+=======
+      <div className="space-y-2">
+        <p><strong>Nome:</strong> {usuarioAtual.nome}</p>
+        <p><strong>Email:</strong> {usuarioAtual.email}</p>
+        <p>
+          <strong>Perfil:</strong>{' '}
+          {usuarioAtual.role === 'admin'
+            ? 'Administrador'
+            : usuarioAtual.role === 'editor'
+            ? 'Editor'
+            : 'Visualizador'}
+        </p>
+      </div>
+      <form onSubmit={handleSenha} className="space-y-2 max-w-sm">
+>>>>>>> origin/main
         {erro && <p className="text-sm text-red-600">{erro}</p>}
         <Button type="submit" variant="primary">Salvar Perfil</Button>
       </form>

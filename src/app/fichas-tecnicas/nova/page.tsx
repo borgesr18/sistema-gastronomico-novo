@@ -14,6 +14,7 @@ import { useUnidadesMedida } from '@/lib/unidadesService';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import { useModal } from '@/components/ui/Modal';
 import Modal from '@/components/ui/Modal';
+import Toast from '@/components/ui/Toast';
 
 type Ingrediente = Omit<IngredienteFicha, 'id' | 'custo'>;
 
@@ -36,6 +37,7 @@ export default function NovaFichaTecnicaPage() {
   const { unidades } = useUnidadesMedida();
   const { categorias } = useCategoriasReceita();
   const [isLoading, setIsLoading] = useState(false);
+  const [toast, setToast] = useState('');
 
   
   // Modal para adicionar ingredientes
@@ -78,6 +80,12 @@ export default function NovaFichaTecnicaPage() {
   }, [fichaTecnica.ingredientes, fichaTecnica.unidadeRendimento]);
 
   const [erros, setErros] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   // Manipular mudanças nos campos da ficha técnica
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -210,7 +218,7 @@ export default function NovaFichaTecnicaPage() {
       router.push('/fichas-tecnicas');
     } catch (error) {
       console.error('Erro ao salvar ficha técnica:', error);
-      alert('Ocorreu um erro ao salvar a ficha técnica. Tente novamente.');
+      setToast('Erro ao salvar ficha técnica');
     } finally {
       setIsLoading(false);
     }
@@ -230,6 +238,7 @@ export default function NovaFichaTecnicaPage() {
 
   return (
     <div className="space-y-6">
+      <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Nova Ficha Técnica</h1>
       
       <form onSubmit={handleSubmit}>

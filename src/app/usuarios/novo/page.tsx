@@ -11,10 +11,10 @@ import Logo from '@/components/ui/Logo';
 export default function NovoUsuarioPage() {
   const router = useRouter();
   const { registrarUsuario } = useUsuarios();
-  const [form, setForm] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
+  const [form, setForm] = useState({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
   const [erro, setErro] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -24,7 +24,11 @@ export default function NovoUsuarioPage() {
       setErro('Senhas não conferem');
       return;
     }
-    registrarUsuario({ nome: form.nome, email: form.email, senha: form.senha, role: 'viewer' });
+    const criado = registrarUsuario({ nome: form.nome, email: form.email, senha: form.senha, role: form.role as 'admin' | 'editor' | 'viewer' });
+    if (!criado) {
+      setErro('Email já cadastrado ou senha fraca');
+      return;
+    }
     router.push('/login');
   };
 
@@ -41,6 +45,19 @@ export default function NovoUsuarioPage() {
           <Input label="Email" type="email" name="email" value={form.email} onChange={handleChange} required />
           <Input label="Senha" type="password" name="senha" value={form.senha} onChange={handleChange} required />
           <Input label="Confirmar Senha" type="password" name="confirmarSenha" value={form.confirmarSenha} onChange={handleChange} required />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
+            <select
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
+            >
+              <option value="viewer">Visualizador</option>
+              <option value="editor">Editor</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
           <Button type="submit" variant="primary" fullWidth>Cadastrar</Button>
         </form>
       </Card>

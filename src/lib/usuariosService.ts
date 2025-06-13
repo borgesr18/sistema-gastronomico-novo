@@ -98,6 +98,25 @@ export const useUsuarios = () => {
     }
   };
 
+  const editarUsuario = (
+    id: string,
+    dados: { nome: string; email: string; role: 'admin' | 'editor' | 'viewer' }
+  ) => {
+    if (usuarios.some(u => u.email === dados.email && u.id !== id)) {
+      return false;
+    }
+    const atualizados = usuarios.map(u =>
+      u.id === id ? { ...u, nome: dados.nome, email: dados.email, role: dados.role } : u
+    );
+    setUsuarios(atualizados);
+    salvarUsuarios(atualizados);
+    if (usuarioAtual?.id === id) {
+      const atualizado = atualizados.find(u => u.id === id) || null;
+      setUsuarioAtual(atualizado);
+    }
+    return true;
+  };
+
   const login = (email: string, senha: string) => {
     const usuario = usuarios.find(u => u.email === email && u.senhaHash === hashSenha(senha));
     if (usuario) {
@@ -113,5 +132,5 @@ export const useUsuarios = () => {
     localStorage.removeItem('usuarioLogado');
   };
 
-  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha };
+  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha, editarUsuario };
 };

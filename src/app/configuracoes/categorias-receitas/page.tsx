@@ -67,11 +67,21 @@ export default function CategoriasReceitasConfigPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
-      <div className="flex flex-wrap items-end gap-2">
-        <Button onClick={openModal} variant="primary">Nova Categoria</Button>
-        <Button onClick={handleExport} variant="secondary">Exportar</Button>
-        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar</Button>
-        <div className="ml-auto w-full sm:w-[200px]">
+
+      <div className="flex flex-wrap justify-between items-end gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={openModal} variant="primary">
+            ➕ Nova Categoria
+          </Button>
+          <Button onClick={handleExport} variant="secondary">
+            ⬇️ Exportar
+          </Button>
+          <Button onClick={() => fileInput.current?.click()} variant="secondary">
+            ⬆️ Importar
+          </Button>
+        </div>
+
+        <div className="w-full sm:w-[220px]">
           <Input
             label="Buscar"
             value={filtro}
@@ -88,17 +98,23 @@ export default function CategoriasReceitasConfigPage() {
         onChange={handleImport}
       />
 
-      <Table headers={["Nome", "Ações"]}>
-        {filtradas.map(cat => (
-          <TableRow key={cat.id}>
-            <TableCell>{cat.nome}</TableCell>
-            <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>Editar</Button>
-              <Button size="sm" variant="danger" onClick={() => remover(cat.id)}>Excluir</Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
+      <div className="pt-2">
+        <Table headers={["Nome", "Ações"]}>
+          {filtradas.map(cat => (
+            <TableRow key={cat.id}>
+              <TableCell>{cat.nome}</TableCell>
+              <TableCell className="flex items-center space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
+                  ✏️ Editar
+                </Button>
+                <Button size="sm" variant="danger" onClick={() => remover(cat.id)}>
+                  🗑️ Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </div>
 
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
         <form onSubmit={handleAdd} className="space-y-4">
@@ -132,3 +148,4 @@ export default function CategoriasReceitasConfigPage() {
     </div>
   );
 }
+

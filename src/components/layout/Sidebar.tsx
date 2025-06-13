@@ -4,14 +4,18 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Logo from '../ui/Logo';
 
+type MenuItem = {
+  href: string;
+  icon: string;
+  label: string;
+};
+
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsCollapsed(prev => !prev);
-  };
+  const toggleSidebar = () => setIsCollapsed(prev => !prev);
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     { href: '/', icon: 'dashboard', label: 'Dashboard' },
     { href: '/fichas-tecnicas', icon: 'receipt', label: 'Fichas Técnicas' },
     { href: '/produtos', icon: 'inventory', label: 'Insumos' },
@@ -28,8 +32,9 @@ const Sidebar: React.FC = () => {
       className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen`}
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
+      {/* Topo com logo e botão de colapso */}
       <div className="p-4 flex items-center justify-between">
-        {!isCollapsed && <Logo className="text-xl" showTagline />}
+        {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
         <button
           onClick={toggleSidebar}
           className="p-1 rounded-full hover:bg-[var(--cor-secundaria)] focus:outline-none"
@@ -39,6 +44,7 @@ const Sidebar: React.FC = () => {
         </button>
       </div>
 
+      {/* Navegação */}
       <nav className="mt-6">
         <ul>
           {menuItems.map(({ href, icon, label }) => (

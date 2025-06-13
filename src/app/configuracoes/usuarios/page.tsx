@@ -14,7 +14,7 @@ export default function UsuariosConfigPage() {
   const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal(); // Senha
   const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal(); // Edição
 
-  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' }>({
+  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({
     nome: '',
     email: '',
     senha: '',
@@ -22,7 +22,7 @@ export default function UsuariosConfigPage() {
     role: 'viewer',
   });
 
-  const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' }>({
+  const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({
     id: '',
     nome: '',
     email: '',
@@ -32,15 +32,16 @@ export default function UsuariosConfigPage() {
   const [erro, setErro] = useState('');
   const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [erroSenha, setErroSenha] = useState('');
+  const [filtro, setFiltro] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (novo.senha !== novo.confirmarSenha) {
       setErro('Senhas não conferem');
       return;
     }
 
-    const criado = registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role });
+    const criado = await registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role });
     if (!criado) {
       setErro('Email já cadastrado ou senha fraca');
       return;
@@ -57,7 +58,7 @@ export default function UsuariosConfigPage() {
     openSenhaModal();
   };
 
-  const iniciarEdicao = (u: { id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' }) => {
+  const iniciarEdicao = (u: { id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }) => {
     setEditar(u);
     setErro('');
     openEditModal();
@@ -81,22 +82,37 @@ export default function UsuariosConfigPage() {
       setErro('Email já cadastrado');
       return;
     }
-
     closeEditModal();
   };
+
+  const filtrados = usuarios.filter(u =>
+    u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+    u.email.toLowerCase().includes(filtro.toLowerCase())
+  );
 
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
-      <Button onClick={openModal} variant="primary">Novo Usuário</Button>
+      <div className="flex flex-wrap items-end gap-2">
+        <Button onClick={openModal} variant="primary">Novo Usuário</Button>
+        <div className="flex-1 min-w-[150px]">
+          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} />
+        </div>
+      </div>
 
       <Table headers={["Nome", "Email", "Perfil", "Ações"]}>
-        {usuarios.map(u => (
+        {filtrados.map(u => (
           <TableRow key={u.id}>
             <TableCell>{u.nome}</TableCell>
             <TableCell>{u.email}</TableCell>
             <TableCell>
-              {u.role === 'admin' ? 'Administrador' : u.role === 'editor' ? 'Editor' : 'Visualizador'}
+              {u.role === 'admin'
+                ? 'Administrador'
+                : u.role === 'editor'
+                ? 'Editor'
+                : u.role === 'manager'
+                ? 'Gerente'
+                : 'Visualizador'}
             </TableCell>
             <TableCell className="flex items-center space-x-2">
               <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u)}>Editar</Button>
@@ -120,10 +136,11 @@ export default function UsuariosConfigPage() {
             <select
               className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
               value={novo.role}
-              onChange={e => setNovo({ ...novo, role: e.target.value as 'admin' | 'editor' | 'viewer' })}
+              onChange={e => setNovo({ ...novo, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             >
               <option value="viewer">Visualizador</option>
               <option value="editor">Editor</option>
+              <option value="manager">Gerente</option>
               <option value="admin">Administrador</option>
             </select>
           </div>
@@ -158,10 +175,11 @@ export default function UsuariosConfigPage() {
             <select
               className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
               value={editar.role}
-              onChange={e => setEditar({ ...editar, role: e.target.value as 'admin' | 'editor' | 'viewer' })}
+              onChange={e => setEditar({ ...editar, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             >
               <option value="viewer">Visualizador</option>
               <option value="editor">Editor</option>
+              <option value="manager">Gerente</option>
               <option value="admin">Administrador</option>
             </select>
           </div>

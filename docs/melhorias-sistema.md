@@ -9,7 +9,7 @@ Este documento apresenta os principais pontos de melhoria identificados no proje
 Atualmente, o controle de usuários é feito no cliente por meio do hook `useUsuarios` (`src/lib/usuariosService.ts`), que armazena dados no `localStorage` com uso de hashing SHA-256. Essa abordagem tem limitações importantes:
 
 - ❌ Não há verificação de unicidade do e-mail ou políticas de senha segura.
-- 🔒 Os perfis são limitados a `admin` e `viewer`.
+- 🔒 Os perfis são limitados a `admin`, `editor` e `viewer`.
 - 📡 Não há backend para centralização dos dados, o que compromete a escalabilidade.
 
 **Sugestões de melhoria**:

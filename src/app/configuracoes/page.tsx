@@ -1,13 +1,28 @@
 'use client';
+
+import { ReactNode } from 'react';
 import Tabs from '@/components/ui/Tabs';
+
+// Importação das páginas de configuração
 import UsuariosConfigPage from './usuarios/page';
 import CategoriasConfigPage from './categorias/page';
 import CategoriasReceitasConfigPage from './categorias-receitas/page';
 import UnidadesConfigPage from './unidades/page';
 
+// Tipagem para as abas
+type Tab = {
+  id: string;
+  label: string;
+  content: ReactNode;
+};
+
 export default function ConfiguracoesPage() {
-  const tabs = [
-    { id: 'usuarios', label: 'Usuários', content: <UsuariosConfigPage /> },
+  const tabs: Tab[] = [
+    {
+      id: 'usuarios',
+      label: 'Usuários',
+      content: <UsuariosConfigPage />,
+    },
     {
       id: 'categorias',
       label: 'Categorias de Produtos',
@@ -18,7 +33,11 @@ export default function ConfiguracoesPage() {
       label: 'Categorias de Receitas',
       content: <CategoriasReceitasConfigPage />,
     },
-    { id: 'unidades', label: 'Unidades', content: <UnidadesConfigPage /> },
+    {
+      id: 'unidades',
+      label: 'Unidades de Medida',
+      content: <UnidadesConfigPage />,
+    },
   ];
 
   return (

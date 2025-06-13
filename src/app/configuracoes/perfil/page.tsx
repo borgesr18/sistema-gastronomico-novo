@@ -11,7 +11,7 @@ export default function PerfilPage() {
   const [perfilForm, setPerfilForm] = useState({
     nome: '',
     email: '',
-    role: 'viewer' as 'admin' | 'editor' | 'viewer',
+    role: 'viewer' as 'admin' | 'editor' | 'viewer' | 'manager',
   });
   const [senhaForm, setSenhaForm] = useState({ senha: '', confirmar: '' });
   const [erro, setErro] = useState('');
@@ -40,6 +40,7 @@ export default function PerfilPage() {
     const ok = editarUsuario(usuarioAtual.id, perfilForm);
     if (ok) {
       setToast('Perfil atualizado');
+      setErro('');
     } else {
       setErro('Email já cadastrado');
     }
@@ -80,11 +81,12 @@ export default function PerfilPage() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
           <select
             value={perfilForm.role}
-            onChange={e => setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' })}
+            onChange={e => setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
           >
             <option value="viewer">Visualizador</option>
             <option value="editor">Editor</option>
+            <option value="manager">Gerente</option>
             <option value="admin">Administrador</option>
           </select>
         </div>

@@ -72,7 +72,11 @@ export default function CategoriasConfigPage() {
         <Button onClick={handleExport} variant="secondary">Exportar JSON</Button>
         <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar JSON</Button>
         <div className="flex-1 min-w-[150px]">
-          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} />
+          <Input
+            label="Buscar"
+            value={filtro}
+            onChange={e => setFiltro(e.target.value)}
+          />
         </div>
       </div>
       <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
@@ -87,6 +91,7 @@ export default function CategoriasConfigPage() {
           </TableRow>
         ))}
       </Table>
+
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
         <form onSubmit={handleAdd} className="space-y-4">
           <Input label="Nome" value={nova} onChange={e => setNova(e.target.value)} required />
@@ -96,6 +101,7 @@ export default function CategoriasConfigPage() {
           </div>
         </form>
       </Modal>
+
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
         <form onSubmit={handleEdit} className="space-y-4">
           <Input label="Nome" value={editar.nome} onChange={e => setEditar({ ...editar, nome: e.target.value })} required />

@@ -76,7 +76,15 @@ export default function UnidadesConfigPage() {
           <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} />
         </div>
       </div>
-      <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
+
+      <input
+        type="file"
+        ref={fileInput}
+        className="hidden"
+        accept="application/json"
+        onChange={handleImport}
+      />
+
       <Table headers={["Sigla", "Nome", "Ações"]}>
         {filtradas.map(u => (
           <TableRow key={u.id}>
@@ -89,6 +97,7 @@ export default function UnidadesConfigPage() {
           </TableRow>
         ))}
       </Table>
+
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Unidade">
         <form onSubmit={handleAdd} className="space-y-4">
           <Input label="Sigla" value={nova.id} onChange={e => setNova({ ...nova, id: e.target.value })} required />
@@ -99,6 +108,7 @@ export default function UnidadesConfigPage() {
           </div>
         </form>
       </Modal>
+
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Unidade">
         <form onSubmit={handleEdit} className="space-y-4">
           <Input label="Sigla" value={editar.id} disabled />

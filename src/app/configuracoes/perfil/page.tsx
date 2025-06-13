@@ -59,16 +59,18 @@ export default function PerfilPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Perfil</h1>
 
-      <form onSubmit={handlePerfil} className="space-y-2 max-w-sm">
+      {/* Formulário de perfil */}
+      <form onSubmit={handlePerfil} className="space-y-4 max-w-sm">
         <Input
           label="Nome"
           value={perfilForm.nome}
           onChange={e => setPerfilForm({ ...perfilForm, nome: e.target.value })}
           required
+          className="h-[38px]"
         />
         <Input
           label="Email"
@@ -76,13 +78,20 @@ export default function PerfilPage() {
           value={perfilForm.email}
           onChange={e => setPerfilForm({ ...perfilForm, email: e.target.value })}
           required
+          className="h-[38px]"
         />
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
           <select
             value={perfilForm.role}
-            onChange={e => setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
-            className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
+            onChange={e =>
+              setPerfilForm({
+                ...perfilForm,
+                role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager',
+              })
+            }
+            className="border border-[var(--cor-borda)] rounded-md p-2 w-full h-[38px] text-sm"
           >
             <option value="viewer">Visualizador</option>
             <option value="editor">Editor</option>
@@ -90,17 +99,23 @@ export default function PerfilPage() {
             <option value="admin">Administrador</option>
           </select>
         </div>
+
         {erro && <p className="text-sm text-red-600">{erro}</p>}
-        <Button type="submit" variant="primary">Salvar Perfil</Button>
+
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary">Salvar Perfil</Button>
+        </div>
       </form>
 
-      <form onSubmit={handleSenha} className="space-y-2 max-w-sm">
+      {/* Formulário de senha */}
+      <form onSubmit={handleSenha} className="space-y-4 max-w-sm">
         <Input
           label="Nova Senha"
           type="password"
           value={senhaForm.senha}
           onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })}
           required
+          className="h-[38px]"
         />
         <Input
           label="Confirmar Senha"
@@ -108,8 +123,11 @@ export default function PerfilPage() {
           value={senhaForm.confirmar}
           onChange={e => setSenhaForm({ ...senhaForm, confirmar: e.target.value })}
           required
+          className="h-[38px]"
         />
-        <Button type="submit" variant="primary">Alterar Senha</Button>
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary">Alterar Senha</Button>
+        </div>
       </form>
     </div>
   );

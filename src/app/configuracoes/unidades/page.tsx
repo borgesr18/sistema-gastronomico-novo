@@ -70,10 +70,10 @@ export default function UnidadesConfigPage() {
       <h1 className="text-2xl font-bold text-gray-800">Unidades de Medida</h1>
       <div className="flex flex-wrap items-end gap-2">
         <Button onClick={openModal} variant="primary">Nova Unidade</Button>
-        <Button onClick={handleExport} variant="secondary">Exportar JSON</Button>
-        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar JSON</Button>
+        <Button onClick={handleExport} variant="secondary">Exportar Lista</Button>
+        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar Lista</Button>
         <div className="flex-1 min-w-[150px]">
-          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} />
+          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} className="mb-0" />
         </div>
       </div>
       <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />

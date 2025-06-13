@@ -8,7 +8,7 @@ import { useUsuarios } from '@/lib/usuariosService';
 
 export default function PerfilPage() {
   const { usuarioAtual, alterarSenha, editarUsuario } = useUsuarios();
-  const [perfilForm, setPerfilForm] = useState({
+  const [perfilForm, setPerfilForm] = useState({ nome: '', email: '', role: 'viewer' as 'admin' | 'editor' | 'viewer' | 'manager' });
     nome: '',
     email: '',
     role: 'viewer' as 'admin' | 'editor' | 'viewer',
@@ -45,7 +45,10 @@ export default function PerfilPage() {
     }
   };
 
-  const handleSenha = (e: React.FormEvent) => {
+            onChange={e =>
+              setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
+            }
+            <option value="manager">Gerente</option>
     e.preventDefault();
     if (senhaForm.senha !== senhaForm.confirmar) {
       setErro('Senhas não conferem');

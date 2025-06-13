@@ -9,16 +9,39 @@ import { useUsuarios } from '@/lib/usuariosService';
 
 export default function UsuariosConfigPage() {
   const { usuarios, registrarUsuario, removerUsuario, alterarSenha, editarUsuario } = useUsuarios();
+  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
+  const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({ id: '', nome: '', email: '', role: 'viewer' });
+  const [filtro, setFiltro] = useState('');
+  const handleSubmit = async (e: React.FormEvent) => {
+    const criado = await registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role });
 
-  const { isOpen, openModal, closeModal } = useModal(); // Novo usuário
-  const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal(); // Senha
-  const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal(); // Edição
+  const filtrados = usuarios.filter(u =>
+    u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+    u.email.toLowerCase().includes(filtro.toLowerCase())
+  );
 
-  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' }>({
-    nome: '',
-    email: '',
-    senha: '',
-    confirmarSenha: '',
+      <div className="flex flex-wrap items-end gap-2">
+        <Button onClick={openModal} variant="primary">Novo Usuário</Button>
+        <div className="flex-1 min-w-[150px]">
+          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} className="mb-0" />
+        </div>
+      </div>
+        {filtrados.map(u => (
+              {u.role === 'admin'
+                ? 'Administrador'
+                : u.role === 'editor'
+                ? 'Editor'
+                : u.role === 'manager'
+                ? 'Gerente'
+                : 'Visualizador'}
+              onChange={e =>
+                setNovo({ ...novo, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
+              }
+              <option value="manager">Gerente</option>
+              onChange={e =>
+                setEditar({ ...editar, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
+              }
+              <option value="manager">Gerente</option>
     role: 'viewer',
   });
 

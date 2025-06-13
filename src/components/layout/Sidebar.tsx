@@ -8,7 +8,7 @@ const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => {
-    setIsCollapsed(prev => !prev);
+        {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
   };
 
   const menuItems = [

@@ -8,7 +8,7 @@ export interface UsuarioInfo {
   nome: string;
   email: string;
   senhaHash: string;
-  role: 'admin' | 'editor' | 'viewer';
+  role: 'admin' | 'editor' | 'viewer' | 'manager';
 }
 
 const gerarId = () => {
@@ -54,26 +54,33 @@ export const useUsuarios = () => {
     }
   }, []);
 
-  const senhaForte = (senha: string) => /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/.test(senha);
+  const senhaForte = (senha: string) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);
 
-  const registrarUsuario = (dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' }) => {
+  const registrarUsuario = async (
+    dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' | 'manager' }
+  ) => {
     if (usuarios.some(u => u.email === dados.email)) {
       return null;
     }
     if (!senhaForte(dados.senha)) {
       return null;
     }
-    const novo = {
-      id: gerarId(),
-      nome: dados.nome,
-      email: dados.email,
-      senhaHash: hashSenha(dados.senha),
-      role: dados.role || 'viewer'
-    } as UsuarioInfo;
-    const novos = [...usuarios, novo];
-    setUsuarios(novos);
-    salvarUsuarios(novos);
-    return novo;
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
+      if (!res.ok) return null;
+      const novo = (await res.json()) as UsuarioInfo;
+      const novos = [...usuarios, novo];
+      setUsuarios(novos);
+      salvarUsuarios(novos);
+      return novo;
+    } catch {
+      return null;
+    }
   };
 
   const removerUsuario = (id: string) => {
@@ -100,7 +107,7 @@ export const useUsuarios = () => {
 
   const editarUsuario = (
     id: string,
-    dados: { nome: string; email: string; role: 'admin' | 'editor' | 'viewer' }
+    dados: { nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }
   ) => {
     if (usuarios.some(u => u.email === dados.email && u.id !== id)) {
       return false;
@@ -117,14 +124,21 @@ export const useUsuarios = () => {
     return true;
   };
 
-  const login = (email: string, senha: string) => {
-    const usuario = usuarios.find(u => u.email === email && u.senhaHash === hashSenha(senha));
-    if (usuario) {
+  const login = async (email: string, senha: string) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
+      if (!res.ok) return null;
+      const usuario = (await res.json()) as UsuarioInfo;
       setUsuarioAtual(usuario);
       localStorage.setItem('usuarioLogado', usuario.id);
       return usuario;
+    } catch {
+      return null;
     }
-    return null;
   };
 
   const logout = () => {

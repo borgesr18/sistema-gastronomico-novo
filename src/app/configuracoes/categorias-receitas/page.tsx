@@ -69,9 +69,9 @@ export default function CategoriasReceitasConfigPage() {
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
       <div className="flex flex-wrap items-end gap-2">
         <Button onClick={openModal} variant="primary">Nova Categoria</Button>
-        <Button onClick={handleExport} variant="secondary">Exportar JSON</Button>
-        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar JSON</Button>
-        <div className="flex-1 min-w-[150px]">
+        <Button onClick={handleExport} variant="secondary">Exportar</Button>
+        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar</Button>
+        <div className="flex-1 min-w-[60px]">
           <Input
             label="Buscar"
             value={filtro}

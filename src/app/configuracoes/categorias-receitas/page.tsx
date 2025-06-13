@@ -71,7 +71,7 @@ export default function CategoriasReceitasConfigPage() {
         <Button onClick={openModal} variant="primary">Nova Categoria</Button>
         <Button onClick={handleExport} variant="secondary">Exportar</Button>
         <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar</Button>
-        <div className="flex-1 min-w-[60px]">
+        <div className="ml-auto w-full sm:w-[200px]">
           <Input
             label="Buscar"
             value={filtro}
@@ -79,7 +79,15 @@ export default function CategoriasReceitasConfigPage() {
           />
         </div>
       </div>
-      <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
+
+      <input
+        type="file"
+        ref={fileInput}
+        className="hidden"
+        accept="application/json"
+        onChange={handleImport}
+      />
+
       <Table headers={["Nome", "Ações"]}>
         {filtradas.map(cat => (
           <TableRow key={cat.id}>
@@ -94,7 +102,12 @@ export default function CategoriasReceitasConfigPage() {
 
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
         <form onSubmit={handleAdd} className="space-y-4">
-          <Input label="Nome" value={nova} onChange={e => setNova(e.target.value)} required />
+          <Input
+            label="Nome"
+            value={nova}
+            onChange={e => setNova(e.target.value)}
+            required
+          />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>
@@ -104,7 +117,12 @@ export default function CategoriasReceitasConfigPage() {
 
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
         <form onSubmit={handleEdit} className="space-y-4">
-          <Input label="Nome" value={editar.nome} onChange={e => setEditar({ ...editar, nome: e.target.value })} required />
+          <Input
+            label="Nome"
+            value={editar.nome}
+            onChange={e => setEditar({ ...editar, nome: e.target.value })}
+            required
+          />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeEdit}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>

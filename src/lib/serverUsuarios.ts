@@ -15,36 +15,38 @@ const adminSenha = 'Rb180780@';
 
 let usuarios: UsuarioInfo[] = [];
 
-/** Função para gerar hash de senha */
+/** Gera hash da senha */
 export const hashSenha = (senha: string) =>
   createHash('sha256').update(senha).digest('hex');
 
-/** Função para garantir que o admin exista */
+/** Garante que o Admin fixo sempre exista */
 export const ensureAdmin = () => {
-  usuarios = usuarios.filter(
-    (u) => u.email !== adminEmail && u.nome !== adminNome
-  );
-
-  usuarios.push({
-    id: 'admin',
-    nome: adminNome,
-    email: adminEmail,
-    senhaHash: hashSenha(adminSenha),
-    role: 'admin',
-    oculto: true,
-  });
+  const jaExiste = usuarios.some(u => u.email === adminEmail);
+  if (!jaExiste) {
+    usuarios.push({
+      id: 'admin',
+      nome: adminNome,
+      email: adminEmail,
+      senhaHash: hashSenha(adminSenha),
+      role: 'admin',
+      oculto: true,
+    });
+  }
 };
 
-// Executa ao carregar o módulo
-ensureAdmin();
+/** Retorna todos os usuários visíveis */
+export const getUsuarios = () => {
+  ensureAdmin();
+  return usuarios.filter(u => !u.oculto);
+};
 
-/** Retorna apenas usuários visíveis (não ocultos) */
-export const getUsuarios = () => usuarios.filter((u) => !u.oculto);
+/** Retorna todos os usuários incluindo ocultos (admin fixo) */
+export const getAllUsuarios = () => {
+  ensureAdmin();
+  return usuarios;
+};
 
-/** Retorna todos os usuários, incluindo ocultos */
-export const getAllUsuarios = () => usuarios;
-
-/** Adiciona um novo usuário */
+/** Adiciona novo usuário */
 export const addUsuario = (dados: Omit<UsuarioInfo, 'id'>) => {
   const novo: UsuarioInfo = {
     ...dados,
@@ -54,10 +56,12 @@ export const addUsuario = (dados: Omit<UsuarioInfo, 'id'>) => {
   return novo;
 };
 
-/** Busca usuário por email */
-export const findByEmail = (email: string) =>
-  usuarios.find((u) => u.email === email);
+/** Busca por e-mail */
+export const findByEmail = (email: string) => {
+  ensureAdmin();
+  return usuarios.find(u => u.email === email);
+};
 
-/** Valida força da senha */
+/** Validação de senha forte */
 export const senhaForte = (senha: string) =>
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);

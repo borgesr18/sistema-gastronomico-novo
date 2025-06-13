@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Card from '@/components/ui/Card';
@@ -16,10 +16,13 @@ export default function LoginPage() {
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
 
-  if (usuarioAtual) {
-    router.push('/');
-    return null;
-  }
+  useEffect(() => {
+    if (usuarioAtual) {
+      router.replace('/');
+    }
+  }, [usuarioAtual, router]);
+
+  if (usuarioAtual) return null;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -57,7 +60,7 @@ export default function LoginPage() {
           <Button type="submit" variant="primary" fullWidth>
             Entrar
           </Button>
-          <p className="text-sm">
+          <p className="text-sm text-center">
             Não possui conta?{' '}
             <Link href="/usuarios/novo" className="text-blue-600 hover:underline">
               Cadastre-se
@@ -68,3 +71,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

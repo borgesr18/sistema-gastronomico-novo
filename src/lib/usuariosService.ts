@@ -57,38 +57,46 @@ export const useUsuarios = () => {
   const senhaForte = (senha: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);
 
-  const registrarUsuario = (dados: {
-    nome: string;
-    email: string;
-    senha: string;
-    role?: 'admin' | 'editor' | 'viewer' | 'manager';
-  }) => {
+  const registrarUsuario = async (
+    dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' | 'manager' }
+  ) => {
     if (usuarios.some(u => u.email === dados.email)) return null;
     if (!senhaForte(dados.senha)) return null;
 
-    const novo: UsuarioInfo = {
-      id: gerarId(),
-      nome: dados.nome,
-      email: dados.email,
-      senhaHash: hashSenha(dados.senha),
-      role: dados.role || 'viewer',
-    };
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
+      if (!res.ok) return null;
 
-    const novos = [...usuarios, novo];
-    setUsuarios(novos);
-    salvarUsuarios(novos);
-    return novo;
+      const novo = (await res.json()) as UsuarioInfo;
+      const novos = [...usuarios, novo];
+      setUsuarios(novos);
+      salvarUsuarios(novos);
+      return novo;
+    } catch {
+      return null;
+    }
   };
 
-  const login = (email: string, senha: string) => {
-    const usuario = usuarios.find(
-      u => u.email === email && u.senhaHash === hashSenha(senha)
-    );
-    if (!usuario) return null;
+  const login = async (email: string, senha: string) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
+      if (!res.ok) return null;
 
-    setUsuarioAtual(usuario);
-    localStorage.setItem('usuarioLogado', usuario.id);
-    return usuario;
+      const usuario = (await res.json()) as UsuarioInfo;
+      setUsuarioAtual(usuario);
+      localStorage.setItem('usuarioLogado', usuario.id);
+      return usuario;
+    } catch {
+      return null;
+    }
   };
 
   const logout = () => {
@@ -126,10 +134,12 @@ export const useUsuarios = () => {
     );
     setUsuarios(atualizados);
     salvarUsuarios(atualizados);
+
     if (usuarioAtual?.id === id) {
       const atualizado = atualizados.find(u => u.id === id) || null;
       setUsuarioAtual(atualizado);
     }
+
     return true;
   };
 

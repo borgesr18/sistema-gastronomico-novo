@@ -71,11 +71,45 @@ export default function NovoUsuarioPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <h1 className="text-xl font-bold text-gray-800">Novo Usuário</h1>
           {erro && <p className="text-sm text-red-600">{erro}</p>}
-          <Input label="Nome" name="nome" value={form.nome} onChange={handleChange} required />
-          <Input label="Email" type="email" name="email" value={form.email} onChange={handleChange} required />
-          <Input label="Confirmar Email" type="email" name="confirmarEmail" value={form.confirmarEmail} onChange={handleChange} required />
-          <Input label="Senha" type="password" name="senha" value={form.senha} onChange={handleChange} required />
-          <Input label="Confirmar Senha" type="password" name="confirmarSenha" value={form.confirmarSenha} onChange={handleChange} required />
+          <Input
+            label="Nome"
+            name="nome"
+            value={form.nome}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            label="Confirmar Email"
+            type="email"
+            name="confirmarEmail"
+            value={form.confirmarEmail}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            label="Senha"
+            type="password"
+            name="senha"
+            value={form.senha}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            label="Confirmar Senha"
+            type="password"
+            name="confirmarSenha"
+            value={form.confirmarSenha}
+            onChange={handleChange}
+            required
+          />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
             <select
@@ -90,7 +124,9 @@ export default function NovoUsuarioPage() {
               <option value="admin">Administrador</option>
             </select>
           </div>
-          <Button type="submit" variant="primary" fullWidth>Cadastrar</Button>
+          <Button type="submit" variant="primary" fullWidth>
+            Cadastrar
+          </Button>
         </form>
       </Card>
     </div>

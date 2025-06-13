@@ -8,11 +8,13 @@ import { useUsuarios } from '@/lib/usuariosService';
 
 export default function PerfilPage() {
   const { usuarioAtual, alterarSenha, editarUsuario } = useUsuarios();
+
   const [perfilForm, setPerfilForm] = useState({
     nome: '',
     email: '',
     role: 'viewer' as 'admin' | 'editor' | 'viewer' | 'manager',
   });
+
   const [senhaForm, setSenhaForm] = useState({ senha: '', confirmar: '' });
   const [erro, setErro] = useState('');
   const [toast, setToast] = useState('');
@@ -63,7 +65,7 @@ export default function PerfilPage() {
       <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Perfil</h1>
 
-      {/* Formulário de perfil */}
+      {/* Formulário de dados do perfil */}
       <form onSubmit={handlePerfil} className="space-y-4 max-w-sm">
         <Input
           label="Nome"
@@ -80,16 +82,12 @@ export default function PerfilPage() {
           required
           className="h-[38px]"
         />
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
           <select
             value={perfilForm.role}
             onChange={e =>
-              setPerfilForm({
-                ...perfilForm,
-                role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager',
-              })
+              setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
             }
             className="border border-[var(--cor-borda)] rounded-md p-2 w-full h-[38px] text-sm"
           >
@@ -99,15 +97,13 @@ export default function PerfilPage() {
             <option value="admin">Administrador</option>
           </select>
         </div>
-
         {erro && <p className="text-sm text-red-600">{erro}</p>}
-
         <div className="flex justify-end">
           <Button type="submit" variant="primary">Salvar Perfil</Button>
         </div>
       </form>
 
-      {/* Formulário de senha */}
+      {/* Formulário de alteração de senha */}
       <form onSubmit={handleSenha} className="space-y-4 max-w-sm">
         <Input
           label="Nova Senha"

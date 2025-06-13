@@ -69,14 +69,13 @@ export default function UnidadesConfigPage() {
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Unidades de Medida</h1>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex flex-wrap gap-2 grow">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button onClick={openModal} variant="primary">➕ Nova Unidade</Button>
           <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
           <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
         </div>
-
-        <div className="w-full sm:w-[220px]">
+        <div className="sm:w-[220px] w-full">
           <Input
             label=""
             placeholder="Buscar..."
@@ -95,18 +94,24 @@ export default function UnidadesConfigPage() {
         onChange={handleImport}
       />
 
-      <Table headers={["Sigla", "Nome", "Ações"]}>
-        {filtradas.map(u => (
-          <TableRow key={u.id}>
-            <TableCell>{u.id}</TableCell>
-            <TableCell>{u.nome}</TableCell>
-            <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)}>✏️ Editar</Button>
-              <Button size="sm" variant="danger" onClick={() => removerUnidade(u.id)}>🗑️ Excluir</Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
+      <div className="pt-2">
+        <Table headers={["Sigla", "Nome", "Ações"]}>
+          {filtradas.map(u => (
+            <TableRow key={u.id}>
+              <TableCell>{u.id}</TableCell>
+              <TableCell>{u.nome}</TableCell>
+              <TableCell className="flex items-center space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)}>
+                  ✏️ Editar
+                </Button>
+                <Button size="sm" variant="danger" onClick={() => removerUnidade(u.id)}>
+                  🗑️ Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </div>
 
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Unidade">
         <form onSubmit={handleAdd} className="space-y-4">

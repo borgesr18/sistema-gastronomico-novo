@@ -29,7 +29,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
-      className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen`}
+      className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen flex flex-col`}
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
       {/* Topo com logo e botão de colapso */}
@@ -37,24 +37,26 @@ const Sidebar: React.FC = () => {
         {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
         <button
           onClick={toggleSidebar}
-          className="p-1 rounded-full hover:bg-[var(--cor-secundaria)] focus:outline-none"
+          className="p-2 rounded-full hover:bg-[var(--cor-secundaria)] focus:outline-none"
           aria-label="Alternar menu lateral"
         >
-          {isCollapsed ? '→' : '←'}
+          <span className="material-icons">
+            {isCollapsed ? 'chevron_right' : 'chevron_left'}
+          </span>
         </button>
       </div>
 
       {/* Navegação */}
-      <nav className="mt-6">
+      <nav className="mt-4 flex-1">
         <ul>
           {menuItems.map(({ href, icon, label }) => (
             <li key={href}>
               <Link
                 href={href}
-                className="flex items-center p-4 hover:bg-[var(--cor-secundaria)] transition-colors"
+                className="flex items-center px-4 py-3 hover:bg-[var(--cor-secundaria)] transition-colors"
               >
                 <span className="material-icons mr-3">{icon}</span>
-                {!isCollapsed && <span>{label}</span>}
+                {!isCollapsed && <span className="text-sm">{label}</span>}
               </Link>
             </li>
           ))}

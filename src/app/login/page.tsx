@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Card from '@/components/ui/Card';
@@ -16,17 +16,18 @@ export default function LoginPage() {
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
 
-  if (usuarioAtual) {
-    router.push('/');
-    return null;
-  }
+  useEffect(() => {
+    if (usuarioAtual) {
+      router.replace('/');
+    }
+  }, [usuarioAtual, router]);
 
-  const handleSubmit = (e: FormEvent) => {
+  if (usuarioAtual) return null;
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const usuario = login(email, senha);
-    if (usuario) {
-      router.push('/');
-    } else {
+    const usuario = await login(email, senha);
+    if (!usuario) {
       setErro('Credenciais inválidas');
     }
   };

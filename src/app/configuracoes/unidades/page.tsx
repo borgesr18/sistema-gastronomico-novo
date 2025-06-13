@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Modal, { useModal } from '@/components/ui/Modal';
@@ -13,6 +13,8 @@ export default function UnidadesConfigPage() {
   const { isOpen: isEditOpen, openModal: openEdit, closeModal: closeEdit } = useModal();
   const [nova, setNova] = useState({ id: '', nome: '' });
   const [editar, setEditar] = useState({ id: '', nome: '' });
+  const [filtro, setFiltro] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,12 +34,51 @@ export default function UnidadesConfigPage() {
     closeEdit();
   };
 
+  const handleExport = () => {
+    const data = JSON.stringify(unidades, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'unidades.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport: React.ChangeEventHandler<HTMLInputElement> = e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string) as { id: string; nome: string }[];
+        data.forEach(d => d.id && adicionarUnidade(d.id, d.nome));
+      } catch (err) {
+        console.error('Erro ao importar unidades', err);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const filtradas = unidades.filter(u =>
+    u.id.toLowerCase().includes(filtro.toLowerCase()) ||
+    u.nome.toLowerCase().includes(filtro.toLowerCase())
+  );
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Unidades de Medida</h1>
-      <Button onClick={openModal} variant="primary">Nova Unidade</Button>
+      <div className="flex flex-wrap items-end gap-2">
+        <Button onClick={openModal} variant="primary">Nova Unidade</Button>
+        <Button onClick={handleExport} variant="secondary">Exportar Lista</Button>
+        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar Lista</Button>
+        <div className="flex-1 min-w-[150px]">
+          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} className="mb-0" />
+        </div>
+      </div>
+      <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
       <Table headers={["Sigla", "Nome", "Ações"]}>
-        {unidades.map(u => (
+        {filtradas.map(u => (
           <TableRow key={u.id}>
             <TableCell>{u.id}</TableCell>
             <TableCell>{u.nome}</TableCell>

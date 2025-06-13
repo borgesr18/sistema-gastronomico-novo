@@ -57,9 +57,12 @@ export const useUsuarios = () => {
   const senhaForte = (senha: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);
 
-  const registrarUsuario = async (
-    dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' | 'manager' }
-  ) => {
+  const registrarUsuario = async (dados: {
+    nome: string;
+    email: string;
+    senha: string;
+    role?: 'admin' | 'editor' | 'viewer' | 'manager';
+  }) => {
     if (usuarios.some(u => u.email === dados.email)) return null;
     if (!senhaForte(dados.senha)) return null;
 
@@ -67,7 +70,7 @@ export const useUsuarios = () => {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
+        body: JSON.stringify(dados),
       });
       if (!res.ok) return null;
 
@@ -86,7 +89,7 @@ export const useUsuarios = () => {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha })
+        body: JSON.stringify({ email, senha }),
       });
       if (!res.ok) return null;
 

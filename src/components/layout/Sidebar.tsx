@@ -13,7 +13,7 @@ type MenuItem = {
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const toggleSidebar = () => setIsCollapsed(prev => !prev);
+  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 
   const menuItems: MenuItem[] = [
     { href: '/', icon: 'dashboard', label: 'Dashboard' },
@@ -32,13 +32,13 @@ const Sidebar: React.FC = () => {
       className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen flex flex-col`}
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
-      {/* Topo com logo e botão de colapso */}
       <div className="p-4 flex items-center justify-between">
         {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
         <button
           onClick={toggleSidebar}
           className="p-2 rounded-full hover:bg-[var(--cor-secundaria)] focus:outline-none"
           aria-label="Alternar menu lateral"
+          aria-expanded={!isCollapsed}
         >
           <span className="material-icons">
             {isCollapsed ? 'chevron_right' : 'chevron_left'}
@@ -46,7 +46,6 @@ const Sidebar: React.FC = () => {
         </button>
       </div>
 
-      {/* Navegação */}
       <nav className="mt-4 flex-1">
         <ul>
           {menuItems.map(({ href, icon, label }) => (
@@ -67,3 +66,4 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+

@@ -42,7 +42,9 @@ export default function LoginPage() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <h1 className="text-xl font-bold text-gray-800">Entrar</h1>
+
           {erro && <p className="text-sm text-red-600">{erro}</p>}
+
           <Input
             label="Email"
             type="email"
@@ -50,6 +52,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+
           <Input
             label="Senha"
             type="password"
@@ -57,9 +60,11 @@ export default function LoginPage() {
             onChange={(e) => setSenha(e.target.value)}
             required
           />
+
           <Button type="submit" variant="primary" fullWidth>
             Entrar
           </Button>
+
           <p className="text-sm text-center">
             Não possui conta?{' '}
             <Link href="/usuarios/novo" className="text-blue-600 hover:underline">
@@ -71,4 +76,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

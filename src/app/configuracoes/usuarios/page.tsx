@@ -9,7 +9,6 @@ import { useUsuarios } from '@/lib/usuariosService';
 
 export default function UsuariosConfigPage() {
   const { usuarios, registrarUsuario, removerUsuario, alterarSenha, editarUsuario } = useUsuarios();
-
   const { isOpen, openModal, closeModal } = useModal();
   const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
   const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal();
@@ -97,10 +96,8 @@ export default function UsuariosConfigPage() {
       <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
 
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex gap-2">
-          <Button onClick={openModal} variant="primary">➕ Novo Usuário</Button>
-        </div>
-        <div className="sm:w-[220px] w-full">
+        <Button onClick={openModal} variant="primary">➕ Novo Usuário</Button>
+        <div className="w-full sm:w-[220px]">
           <Input
             label=""
             placeholder="Buscar..."
@@ -133,7 +130,7 @@ export default function UsuariosConfigPage() {
         ))}
       </Table>
 
-      {/* Modal de Novo Usuário */}
+      {/* Modal Novo Usuário */}
       <Modal isOpen={isOpen} onClose={closeModal} title="Novo Usuário">
         <form onSubmit={handleSubmit} className="space-y-4">
           {erro && <p className="text-sm text-red-600">{erro}</p>}
@@ -161,7 +158,7 @@ export default function UsuariosConfigPage() {
         </form>
       </Modal>
 
-      {/* Modal de Alterar Senha */}
+      {/* Modal Alterar Senha */}
       <Modal isOpen={isSenhaOpen} onClose={closeSenhaModal} title="Alterar Senha">
         <form onSubmit={handleAlterarSenha} className="space-y-4">
           {erroSenha && <p className="text-sm text-red-600">{erroSenha}</p>}
@@ -174,7 +171,7 @@ export default function UsuariosConfigPage() {
         </form>
       </Modal>
 
-      {/* Modal de Editar Usuário */}
+      {/* Modal Editar Usuário */}
       <Modal isOpen={isEditOpen} onClose={closeEditModal} title="Editar Usuário">
         <form onSubmit={handleEditar} className="space-y-4">
           {erro && <p className="text-sm text-red-600">{erro}</p>}
@@ -202,4 +199,3 @@ export default function UsuariosConfigPage() {
     </div>
   );
 }
-

@@ -70,22 +70,11 @@ export default function NovoUsuarioPage() {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <h1 className="text-xl font-bold text-gray-800">Novo Usuário</h1>
+
           {erro && <p className="text-sm text-red-600">{erro}</p>}
-          <Input
-            label="Nome"
-            name="nome"
-            value={form.nome}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+
+          <Input label="Nome" name="nome" value={form.nome} onChange={handleChange} required />
+          <Input label="Email" type="email" name="email" value={form.email} onChange={handleChange} required />
           <Input
             label="Confirmar Email"
             type="email"
@@ -102,6 +91,9 @@ export default function NovoUsuarioPage() {
             onChange={handleChange}
             required
           />
+          <p className="text-xs text-gray-600">
+            A senha deve ter ao menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.
+          </p>
           <Input
             label="Confirmar Senha"
             type="password"
@@ -110,6 +102,7 @@ export default function NovoUsuarioPage() {
             onChange={handleChange}
             required
           />
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
             <select
@@ -124,6 +117,7 @@ export default function NovoUsuarioPage() {
               <option value="admin">Administrador</option>
             </select>
           </div>
+
           <Button type="submit" variant="primary" fullWidth>
             Cadastrar
           </Button>

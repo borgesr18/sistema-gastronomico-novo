@@ -75,7 +75,7 @@ export default function UnidadesConfigPage() {
           <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
           <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
         </div>
-        <div className="sm:w-[220px] w-full">
+        <div className="w-full sm:w-[220px]">
           <Input
             label=""
             placeholder="Buscar..."

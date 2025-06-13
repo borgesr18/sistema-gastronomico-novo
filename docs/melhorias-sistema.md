@@ -8,70 +8,73 @@ Este documento apresenta os principais pontos de melhoria identificados no proje
 
 Atualmente, o controle de usuários é feito no cliente por meio do hook `useUsuarios` (`src/lib/usuariosService.ts`), que armazena dados no `localStorage` com uso de hashing SHA-256. Essa abordagem tem limitações importantes:
 
-- ❌ Não há verificação de unicidade do e-mail ou políticas de senha segura.
-- 🔒 Os perfis são limitados a `admin`, `editor` e `viewer`.
-- 📡 Não há backend para centralização dos dados, o que compromete a escalabilidade.
+- ❌ Não há verificação de unicidade do e-mail ou políticas de senha forte.
+- 🔒 Os perfis são limitados a `admin`, `editor`, `manager` e `viewer`.
+- 📡 Não existe backend para centralização dos dados, o que compromete a escalabilidade e a segurança.
 
-**Sugestões de melhoria**:
+**Sugestões de melhoria:**
 
 1. ✅ Implementar autenticação baseada em servidor (ex.: API REST ou integração com NextAuth) para maior segurança e persistência real.
 2. 🧩 Adicionar novos níveis de acesso e telas de gerenciamento com filtros e busca.
-3. 🔐 Incluir validações de senha forte e confirmação de e-mail no cadastro.
+3. 🔐 Incluir validações de senha forte e confirmação de e-mail durante o cadastro.
 
-**Referências no código**:
-- Hook `useUsuarios`: `src/lib/usuariosService.ts` (L1–L75)
-- Formulário de novo usuário: `src/app/usuarios/novo/page.tsx` (L1–L37)
+**Referências no código:**
+
+- Hook de usuários: `src/lib/usuariosService.ts` (linhas 1 a 75)
+- Formulário de novo usuário: `src/app/usuarios/novo/page.tsx` (linhas 1 a 37)
 
 ---
 
 ## 2. Páginas de Configurações
 
-As páginas de configurações (ex.: categorias, unidades, usuários) compartilham estrutura baseada em modais de criação/edição. Contudo, apresentam limitações de usabilidade:
+As páginas de configuração (ex.: categorias, unidades, usuários) seguem um padrão baseado em modais para criação e edição, mas apresentam limitações de usabilidade:
 
-- 🔍 Falta de paginação ou busca para lidar com grandes volumes de dados.
-- ⛔ Não há funcionalidades de exportação/importação.
-- 🧭 A navegação entre seções pode ser mais intuitiva.
+- 🔍 Falta paginação e pesquisa para lidar com grandes volumes de dados.
+- ⛔ Não há opções de exportação/importação de dados.
+- 🧭 Navegação entre seções poderia ser centralizada em uma barra lateral ou em abas internas.
 
-**Sugestões de melhoria**:
+**Sugestões de melhoria:**
 
-1. 🔎 Implementar filtros e pesquisa nas tabelas (ex.: `CategoriasConfigPage`).
-2. ⬆️⬇️ Permitir exportação e importação de configurações em JSON.
-3. 🧱 Adotar layout com abas internas para melhor organização visual.
+1. 🔎 Implementar filtros e campo de busca em todas as tabelas (exemplo: `CategoriasConfigPage`).
+2. ⬇️⬆️ Adicionar funcionalidade de exportação/importação em formato JSON.
+3. 🧱 Adotar um layout com abas internas ou navegação lateral fixa.
 
-**Referência**: `src/app/configuracoes/page.tsx` (L1–L34)
+**Referência de código:** `src/app/configuracoes/page.tsx` (linhas 1 a 34)
 
 ---
 
 ## 3. Modernização do Dashboard
 
-O Dashboard atual apresenta estatísticas por meio de cartões simples e listas. Para torná-lo mais atrativo e informativo:
+O Dashboard atual apresenta apenas cartões numéricos e listas simples. Para tornar a experiência mais visual e informativa:
 
-- 📈 Adicionar gráficos (barras, pizza) com distribuições e totais.
-- 🎨 Utilizar componentes visuais com ícones e cores que indiquem status ou alertas.
-- 📱 Melhorar responsividade e transições para melhor experiência do usuário.
+- 📈 Adicionar gráficos (barras, pizza, linhas) com dados agregados (ex.: número de categorias, estoque atual, produção mensal).
+- 🎨 Melhorar o design dos cards com uso de cores de destaque, ícones e status visuais.
+- 📱 Aplicar melhorias de responsividade e adicionar transições ou animações suaves.
 
-**Referência**: `src/app/page.tsx` (L1–L117)
+**Referência:** `src/app/page.tsx` (linhas 1 a 117)
 
 ---
 
-## 4. Padronização das Telas
+## 4. Padronização e Reutilização de Componentes nas Telas
 
-- ♻️ Telas como `Unidades de Medida` e `Categorias` possuem layouts repetidos e podem utilizar componentes compartilháveis.
-- ✅ O uso de `alert()` foi corretamente substituído por `Toast`, mas ainda há trechos legados.
-- 🚨 Incluir feedbacks visuais padronizados de erro e carregamento em todas as telas.
+- ♻️ Telas como **Unidades de Medida**, **Categorias** e **Categorias de Receita** possuem layouts quase idênticos e podem compartilhar componentes de formulário e tabela.
+- ✅ O uso de `alert()` foi descontinuado. Agora o sistema utiliza o componente `Toast` para notificações.
+- 🚨 É importante revisar e padronizar mensagens de erro, estados de carregamento e feedbacks visuais em todas as telas.
 
-**Exemplo atualizado com Toast**: `src/app/configuracoes/perfil/page.tsx` (L36–L47)  
-**Exemplo legado com `alert()`**: `src/app/configuracoes/perfil/page.tsx` (L21–L24)
+**Exemplos:**
+
+- Uso de Toast: `src/app/configuracoes/perfil/page.tsx` (linhas 36 a 47)
+- Exemplo legado (uso antigo de `alert()`): `src/app/configuracoes/perfil/page.tsx` (linhas 21 a 24)
 
 ---
 
 ## ✅ Conclusão
 
-O projeto **CustoChef** apresenta boa organização estrutural e clareza na separação de responsabilidades. No entanto, melhorias são necessárias para evoluir em:
+O projeto **CustoChef** está bem estruturado e com bom nível de organização. No entanto, alguns pontos essenciais para sua evolução incluem:
 
-- Segurança e autenticação de usuários.
-- Navegação e usabilidade em páginas de configuração.
-- Experiência visual e interativa no dashboard.
-- Reutilização de componentes e padronização de feedbacks.
+- Reforço na **segurança** e **persistência de dados** (backend).
+- Melhorias em **UX/UI**, incluindo navegação mais fluida e design moderno.
+- Adoção de **componentes reutilizáveis** e **padronização de feedbacks**.
+- Modernização do **dashboard** com visualizações gráficas.
 
-A adoção de um backend, aprimoramentos no front-end e modernização da interface fortalecerão o projeto para usos mais exigentes e escaláveis.
+Estas melhorias vão preparar o sistema para atender a demandas maiores e oferecer uma experiência mais profissional e escalável.

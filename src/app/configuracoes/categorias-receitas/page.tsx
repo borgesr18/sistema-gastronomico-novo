@@ -65,11 +65,11 @@ export default function CategoriasReceitasConfigPage() {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap gap-2 grow">
           <Button onClick={openModal} variant="primary">➕ Nova Categoria</Button>
           <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
           <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>

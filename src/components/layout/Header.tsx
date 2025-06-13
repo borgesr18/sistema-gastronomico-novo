@@ -1,19 +1,31 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useUsuarios } from '@/lib/usuariosService';
 import Logo from '../ui/Logo';
 
 const Header: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const closeTimeout = useRef<NodeJS.Timeout | null>(null);
   const { usuarioAtual, logout } = useUsuarios();
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  const closeProfile = () => setIsProfileOpen(false);
+  const closeProfile = () => {
+    setIsProfileOpen(false);
+  };
+
+  const handleMouseEnter = () => {
+    if (closeTimeout.current) clearTimeout(closeTimeout.current);
+    setIsProfileOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    closeTimeout.current = setTimeout(() => setIsProfileOpen(false), 200);
+  };
 
   return (
     <header
@@ -33,7 +45,7 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="relative" onMouseLeave={closeProfile}>
+          <div className="relative" onMouseLeave={handleMouseLeave}>
             <button
               onClick={toggleProfile}
               className="flex items-center space-x-2 focus:outline-none"
@@ -51,7 +63,8 @@ const Header: React.FC = () => {
             {isProfileOpen && (
               <div
                 className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
-                onMouseEnter={() => setIsProfileOpen(true)}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
                 <Link
                   href="/configuracoes/perfil"
@@ -85,4 +98,3 @@ const Header: React.FC = () => {
 };
 
 export default Header;
-

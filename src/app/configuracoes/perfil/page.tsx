@@ -9,10 +9,14 @@ import { useUsuarios } from '@/lib/usuariosService';
 export default function PerfilPage() {
   const { usuarioAtual, alterarSenha, editarUsuario } = useUsuarios();
 
-  const [perfilForm, setPerfilForm] = useState({
+  const [perfilForm, setPerfilForm] = useState<{
+    nome: string;
+    email: string;
+    role: 'admin' | 'editor' | 'viewer' | 'manager';
+  }>({
     nome: '',
     email: '',
-    role: 'viewer' as 'admin' | 'editor' | 'viewer' | 'manager',
+    role: 'viewer',
   });
 
   const [senhaForm, setSenhaForm] = useState({ senha: '', confirmar: '' });
@@ -97,7 +101,9 @@ export default function PerfilPage() {
             <option value="admin">Administrador</option>
           </select>
         </div>
+
         {erro && <p className="text-sm text-red-600">{erro}</p>}
+
         <div className="flex justify-end">
           <Button type="submit" variant="primary">Salvar Perfil</Button>
         </div>

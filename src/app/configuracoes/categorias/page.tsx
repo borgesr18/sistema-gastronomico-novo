@@ -65,16 +65,16 @@ export default function CategoriasConfigPage() {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Produtos</h1>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap gap-2 grow">
           <Button onClick={openModal} variant="primary">➕ Nova Categoria</Button>
           <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
           <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
         </div>
-        <div className="sm:w-[220px] w-full">
+        <div className="w-full sm:w-[220px]">
           <Input
             label=""
             placeholder="Buscar..."
@@ -85,7 +85,13 @@ export default function CategoriasConfigPage() {
         </div>
       </div>
 
-      <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
+      <input
+        type="file"
+        ref={fileInput}
+        className="hidden"
+        accept="application/json"
+        onChange={handleImport}
+      />
 
       <div className="pt-2">
         <Table headers={["Nome", "Ações"]}>
@@ -107,7 +113,12 @@ export default function CategoriasConfigPage() {
 
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
         <form onSubmit={handleAdd} className="space-y-4">
-          <Input label="Nome" value={nova} onChange={e => setNova(e.target.value)} required />
+          <Input
+            label="Nome"
+            value={nova}
+            onChange={e => setNova(e.target.value)}
+            required
+          />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>
@@ -117,7 +128,12 @@ export default function CategoriasConfigPage() {
 
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
         <form onSubmit={handleEdit} className="space-y-4">
-          <Input label="Nome" value={editar.nome} onChange={e => setEditar({ ...editar, nome: e.target.value })} required />
+          <Input
+            label="Nome"
+            value={editar.nome}
+            onChange={e => setEditar({ ...editar, nome: e.target.value })}
+            required
+          />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeEdit}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>

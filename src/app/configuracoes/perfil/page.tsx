@@ -27,6 +27,16 @@ export default function PerfilPage() {
 
   if (!usuarioAtual) return <p className="p-4">Nenhum usuário logado.</p>;
 
+  const handlePerfil = (e: React.FormEvent) => {
+    e.preventDefault();
+    const ok = editarUsuario(usuarioAtual.id, perfilForm);
+    if (ok) {
+      setToast('Perfil atualizado');
+    } else {
+      setErro('Email já cadastrado');
+    }
+  };
+
   const handleSenha = (e: React.FormEvent) => {
     e.preventDefault();
     if (senhaForm.senha !== senhaForm.confirmar) {
@@ -39,20 +49,11 @@ export default function PerfilPage() {
     setToast('Senha alterada');
   };
 
-  const handlePerfil = (e: React.FormEvent) => {
-    e.preventDefault();
-    const ok = editarUsuario(usuarioAtual.id, perfilForm);
-    if (ok) {
-      setToast('Perfil atualizado');
-    } else {
-      setErro('Email já cadastrado');
-    }
-  };
-
   return (
     <div className="space-y-4">
       <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Perfil</h1>
+      
       <form onSubmit={handlePerfil} className="space-y-2 max-w-sm">
         <Input label="Nome" value={perfilForm.nome} onChange={e => setPerfilForm({ ...perfilForm, nome: e.target.value })} required />
         <Input label="Email" type="email" value={perfilForm.email} onChange={e => setPerfilForm({ ...perfilForm, email: e.target.value })} required />
@@ -71,6 +72,7 @@ export default function PerfilPage() {
         {erro && <p className="text-sm text-red-600">{erro}</p>}
         <Button type="submit" variant="primary">Salvar Perfil</Button>
       </form>
+
       <form onSubmit={handleSenha} className="space-y-2 max-w-sm">
         <Input label="Nova Senha" type="password" value={senhaForm.senha} onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })} required />
         <Input label="Confirmar Senha" type="password" value={senhaForm.confirmar} onChange={e => setSenhaForm({ ...senhaForm, confirmar: e.target.value })} required />

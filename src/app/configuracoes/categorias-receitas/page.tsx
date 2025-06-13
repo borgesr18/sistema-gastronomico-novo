@@ -68,8 +68,8 @@ export default function CategoriasReceitasConfigPage() {
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex flex-wrap gap-2 grow">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button onClick={openModal} variant="primary">
             ➕ Nova Categoria
           </Button>
@@ -80,8 +80,7 @@ export default function CategoriasReceitasConfigPage() {
             ⬆️ Importar
           </Button>
         </div>
-
-        <div className="w-full sm:w-[220px]">
+        <div className="sm:mt-0 sm:ml-auto w-full sm:w-[220px]">
           <Input
             label=""
             placeholder="Buscar..."

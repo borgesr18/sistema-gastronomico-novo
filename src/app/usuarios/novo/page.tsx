@@ -6,11 +6,20 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { useUsuarios } from '@/lib/usuariosService';
+import { useEffect } from 'react';
 import Logo from '@/components/ui/Logo';
 
 export default function NovoUsuarioPage() {
   const router = useRouter();
-  const { registrarUsuario } = useUsuarios();
+  const { registrarUsuario, usuarioAtual } = useUsuarios();
+
+  useEffect(() => {
+    if (!usuarioAtual || usuarioAtual.role !== 'admin') {
+      router.replace('/login');
+    }
+  }, [usuarioAtual, router]);
+
+  if (!usuarioAtual || usuarioAtual.role !== 'admin') return null;
 
   const [form, setForm] = useState<{
     nome: string;

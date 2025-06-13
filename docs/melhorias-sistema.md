@@ -1,5 +1,6 @@
 # 📊 Análise de Melhorias – Projeto CustoChef
 
+- Página de login sem link público de cadastro【F:src/app/login/page.tsx†L27-L35】
 Este documento apresenta os principais pontos de melhoria identificados no projeto **CustoChef**, com base em uma revisão geral do código-fonte e das funcionalidades atuais do sistema.
 
 ---

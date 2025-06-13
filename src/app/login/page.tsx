@@ -33,12 +33,6 @@ export default function LoginPage() {
       setErro('Credenciais inválidas');
     }
   };
-
-  return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <Card className="w-96">
-        <div className="flex justify-center mb-4">
-          <Logo className="text-2xl" />
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <h1 className="text-xl font-bold text-gray-800">Entrar</h1>

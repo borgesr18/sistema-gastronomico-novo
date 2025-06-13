@@ -8,14 +8,22 @@ import { useUsuarios } from '@/lib/usuariosService';
 
 export default function PerfilPage() {
   const { usuarioAtual, alterarSenha, editarUsuario } = useUsuarios();
-  const [perfilForm, setPerfilForm] = useState({ nome: '', email: '', role: 'viewer' as 'admin' | 'editor' | 'viewer' });
+  const [perfilForm, setPerfilForm] = useState({
+    nome: '',
+    email: '',
+    role: 'viewer' as 'admin' | 'editor' | 'viewer',
+  });
   const [senhaForm, setSenhaForm] = useState({ senha: '', confirmar: '' });
   const [erro, setErro] = useState('');
   const [toast, setToast] = useState('');
 
   useEffect(() => {
     if (usuarioAtual) {
-      setPerfilForm({ nome: usuarioAtual.nome, email: usuarioAtual.email, role: usuarioAtual.role });
+      setPerfilForm({
+        nome: usuarioAtual.nome,
+        email: usuarioAtual.email,
+        role: usuarioAtual.role,
+      });
     }
   }, [usuarioAtual]);
 
@@ -53,10 +61,21 @@ export default function PerfilPage() {
     <div className="space-y-4">
       <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Perfil</h1>
-      
+
       <form onSubmit={handlePerfil} className="space-y-2 max-w-sm">
-        <Input label="Nome" value={perfilForm.nome} onChange={e => setPerfilForm({ ...perfilForm, nome: e.target.value })} required />
-        <Input label="Email" type="email" value={perfilForm.email} onChange={e => setPerfilForm({ ...perfilForm, email: e.target.value })} required />
+        <Input
+          label="Nome"
+          value={perfilForm.nome}
+          onChange={e => setPerfilForm({ ...perfilForm, nome: e.target.value })}
+          required
+        />
+        <Input
+          label="Email"
+          type="email"
+          value={perfilForm.email}
+          onChange={e => setPerfilForm({ ...perfilForm, email: e.target.value })}
+          required
+        />
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
           <select
@@ -74,8 +93,20 @@ export default function PerfilPage() {
       </form>
 
       <form onSubmit={handleSenha} className="space-y-2 max-w-sm">
-        <Input label="Nova Senha" type="password" value={senhaForm.senha} onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })} required />
-        <Input label="Confirmar Senha" type="password" value={senhaForm.confirmar} onChange={e => setSenhaForm({ ...senhaForm, confirmar: e.target.value })} required />
+        <Input
+          label="Nova Senha"
+          type="password"
+          value={senhaForm.senha}
+          onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })}
+          required
+        />
+        <Input
+          label="Confirmar Senha"
+          type="password"
+          value={senhaForm.confirmar}
+          onChange={e => setSenhaForm({ ...senhaForm, confirmar: e.target.value })}
+          required
+        />
         <Button type="submit" variant="primary">Alterar Senha</Button>
       </form>
     </div>

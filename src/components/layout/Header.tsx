@@ -16,8 +16,11 @@ const Header: React.FC = () => {
   return (
     <header className="border-b shadow-sm" style={{ backgroundColor: 'var(--cor-primaria)', color: 'white', borderColor: 'var(--cor-borda)' }}>
       <div className="flex items-center justify-between p-4">
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
           <Logo className="text-xl" />
+          <span className="text-xs sm:text-sm whitespace-nowrap">
+            - Sistema de Fichas Técnicas
+          </span>
         </div>
 
         <div className="flex items-center space-x-4">

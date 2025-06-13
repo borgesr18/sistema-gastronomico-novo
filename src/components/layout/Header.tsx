@@ -16,13 +16,16 @@ const Header: React.FC = () => {
   return (
     <header className="border-b shadow-sm" style={{ backgroundColor: 'var(--cor-primaria)', color: 'white', borderColor: 'var(--cor-borda)' }}>
       <div className="flex items-center justify-between p-4">
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
           <Logo className="text-xl" />
+          <span className="text-xs sm:text-sm whitespace-nowrap">
+            - Sistema de Fichas Técnicas
+          </span>
         </div>
 
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <button 
+            <button
               onClick={toggleProfile}
               className="flex items-center space-x-2 focus:outline-none"
               >
@@ -33,7 +36,11 @@ const Header: React.FC = () => {
             </button>
 
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+              <div
+                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                onMouseEnter={() => setIsProfileOpen(true)}
+                onMouseLeave={() => setIsProfileOpen(false)}
+              >
                 <Link
                   href="/configuracoes/perfil"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

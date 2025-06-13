@@ -17,7 +17,7 @@ const Sidebar: React.FC = () => {
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
       <div className="p-4 flex items-center justify-between">
-        {!isCollapsed && <Logo className="text-xl" />}
+        {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
         <button
           onClick={toggleSidebar}
           className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"

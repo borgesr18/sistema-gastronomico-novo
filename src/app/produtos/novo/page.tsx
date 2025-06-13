@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 import { useCategorias } from '@/lib/categoriasService';
-import { useState } from 'react';
+import Toast from '@/components/ui/Toast';
 
 export default function NovoInsumoPage() {
   const router = useRouter();
@@ -18,6 +18,13 @@ export default function NovoInsumoPage() {
   const { unidades } = useUnidadesMedida();
   const [isLoading, setIsLoading] = useState(false);
   const [mostrarInfoNutricional, setMostrarInfoNutricional] = useState(false);
+  const [toast, setToast] = useState('');
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
   
   const [produto, setProduto] = useState({
     nome: '',
@@ -135,7 +142,7 @@ export default function NovoInsumoPage() {
       router.push('/produtos');
     } catch (error) {
       console.error('Erro ao salvar produto:', error);
-      alert('Ocorreu um erro ao salvar o produto. Tente novamente.');
+      setToast('Erro ao salvar produto');
     } finally {
       setIsLoading(false);
     }
@@ -143,6 +150,7 @@ export default function NovoInsumoPage() {
 
   return (
     <div className="space-y-6">
+      <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Novo Insumo</h1>
       
       <form onSubmit={handleSubmit}>

@@ -21,9 +21,9 @@ export default function LoginPage() {
     return null;
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const usuario = login(email, senha);
+    const usuario = await login(email, senha);
     if (usuario) {
       router.push('/');
     } else {

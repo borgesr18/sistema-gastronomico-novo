@@ -13,8 +13,17 @@ const Header: React.FC = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
+  const closeProfile = () => setIsProfileOpen(false);
+
   return (
-    <header className="border-b shadow-sm" style={{ backgroundColor: 'var(--cor-primaria)', color: 'white', borderColor: 'var(--cor-borda)' }}>
+    <header
+      className="border-b shadow-sm"
+      style={{
+        backgroundColor: 'var(--cor-primaria)',
+        color: 'white',
+        borderColor: 'var(--cor-borda)',
+      }}
+    >
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-2">
           <Logo className="text-xl" />
@@ -24,22 +33,25 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          <div className="relative" onMouseLeave={closeProfile}>
             <button
               onClick={toggleProfile}
               className="flex items-center space-x-2 focus:outline-none"
-              >
-              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                <span className="text-sm font-medium text-gray-700">U</span>
+            >
+              <div className="w-8 h-8 rounded-full bg-white text-gray-800 flex items-center justify-center">
+                <span className="text-sm font-medium">
+                  {usuarioAtual?.nome?.[0]?.toUpperCase() || 'U'}
+                </span>
               </div>
-              <span className="hidden md:block text-sm font-medium text-white">{usuarioAtual?.nome || 'Usuário'}</span>
+              <span className="hidden md:block text-sm font-medium text-white">
+                {usuarioAtual?.nome || 'Usuário'}
+              </span>
             </button>
 
             {isProfileOpen && (
               <div
                 className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
                 onMouseEnter={() => setIsProfileOpen(true)}
-                onMouseLeave={() => setIsProfileOpen(false)}
               >
                 <Link
                   href="/configuracoes/perfil"
@@ -47,7 +59,7 @@ const Header: React.FC = () => {
                 >
                   Perfil
                 </Link>
-                <Link 
+                <Link
                   href="/configuracoes"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
@@ -55,7 +67,10 @@ const Header: React.FC = () => {
                 </Link>
                 <div className="border-t" style={{ borderColor: 'var(--cor-borda)' }}></div>
                 <button
-                  onClick={logout}
+                  onClick={() => {
+                    logout();
+                    closeProfile();
+                  }}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Sair
@@ -70,3 +85,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+

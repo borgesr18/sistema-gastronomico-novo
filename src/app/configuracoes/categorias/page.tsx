@@ -67,26 +67,44 @@ export default function CategoriasConfigPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Produtos</h1>
-      <div className="flex flex-wrap items-end gap-2">
-        <Button onClick={openModal} variant="primary">Nova Categoria</Button>
-        <Button onClick={handleExport} variant="secondary">Exportar Lista</Button>
-        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar Lista</Button>
-        <div className="flex-1 min-w-[150px]">
-          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} className="mb-0" />
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button onClick={openModal} variant="primary">➕ Nova Categoria</Button>
+          <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
+          <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
+        </div>
+        <div className="sm:w-[220px] w-full">
+          <Input
+            label=""
+            placeholder="Buscar..."
+            value={filtro}
+            onChange={e => setFiltro(e.target.value)}
+            className="h-[38px]"
+          />
         </div>
       </div>
+
       <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
-      <Table headers={["Nome", "Ações"]}>
-        {filtradas.map(cat => (
-          <TableRow key={cat.id}>
-            <TableCell>{cat.nome}</TableCell>
-            <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>Editar</Button>
-              <Button size="sm" variant="danger" onClick={() => removerCategoria(cat.id)}>Excluir</Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
+
+      <div className="pt-2">
+        <Table headers={["Nome", "Ações"]}>
+          {filtradas.map(cat => (
+            <TableRow key={cat.id}>
+              <TableCell>{cat.nome}</TableCell>
+              <TableCell className="flex items-center space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
+                  ✏️ Editar
+                </Button>
+                <Button size="sm" variant="danger" onClick={() => removerCategoria(cat.id)}>
+                  🗑️ Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </div>
+
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
         <form onSubmit={handleAdd} className="space-y-4">
           <Input label="Nome" value={nova} onChange={e => setNova(e.target.value)} required />
@@ -96,6 +114,7 @@ export default function CategoriasConfigPage() {
           </div>
         </form>
       </Modal>
+
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
         <form onSubmit={handleEdit} className="space-y-4">
           <Input label="Nome" value={editar.nome} onChange={e => setEditar({ ...editar, nome: e.target.value })} required />

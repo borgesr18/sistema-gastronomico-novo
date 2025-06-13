@@ -1,72 +1,77 @@
-# Análise de Melhorias
+# 📊 Análise de Melhorias – Projeto CustoChef
 
-Este documento apresenta pontos de melhoria identificados no projeto CustoChef após
-uma revisão geral do código-fonte.
+Este documento apresenta os principais pontos de melhoria identificados no projeto **CustoChef**, com base em uma revisão geral do código-fonte e das funcionalidades atuais do sistema.
+
+---
 
 ## 1. Sistema de Perfis de Usuário
 
-O controle de usuários é realizado no cliente através do hook `useUsuarios`
-(`src/lib/usuariosService.ts`), que guarda os dados no `localStorage` e utiliza
-hashing SHA-256. Embora simples, esse modelo possui limitações:
+Atualmente, o controle de usuários é feito no cliente por meio do hook `useUsuarios` (`src/lib/usuariosService.ts`), que armazena dados no `localStorage` com uso de hashing SHA-256. Essa abordagem tem limitações importantes:
 
-- Não há validação de email único ou reforço de senha.
-- Os perfis são restritos a `admin` e `viewer`, podendo ser ampliados.
-- Não existe backend para centralizar os dados, dificultando escalabilidade.
+- ❌ Não há verificação de unicidade do e-mail ou políticas de senha segura.
+- 🔒 Os perfis são limitados a `admin`, `editor` e `viewer`.
+- 📡 Não há backend para centralização dos dados, o que compromete a escalabilidade.
 
-**Sugestões**:
+**Sugestões de melhoria**:
 
-1. Implementar autenticação baseada em servidor (por exemplo, API REST ou
-   integração com NextAuth) para persistência segura.
-2. Adicionar níveis de acesso adicionais e telas de gerenciamento com filtros e
-   pesquisa.
-3. Aplicar validações de senha forte e confirmação de email durante o
-   cadastramento.
+1. ✅ Implementar autenticação baseada em servidor (ex.: API REST ou integração com NextAuth) para maior segurança e persistência real.
+2. 🧩 Adicionar novos níveis de acesso e telas de gerenciamento com filtros e busca.
+3. 🔐 Incluir validações de senha forte e confirmação de e-mail no cadastro.
 
-Referências de código:
-- Definição do hook `useUsuarios`【F:src/lib/usuariosService.ts†L1-L75】
-- Formulário de cadastro de usuário【F:src/app/usuarios/novo/page.tsx†L1-L37】
+**Referências no código**:
+- Hook `useUsuarios`: `src/lib/usuariosService.ts` (L1–L75)
+- Formulário de novo usuário: `src/app/usuarios/novo/page.tsx` (L1–L37)
 
-## 2. Configurações
+---
 
-As páginas de configuração (categorias, unidades, usuários) seguem estrutura
-similar com modais para criação/edição. Pontos de melhoria:
+## 2. Páginas de Configurações
 
-- Falta paginação ou busca para grandes listas.
-- Não há opção de exportar/importar as configurações.
-- A navegação poderia ser centralizada em uma barra lateral ou abas internas.
+As páginas de configurações (ex.: categorias, unidades, usuários) compartilham estrutura baseada em modais de criação/edição. Contudo, apresentam limitações de usabilidade:
 
-**Sugestões**:
+- 🔍 Falta de paginação ou busca para lidar com grandes volumes de dados.
+- ⛔ Não há funcionalidades de exportação/importação.
+- 🧭 A navegação entre seções pode ser mais intuitiva.
 
-1. Adicionar filtros e pesquisa nas tabelas (ex.: `CategoriasConfigPage`).
-2. Permitir exportar configurações para JSON e importar de arquivos.
-3. Consolidar as páginas em um layout de abas para facilitar a navegação.
+**Sugestões de melhoria**:
 
-Exemplo de estrutura atual【F:src/app/configuracoes/page.tsx†L1-L34】.
+1. 🔎 Implementar filtros e pesquisa nas tabelas (ex.: `CategoriasConfigPage`).
+2. ⬆️⬇️ Permitir exportação e importação de configurações em JSON.
+3. 🧱 Adotar layout com abas internas para melhor organização visual.
+
+**Referência**: `src/app/configuracoes/page.tsx` (L1–L34)
+
+---
 
 ## 3. Modernização do Dashboard
 
-O Dashboard apresenta cartões com números e listas simples. Para
-uma visualização mais moderna e clara, recomenda-se:
+O Dashboard atual apresenta estatísticas por meio de cartões simples e listas. Para torná-lo mais atrativo e informativo:
 
-- Inserir gráficos (barras, pizza) para as distribuições de categorias.
-- Utilizar componentes de cards com ícones e cores de destaque.
-- Aplicar responsividade e animações sutis para melhorar a experiência.
+- 📈 Adicionar gráficos (barras, pizza) com distribuições e totais.
+- 🎨 Utilizar componentes visuais com ícones e cores que indiquem status ou alertas.
+- 📱 Melhorar responsividade e transições para melhor experiência do usuário.
 
-Trecho da página atual do Dashboard【F:src/app/page.tsx†L1-L117】.
+**Referência**: `src/app/page.tsx` (L1–L117)
 
-## 4. Revisão Geral das Telas
+---
 
-- Páginas como `Unidades de Medida` e `Categorias` se repetem em layout e podem
-  compartilhar componentes reutilizáveis para formulários.
-- O feedback por `alert()` (ex.: troca de senha em
-  `PerfilPage`) foi substituído por toasts utilizando o componente `Toast`.
-- Incluir mensagens de erro ou carregamento consistentes em todas as telas.
+## 4. Padronização das Telas
 
-Exemplo do novo sistema de notificação【F:src/app/configuracoes/perfil/page.tsx†L36-L47】.
+- ♻️ Telas como `Unidades de Medida` e `Categorias` possuem layouts repetidos e podem utilizar componentes compartilháveis.
+- ✅ O uso de `alert()` foi corretamente substituído por `Toast`, mas ainda há trechos legados.
+- 🚨 Incluir feedbacks visuais padronizados de erro e carregamento em todas as telas.
 
-## Conclusão
+**Exemplo atualizado com Toast**: `src/app/configuracoes/perfil/page.tsx` (L36–L47)  
+**Exemplo legado com `alert()`**: `src/app/configuracoes/perfil/page.tsx` (L21–L24)
 
-O projeto está bem organizado em termos de estrutura de pastas e componentes,
-mas pode evoluir em segurança, UX e escalabilidade. A adoção de um backend para
-autenticação, melhorias na navegação de configurações e enriquecimento visual do
-Dashboard são passos importantes para tornar o sistema mais profissional.
+---
+
+## ✅ Conclusão
+
+O projeto **CustoChef** apresenta boa organização estrutural e clareza na separação de responsabilidades. No entanto, melhorias são necessárias para evoluir em:
+
+- Segurança e autenticação de usuários.
+- Navegação e usabilidade em páginas de configuração.
+- Experiência visual e interativa no dashboard.
+- Reutilização de componentes e padronização de feedbacks.
+
+A adoção de um backend, aprimoramentos no front-end e modernização da interface fortalecerão o projeto para usos mais exigentes e escaláveis.

@@ -60,7 +60,7 @@ export default function LoginPage() {
           <Button type="submit" variant="primary" fullWidth>
             Entrar
           </Button>
-          <p className="text-sm">
+          <p className="text-sm text-center">
             Não possui conta?{' '}
             <Link href="/usuarios/novo" className="text-blue-600 hover:underline">
               Cadastre-se
@@ -71,3 +71,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

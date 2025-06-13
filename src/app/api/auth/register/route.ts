@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsuarios, addUsuario, hashSenha, senhaForte } from '@/lib/serverUsuarios';
+import { getUsuarios, addUsuario, hashSenha, senhaForte, ensureAdmin } from '@/lib/serverUsuarios';
 
 export async function POST(req: NextRequest) {
+  ensureAdmin();
+
   const { nome, email, senha, role } = await req.json();
 
   if (getUsuarios().some(u => u.email === email)) {

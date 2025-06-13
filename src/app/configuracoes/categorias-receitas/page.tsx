@@ -70,19 +70,25 @@ export default function CategoriasReceitasConfigPage() {
 
       <div className="flex flex-wrap justify-between items-center gap-2">
         <div className="flex flex-wrap gap-2">
-          <Button onClick={openModal} variant="primary">➕ Nova Categoria</Button>
-          <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
-          <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
+          <Button onClick={openModal} variant="primary">
+            ➕ Nova Categoria
+          </Button>
+          <Button onClick={handleExport} variant="secondary">
+            ⬇️ Exportar
+          </Button>
+          <Button onClick={() => fileInput.current?.click()} variant="secondary">
+            ⬆️ Importar
+          </Button>
         </div>
 
-        <div className="w-full sm:w-auto sm:ml-auto">
+        <div className="self-center w-[220px]">
           <input
             type="text"
             placeholder="Buscar..."
             aria-label="Buscar"
             value={filtro}
             onChange={e => setFiltro(e.target.value)}
-            className="border border-[var(--cor-borda)] rounded-md px-3 py-[6px] w-full sm:w-[220px] text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="border border-[var(--cor-borda)] rounded-md px-3 py-[6px] w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
       </div>
@@ -104,4 +110,44 @@ export default function CategoriasReceitasConfigPage() {
                 <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
                   ✏️ Editar
                 </Button>
-                <Button
+                <Button size="sm" variant="danger" onClick={() => remover(cat.id)}>
+                  🗑️ Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </div>
+
+      <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
+        <form onSubmit={handleAdd} className="space-y-4">
+          <Input
+            label="Nome"
+            value={nova}
+            onChange={e => setNova(e.target.value)}
+            required
+          />
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
+            <Button type="submit" variant="primary">Salvar</Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
+        <form onSubmit={handleEdit} className="space-y-4">
+          <Input
+            label="Nome"
+            value={editar.nome}
+            onChange={e => setEditar({ ...editar, nome: e.target.value })}
+            required
+          />
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="secondary" onClick={closeEdit}>Cancelar</Button>
+            <Button type="submit" variant="primary">Salvar</Button>
+          </div>
+        </form>
+      </Modal>
+    </div>
+  );
+}

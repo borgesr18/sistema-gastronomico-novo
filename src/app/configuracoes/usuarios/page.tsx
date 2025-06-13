@@ -75,7 +75,7 @@ export default function UsuariosConfigPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex flex-wrap gap-2 grow">

@@ -69,10 +69,14 @@ export default function CategoriasConfigPage() {
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Produtos</h1>
       <div className="flex flex-wrap items-end gap-2">
         <Button onClick={openModal} variant="primary">Nova Categoria</Button>
-        <Button onClick={handleExport} variant="secondary">Exportar Lista</Button>
-        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar Lista</Button>
+        <Button onClick={handleExport} variant="secondary">Exportar JSON</Button>
+        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar JSON</Button>
         <div className="flex-1 min-w-[150px]">
-          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} className="mb-0" />
+          <Input
+            label="Buscar"
+            value={filtro}
+            onChange={e => setFiltro(e.target.value)}
+          />
         </div>
       </div>
       <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
@@ -87,6 +91,7 @@ export default function CategoriasConfigPage() {
           </TableRow>
         ))}
       </Table>
+
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
         <form onSubmit={handleAdd} className="space-y-4">
           <Input label="Nome" value={nova} onChange={e => setNova(e.target.value)} required />
@@ -96,6 +101,7 @@ export default function CategoriasConfigPage() {
           </div>
         </form>
       </Modal>
+
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
         <form onSubmit={handleEdit} className="space-y-4">
           <Input label="Nome" value={editar.nome} onChange={e => setEditar({ ...editar, nome: e.target.value })} required />

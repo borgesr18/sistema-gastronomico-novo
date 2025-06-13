@@ -9,11 +9,26 @@ import { useUsuarios } from '@/lib/usuariosService';
 
 export default function UsuariosConfigPage() {
   const { usuarios, registrarUsuario, removerUsuario, alterarSenha, editarUsuario } = useUsuarios();
-  const { isOpen, openModal, closeModal } = useModal();
-  const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
-  const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal();
-  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
-  const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({ id: '', nome: '', email: '', role: 'viewer' });
+
+  const { isOpen, openModal, closeModal } = useModal(); // Novo usuário
+  const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal(); // Senha
+  const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal(); // Edição
+
+  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; confirmarSenha: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({
+    nome: '',
+    email: '',
+    senha: '',
+    confirmarSenha: '',
+    role: 'viewer',
+  });
+
+  const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }>({
+    id: '',
+    nome: '',
+    email: '',
+    role: 'viewer',
+  });
+
   const [erro, setErro] = useState('');
   const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [erroSenha, setErroSenha] = useState('');
@@ -25,11 +40,13 @@ export default function UsuariosConfigPage() {
       setErro('Senhas não conferem');
       return;
     }
+
     const criado = await registrarUsuario({ nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role });
     if (!criado) {
       setErro('Email já cadastrado ou senha fraca');
       return;
     }
+
     setNovo({ nome: '', email: '', senha: '', confirmarSenha: '', role: 'viewer' });
     setErro('');
     closeModal();
@@ -41,7 +58,7 @@ export default function UsuariosConfigPage() {
     openSenhaModal();
   };
 
-  const iniciarEdicao = (u: { id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' }) => {
+  const iniciarEdicao = (u: { id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }) => {
     setEditar(u);
     setErro('');
     openEditModal();
@@ -53,6 +70,7 @@ export default function UsuariosConfigPage() {
       setErroSenha('Senhas não conferem');
       return;
     }
+
     alterarSenha(senhaForm.id, senhaForm.senha);
     closeSenhaModal();
   };
@@ -78,9 +96,10 @@ export default function UsuariosConfigPage() {
       <div className="flex flex-wrap items-end gap-2">
         <Button onClick={openModal} variant="primary">Novo Usuário</Button>
         <div className="flex-1 min-w-[150px]">
-          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} className="mb-0" />
+          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} />
         </div>
       </div>
+
       <Table headers={["Nome", "Email", "Perfil", "Ações"]}>
         {filtrados.map(u => (
           <TableRow key={u.id}>
@@ -96,20 +115,15 @@ export default function UsuariosConfigPage() {
                 : 'Visualizador'}
             </TableCell>
             <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u)}>
-                Editar
-              </Button>
-              <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>
-                Alterar Senha
-              </Button>
-              <Button size="sm" variant="danger" onClick={() => removerUsuario(u.id)}>
-                Excluir
-              </Button>
+              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u)}>Editar</Button>
+              <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>Alterar Senha</Button>
+              <Button size="sm" variant="danger" onClick={() => removerUsuario(u.id)}>Excluir</Button>
             </TableCell>
           </TableRow>
         ))}
       </Table>
 
+      {/* Modal Novo Usuário */}
       <Modal isOpen={isOpen} onClose={closeModal} title="Novo Usuário">
         <form onSubmit={handleSubmit} className="space-y-4">
           {erro && <p className="text-sm text-red-600">{erro}</p>}
@@ -122,9 +136,7 @@ export default function UsuariosConfigPage() {
             <select
               className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
               value={novo.role}
-              onChange={e =>
-                setNovo({ ...novo, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
-              }
+              onChange={e => setNovo({ ...novo, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             >
               <option value="viewer">Visualizador</option>
               <option value="editor">Editor</option>
@@ -139,23 +151,12 @@ export default function UsuariosConfigPage() {
         </form>
       </Modal>
 
+      {/* Modal Alterar Senha */}
       <Modal isOpen={isSenhaOpen} onClose={closeSenhaModal} title="Alterar Senha">
         <form onSubmit={handleAlterarSenha} className="space-y-4">
           {erroSenha && <p className="text-sm text-red-600">{erroSenha}</p>}
-          <Input
-            label="Nova Senha"
-            type="password"
-            value={senhaForm.senha}
-            onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })}
-            required
-          />
-          <Input
-            label="Confirmar Senha"
-            type="password"
-            value={senhaForm.confirmarSenha}
-            onChange={e => setSenhaForm({ ...senhaForm, confirmarSenha: e.target.value })}
-            required
-          />
+          <Input label="Nova Senha" type="password" value={senhaForm.senha} onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })} required />
+          <Input label="Confirmar Senha" type="password" value={senhaForm.confirmarSenha} onChange={e => setSenhaForm({ ...senhaForm, confirmarSenha: e.target.value })} required />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeSenhaModal}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>
@@ -163,6 +164,7 @@ export default function UsuariosConfigPage() {
         </form>
       </Modal>
 
+      {/* Modal Editar Usuário */}
       <Modal isOpen={isEditOpen} onClose={closeEditModal} title="Editar Usuário">
         <form onSubmit={handleEditar} className="space-y-4">
           {erro && <p className="text-sm text-red-600">{erro}</p>}
@@ -173,9 +175,7 @@ export default function UsuariosConfigPage() {
             <select
               className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
               value={editar.role}
-              onChange={e =>
-                setEditar({ ...editar, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
-              }
+              onChange={e => setEditar({ ...editar, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             >
               <option value="viewer">Visualizador</option>
               <option value="editor">Editor</option>

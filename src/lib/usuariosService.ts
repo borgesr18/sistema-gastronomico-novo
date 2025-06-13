@@ -30,7 +30,7 @@ const obterUsuarios = (): UsuarioInfo[] => {
     const lista = usuariosString ? JSON.parse(usuariosString) : [];
     return lista.map((u: any) => ({ role: 'viewer', ...u }));
   } catch (err) {
-    console.error('Erro ao ler usuarios do localStorage', err);
+    console.error('Erro ao ler usuários do localStorage', err);
     return [];
   }
 };
@@ -57,40 +57,50 @@ export const useUsuarios = () => {
   const senhaForte = (senha: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);
 
-  const registrarUsuario = async (
-    dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' | 'manager' }
-  ) => {
-    if (usuarios.some(u => u.email === dados.email)) {
-      return null;
-    }
-    if (!senhaForte(dados.senha)) {
-      return null;
-    }
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
-      });
-      if (!res.ok) return null;
-      const novo = (await res.json()) as UsuarioInfo;
-      const novos = [...usuarios, novo];
-      setUsuarios(novos);
-      salvarUsuarios(novos);
-      return novo;
-    } catch {
-      return null;
-    }
+  const registrarUsuario = (dados: {
+    nome: string;
+    email: string;
+    senha: string;
+    role?: 'admin' | 'editor' | 'viewer' | 'manager';
+  }) => {
+    if (usuarios.some(u => u.email === dados.email)) return null;
+    if (!senhaForte(dados.senha)) return null;
+
+    const novo: UsuarioInfo = {
+      id: gerarId(),
+      nome: dados.nome,
+      email: dados.email,
+      senhaHash: hashSenha(dados.senha),
+      role: dados.role || 'viewer',
+    };
+
+    const novos = [...usuarios, novo];
+    setUsuarios(novos);
+    salvarUsuarios(novos);
+    return novo;
+  };
+
+  const login = (email: string, senha: string) => {
+    const usuario = usuarios.find(
+      u => u.email === email && u.senhaHash === hashSenha(senha)
+    );
+    if (!usuario) return null;
+
+    setUsuarioAtual(usuario);
+    localStorage.setItem('usuarioLogado', usuario.id);
+    return usuario;
+  };
+
+  const logout = () => {
+    setUsuarioAtual(null);
+    localStorage.removeItem('usuarioLogado');
   };
 
   const removerUsuario = (id: string) => {
     const filtrados = usuarios.filter(u => u.id !== id);
     setUsuarios(filtrados);
     salvarUsuarios(filtrados);
-    const idLogado = localStorage.getItem('usuarioLogado');
-    if (idLogado === id) {
-      logout();
-    }
+    if (usuarioAtual?.id === id) logout();
   };
 
   const alterarSenha = (id: string, novaSenha: string) => {
@@ -109,9 +119,8 @@ export const useUsuarios = () => {
     id: string,
     dados: { nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }
   ) => {
-    if (usuarios.some(u => u.email === dados.email && u.id !== id)) {
-      return false;
-    }
+    if (usuarios.some(u => u.email === dados.email && u.id !== id)) return false;
+
     const atualizados = usuarios.map(u =>
       u.id === id ? { ...u, nome: dados.nome, email: dados.email, role: dados.role } : u
     );
@@ -124,27 +133,14 @@ export const useUsuarios = () => {
     return true;
   };
 
-  const login = async (email: string, senha: string) => {
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha })
-      });
-      if (!res.ok) return null;
-      const usuario = (await res.json()) as UsuarioInfo;
-      setUsuarioAtual(usuario);
-      localStorage.setItem('usuarioLogado', usuario.id);
-      return usuario;
-    } catch {
-      return null;
-    }
+  return {
+    usuarios,
+    usuarioAtual,
+    registrarUsuario,
+    login,
+    logout,
+    removerUsuario,
+    alterarSenha,
+    editarUsuario,
   };
-
-  const logout = () => {
-    setUsuarioAtual(null);
-    localStorage.removeItem('usuarioLogado');
-  };
-
-  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha, editarUsuario };
 };

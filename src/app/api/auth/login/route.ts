@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAllUsuarios, hashSenha, ensureAdmin } from '@/lib/serverUsuarios';
 
 export async function POST(req: NextRequest) {
-  ensureAdmin();  // <-- Adicionado aqui antes de validar o login
+  ensureAdmin();
 
   const { email, senha } = await req.json();
+
   const user = getAllUsuarios().find(
     u => u.email === email && u.senhaHash === hashSenha(senha)
   );
@@ -20,4 +21,5 @@ export async function POST(req: NextRequest) {
     role: user.role,
   });
 }
+
 

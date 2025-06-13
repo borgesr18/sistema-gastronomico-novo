@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Modal, { useModal } from '@/components/ui/Modal';
@@ -13,6 +13,8 @@ export default function CategoriasReceitasConfigPage() {
   const { isOpen: isEditOpen, openModal: openEdit, closeModal: closeEdit } = useModal();
   const [nova, setNova] = useState('');
   const [editar, setEditar] = useState({ id: '', nome: '' });
+  const [filtro, setFiltro] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,12 +34,50 @@ export default function CategoriasReceitasConfigPage() {
     closeEdit();
   };
 
+  const handleExport = () => {
+    const data = JSON.stringify(categorias, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'categorias-receitas.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport: React.ChangeEventHandler<HTMLInputElement> = e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string) as { nome: string }[];
+        data.forEach(d => d.nome && adicionar(d.nome));
+      } catch (err) {
+        console.error('Erro ao importar categorias de receitas', err);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const filtradas = categorias.filter(c =>
+    c.nome.toLowerCase().includes(filtro.toLowerCase())
+  );
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
-      <Button onClick={openModal} variant="primary" className="mt-2">Nova Categoria</Button>
+      <div className="flex flex-wrap items-end gap-2">
+        <Button onClick={openModal} variant="primary">Nova Categoria</Button>
+        <Button onClick={handleExport} variant="secondary">Exportar JSON</Button>
+        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar JSON</Button>
+        <div className="flex-1 min-w-[150px]">
+          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} />
+        </div>
+      </div>
+      <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
       <Table headers={["Nome", "Ações"]}>
-        {categorias.map(cat => (
+        {filtradas.map(cat => (
           <TableRow key={cat.id}>
             <TableCell>{cat.nome}</TableCell>
             <TableCell className="flex items-center space-x-2">

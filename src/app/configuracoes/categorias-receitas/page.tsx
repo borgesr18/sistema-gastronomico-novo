@@ -65,30 +65,30 @@ export default function CategoriasReceitasConfigPage() {
   );
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-semibold text-gray-800">Categorias de Receitas</h1>
 
-      <div className="flex flex-wrap justify-between items-center gap-2">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap gap-3">
           <Button onClick={openModal} variant="primary">
             ➕ Nova Categoria
           </Button>
           <Button onClick={handleExport} variant="secondary">
-            ⬇️ Exportar
+            📤 Exportar
           </Button>
           <Button onClick={() => fileInput.current?.click()} variant="secondary">
-            ⬆️ Importar
+            📥 Importar
           </Button>
         </div>
 
-        <div className="self-center w-[220px]">
+        <div className="sm:w-[220px] w-full">
           <input
             type="text"
             placeholder="Buscar..."
             aria-label="Buscar"
             value={filtro}
             onChange={e => setFiltro(e.target.value)}
-            className="border border-[var(--cor-borda)] rounded-md px-3 py-[6px] w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="border border-gray-300 rounded-lg px-4 py-2 w-full text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>

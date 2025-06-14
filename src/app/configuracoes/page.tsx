@@ -1,5 +1,5 @@
 'use client';
-'use client';
+export const dynamic = "force-dynamic"; // disable prerendering
 
 import { ReactNode, useState } from 'react';
 import Tabs from '@/components/ui/Tabs';

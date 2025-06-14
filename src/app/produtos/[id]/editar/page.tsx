@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 import { useCategorias } from '@/lib/categoriasService';
+import Toast from '@/components/ui/Toast';
 
 export default function EditarInsumoPage() {
   const params = useParams();
@@ -18,6 +19,13 @@ export default function EditarInsumoPage() {
   const { unidades } = useUnidadesMedida();
   const [isLoading, setIsLoading] = useState(false);
   const [mostrarInfoNutricional, setMostrarInfoNutricional] = useState(false);
+  const [toast, setToast] = useState('');
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
   
   const produtoId = params.id as string;
   
@@ -171,7 +179,7 @@ export default function EditarInsumoPage() {
       router.push(`/produtos/${produtoId}`);
     } catch (error) {
       console.error('Erro ao atualizar produto:', error);
-      alert('Ocorreu um erro ao atualizar o produto. Tente novamente.');
+      setToast('Erro ao atualizar produto');
     } finally {
       setIsLoading(false);
     }
@@ -179,6 +187,7 @@ export default function EditarInsumoPage() {
 
   return (
     <div className="space-y-6">
+      <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Editar Insumo</h1>
       
       <form onSubmit={handleSubmit}>

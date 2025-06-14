@@ -1,17 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model Usuario {
+  id        String   @id @default(cuid())       // Preferi o cuid() por ser mais moderno que uuid(), mas posso mudar se quiser
+  nome      String
+  email     String   @unique
+  senhaHash String
+  role      Role
+  createdAt DateTime @default(now())
+  oculto    Boolean  @default(false)
 }
 
-model Usuario {
-  id        String  @id @default(uuid())
-  nome      String
-  email     String  @unique
-  senhaHash String
-  role      String  @default("viewer")
-  oculto    Boolean @default(false)
+enum Role {
+  admin
+  editor
+  viewer
+  manager
 }

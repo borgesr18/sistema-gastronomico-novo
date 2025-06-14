@@ -1,4 +1,5 @@
-import { createHash } from 'crypto'
+import { createHash } from 'crypto';
 
-export const hashSenha = (senha: string) =>
-  createHash('sha256').update(senha).digest('hex')
+export function hashSenha(senha: string): string {
+  return createHash('sha256').update(senha).digest('hex');
+}

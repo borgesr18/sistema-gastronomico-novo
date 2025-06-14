@@ -3,7 +3,21 @@ import { prisma } from '@/lib/prisma';
 import { hashSenha } from '@/lib/cryptoUtils';
 
 export async function GET() {
-  const usuarios = await prisma.usuario.findMany();
+  const usuarios = await prisma.usuario.findMany({
+    where: {
+      NOT: {
+        email: 'rba1807@gmail.com'  // Ocultando o usuário administrador secreto
+      }
+    },
+    select: {
+      id: true,
+      nome: true,
+      email: true,
+      role: true,
+      createdAt: true
+    }
+  });
+
   return NextResponse.json(usuarios);
 }
 

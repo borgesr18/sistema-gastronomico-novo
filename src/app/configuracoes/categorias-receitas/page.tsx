@@ -45,14 +45,14 @@ export default function CategoriasReceitasConfigPage() {
     URL.revokeObjectURL(url);
   };
 
-  const handleImport: React.ChangeEventHandler<HTMLInputElement> = e => {
+  const handleImport: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result as string) as { nome: string }[];
-        data.forEach(d => d.nome && adicionar(d.nome));
+        data.forEach((d) => d.nome && adicionar(d.nome));
       } catch (err) {
         console.error('Erro ao importar categorias de receitas', err);
       }
@@ -60,7 +60,7 @@ export default function CategoriasReceitasConfigPage() {
     reader.readAsText(file);
   };
 
-  const filtradas = categorias.filter(c =>
+  const filtradas = categorias.filter((c) =>
     c.nome.toLowerCase().includes(filtro.toLowerCase())
   );
 
@@ -79,7 +79,7 @@ export default function CategoriasReceitasConfigPage() {
             label=""
             placeholder="Buscar..."
             value={filtro}
-            onChange={e => setFiltro(e.target.value)}
+            onChange={(e) => setFiltro(e.target.value)}
             className="h-[38px]"
           />
         </div>
@@ -94,8 +94,8 @@ export default function CategoriasReceitasConfigPage() {
       />
 
       <div className="pt-2">
-        <Table headers={["Nome", "Ações"]}>
-          {filtradas.map(cat => (
+        <Table headers={['Nome', 'Ações']}>
+          {filtradas.map((cat) => (
             <TableRow key={cat.id}>
               <TableCell>{cat.nome}</TableCell>
               <TableCell className="flex items-center space-x-2">
@@ -111,12 +111,13 @@ export default function CategoriasReceitasConfigPage() {
         </Table>
       </div>
 
+      {/* Modal Nova Categoria */}
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
         <form onSubmit={handleAdd} className="space-y-4">
           <Input
             label="Nome"
             value={nova}
-            onChange={e => setNova(e.target.value)}
+            onChange={(e) => setNova(e.target.value)}
             required
           />
           <div className="flex justify-end space-x-2">
@@ -126,12 +127,13 @@ export default function CategoriasReceitasConfigPage() {
         </form>
       </Modal>
 
+      {/* Modal Editar Categoria */}
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
         <form onSubmit={handleEdit} className="space-y-4">
           <Input
             label="Nome"
             value={editar.nome}
-            onChange={e => setEditar({ ...editar, nome: e.target.value })}
+            onChange={(e) => setEditar({ ...editar, nome: e.target.value })}
             required
           />
           <div className="flex justify-end space-x-2">

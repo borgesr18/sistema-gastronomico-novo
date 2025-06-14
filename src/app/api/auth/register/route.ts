@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
 
   const { nome, email, senha, role } = await req.json();
 
-  if (getUsuarios().some(u => u.email === email)) {
+  if (getUsuarios().some((u) => u.email === email)) {
     return NextResponse.json({ error: 'Email já cadastrado' }, { status: 400 });
   }
 

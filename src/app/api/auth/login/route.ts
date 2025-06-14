@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const { email, senha } = await req.json();
 
   const user = getAllUsuarios().find(
-    u => u.email === email && u.senhaHash === hashSenha(senha)
+    (u) => u.email === email && u.senhaHash === hashSenha(senha)
   );
 
   if (!user) {

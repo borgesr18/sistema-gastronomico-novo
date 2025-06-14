@@ -34,19 +34,19 @@ export const ensureAdmin = () => {
   }
 };
 
-/** Retorna todos os usuários visíveis */
+/** Retorna todos os usuários visíveis (excluindo ocultos como admin fixo) */
 export const getUsuarios = () => {
   ensureAdmin();
   return usuarios.filter(u => !u.oculto);
 };
 
-/** Retorna todos os usuários incluindo ocultos (admin fixo) */
+/** Retorna todos os usuários incluindo ocultos */
 export const getAllUsuarios = () => {
   ensureAdmin();
   return usuarios;
 };
 
-/** Adiciona novo usuário */
+/** Adiciona um novo usuário */
 export const addUsuario = (dados: Omit<UsuarioInfo, 'id'>) => {
   const novo: UsuarioInfo = {
     ...dados,
@@ -56,7 +56,7 @@ export const addUsuario = (dados: Omit<UsuarioInfo, 'id'>) => {
   return novo;
 };
 
-/** Busca por e-mail */
+/** Busca usuário por e-mail */
 export const findByEmail = (email: string) => {
   ensureAdmin();
   return usuarios.find(u => u.email === email);

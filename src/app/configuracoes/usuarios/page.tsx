@@ -28,9 +28,10 @@ export default function UsuariosConfigPage() {
     role: 'viewer' as 'admin' | 'editor' | 'viewer' | 'manager',
   });
 
+  const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
+
   const [erro, setErro] = useState('');
   const [erroSenha, setErroSenha] = useState('');
-  const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [filtro, setFiltro] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +55,7 @@ export default function UsuariosConfigPage() {
     closeModal();
   };
 
-  const iniciarEdicao = (u: { id: string; nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }) => {
+  const iniciarEdicao = (u: typeof editar) => {
     setEditar(u);
     setErro('');
     openEditModal();
@@ -92,7 +93,7 @@ export default function UsuariosConfigPage() {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -141,7 +142,7 @@ export default function UsuariosConfigPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
             <select
-              className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
+              className="border border-[var(--cor-borda)] rounded-md p-2 w-full h-[38px]"
               value={novo.role}
               onChange={e => setNovo({ ...novo, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             >
@@ -180,7 +181,7 @@ export default function UsuariosConfigPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
             <select
-              className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
+              className="border border-[var(--cor-borda)] rounded-md p-2 w-full h-[38px]"
               value={editar.role}
               onChange={e => setEditar({ ...editar, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             >

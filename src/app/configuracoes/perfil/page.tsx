@@ -90,9 +90,7 @@ export default function PerfilPage() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
           <select
             value={perfilForm.role}
-            onChange={e =>
-              setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
-            }
+            onChange={e => setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
             className="border border-[var(--cor-borda)] rounded-md p-2 w-full h-[38px] text-sm"
           >
             <option value="viewer">Visualizador</option>

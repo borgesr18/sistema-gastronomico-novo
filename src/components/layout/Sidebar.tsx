@@ -32,6 +32,7 @@ const Sidebar: React.FC = () => {
       className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen flex flex-col`}
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
+      {/* Topo com logo e botão de colapso */}
       <div className="p-4 flex items-center justify-between">
         {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
         <button
@@ -46,6 +47,7 @@ const Sidebar: React.FC = () => {
         </button>
       </div>
 
+      {/* Menu de navegação */}
       <nav className="mt-4 flex-1">
         <ul>
           {menuItems.map(({ href, icon, label }) => (
@@ -66,4 +68,3 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
-

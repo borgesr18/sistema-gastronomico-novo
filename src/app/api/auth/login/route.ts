@@ -21,5 +21,3 @@ export async function POST(req: NextRequest) {
     role: user.role,
   });
 }
-
-

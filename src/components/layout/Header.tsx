@@ -14,10 +14,6 @@ const Header: React.FC = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  const closeProfile = () => {
-    setIsProfileOpen(false);
-  };
-
   const handleMouseEnter = () => {
     if (closeTimeout.current) clearTimeout(closeTimeout.current);
     setIsProfileOpen(true);
@@ -26,6 +22,8 @@ const Header: React.FC = () => {
   const handleMouseLeave = () => {
     closeTimeout.current = setTimeout(() => setIsProfileOpen(false), 200);
   };
+
+  const closeProfile = () => setIsProfileOpen(false);
 
   return (
     <header

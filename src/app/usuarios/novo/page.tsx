@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
@@ -10,7 +10,7 @@ import Logo from '@/components/ui/Logo';
 
 export default function NovoUsuarioPage() {
   const router = useRouter();
-  const { registrarUsuario } = useUsuarios();
+  const { registrarUsuario, usuarioAtual } = useUsuarios();
 
   const [form, setForm] = useState<{
     nome: string;
@@ -29,6 +29,12 @@ export default function NovoUsuarioPage() {
   });
 
   const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    if (!usuarioAtual || usuarioAtual.role !== 'admin') {
+      router.replace('/login');
+    }
+  }, [usuarioAtual, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -62,6 +68,8 @@ export default function NovoUsuarioPage() {
     router.push('/login');
   };
 
+  if (!usuarioAtual || usuarioAtual.role !== 'admin') return null;
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <Card className="w-96">
@@ -75,33 +83,12 @@ export default function NovoUsuarioPage() {
 
           <Input label="Nome" name="nome" value={form.nome} onChange={handleChange} required />
           <Input label="Email" type="email" name="email" value={form.email} onChange={handleChange} required />
-          <Input
-            label="Confirmar Email"
-            type="email"
-            name="confirmarEmail"
-            value={form.confirmarEmail}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Senha"
-            type="password"
-            name="senha"
-            value={form.senha}
-            onChange={handleChange}
-            required
-          />
+          <Input label="Confirmar Email" type="email" name="confirmarEmail" value={form.confirmarEmail} onChange={handleChange} required />
+          <Input label="Senha" type="password" name="senha" value={form.senha} onChange={handleChange} required />
           <p className="text-xs text-gray-600">
             A senha deve ter ao menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.
           </p>
-          <Input
-            label="Confirmar Senha"
-            type="password"
-            name="confirmarSenha"
-            value={form.confirmarSenha}
-            onChange={handleChange}
-            required
-          />
+          <Input label="Confirmar Senha" type="password" name="confirmarSenha" value={form.confirmarSenha} onChange={handleChange} required />
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>

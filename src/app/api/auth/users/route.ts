@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getUsuarios } from '@/lib/serverUsuarios';
+import { getUsuarios, ensureAdmin } from '@/lib/serverUsuarios';
 
 export async function GET() {
+  ensureAdmin();
   const list = getUsuarios().map(u => ({
     id: u.id,
     nome: u.nome,

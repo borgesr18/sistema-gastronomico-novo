@@ -2,25 +2,31 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashSenha } from '@/lib/cryptoUtils';
 
+// 👉 GET: Listar todos os usuários (exceto o oculto)
 export async function GET() {
-  const usuarios = await prisma.usuario.findMany({
-    where: {
-      NOT: {
-        email: 'rba1807@gmail.com'  // Ocultando o usuário administrador secreto
-      }
-    },
-    select: {
-      id: true,
-      nome: true,
-      email: true,
-      role: true,
-      createdAt: true
-    }
-  });
+  try {
+    const usuarios = await prisma.usuario.findMany({
+      where: {
+        NOT: {
+          email: 'rba1807@gmail.com', // Oculta o usuário de suporte
+        },
+      },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
 
-  return NextResponse.json(usuarios);
+    return NextResponse.json(usuarios);
+  } catch (error) {
+    return NextResponse.json({ error: 'Erro ao buscar usuários' }, { status: 500 });
+  }
 }
 
+// 👉 POST: Criar novo usuário
 export async function POST(req: NextRequest) {
   const data = await req.json();
 
@@ -36,14 +42,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Email já cadastrado' }, { status: 400 });
   }
 
-  const novo = await prisma.usuario.create({
-    data: {
-      nome: data.nome,
-      email: data.email,
-      senhaHash: hashSenha(data.senha),
-      role: data.role || 'viewer',
-    },
-  });
+  try {
+    const novo = await prisma.usuario.create({
+      data: {
+        nome: data.nome,
+        email: data.email,
+        senhaHash: hashSenha(data.senha),
+        role: data.role || 'viewer',
+      },
+    });
 
-  return NextResponse.json(novo);
+    return NextResponse.json(novo);
+  } catch (error) {
+    return NextResponse.json({ error: 'Erro ao criar usuário' }, { status: 500 });
+  }
 }

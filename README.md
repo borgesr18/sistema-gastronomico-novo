@@ -125,4 +125,4 @@ Acesse [http://localhost:3000](http://localhost:3000) no seu navegador para ver 
 Para atualizar o sistema após o deploy:
 1. Faça as alterações no código.
 2. Envie para o repositório GitHub.
-3. O Vercel detectará automaticamente as mudanças e fará um novo deploy.
+3. O Vercel detectará automaticamente as mudanças e fará um novo deploy

@@ -8,12 +8,13 @@ datasource db {
 }
 
 model Usuario {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid())       // Preferi o cuid() por ser mais moderno que uuid(), mas posso mudar se quiser
   nome      String
   email     String   @unique
   senhaHash String
   role      Role
   createdAt DateTime @default(now())
+  oculto    Boolean  @default(false)
 }
 
 enum Role {

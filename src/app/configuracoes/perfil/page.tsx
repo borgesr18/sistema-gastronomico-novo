@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from 'react';
 import Input from '@/components/ui/Input';
@@ -74,7 +75,7 @@ export default function PerfilPage() {
         <Input
           label="Nome"
           value={perfilForm.nome}
-          onChange={e => setPerfilForm({ ...perfilForm, nome: e.target.value })}
+          onChange={(e) => setPerfilForm({ ...perfilForm, nome: e.target.value })}
           required
           className="h-[38px]"
         />
@@ -82,7 +83,7 @@ export default function PerfilPage() {
           label="Email"
           type="email"
           value={perfilForm.email}
-          onChange={e => setPerfilForm({ ...perfilForm, email: e.target.value })}
+          onChange={(e) => setPerfilForm({ ...perfilForm, email: e.target.value })}
           required
           className="h-[38px]"
         />
@@ -90,7 +91,9 @@ export default function PerfilPage() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
           <select
             value={perfilForm.role}
-            onChange={e => setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })}
+            onChange={(e) =>
+              setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
+            }
             className="border border-[var(--cor-borda)] rounded-md p-2 w-full h-[38px] text-sm"
           >
             <option value="viewer">Visualizador</option>
@@ -113,7 +116,7 @@ export default function PerfilPage() {
           label="Nova Senha"
           type="password"
           value={senhaForm.senha}
-          onChange={e => setSenhaForm({ ...senhaForm, senha: e.target.value })}
+          onChange={(e) => setSenhaForm({ ...senhaForm, senha: e.target.value })}
           required
           className="h-[38px]"
         />
@@ -121,7 +124,7 @@ export default function PerfilPage() {
           label="Confirmar Senha"
           type="password"
           value={senhaForm.confirmar}
-          onChange={e => setSenhaForm({ ...senhaForm, confirmar: e.target.value })}
+          onChange={(e) => setSenhaForm({ ...senhaForm, confirmar: e.target.value })}
           required
           className="h-[38px]"
         />

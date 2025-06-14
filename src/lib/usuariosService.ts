@@ -84,9 +84,9 @@ export const useUsuarios = () => {
       if (!res.ok) return null;
 
       const novo = (await res.json()) as UsuarioInfo;
-      const novos = [...usuarios, novo];
-      setUsuarios(novos);
-      salvarUsuarios(novos);
+      const total = [...obterUsuarios(), novo];
+      salvarUsuarios(total);
+      setUsuarios(filtrarOculto(total));
       return novo;
     } catch {
       return null;

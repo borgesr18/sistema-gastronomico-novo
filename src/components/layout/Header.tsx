@@ -65,6 +65,13 @@ const Header: React.FC = () => {
             {isProfileOpen && (
               <div
                 className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                onMouseEnter={() => {
+                  if (closeTimeout.current) clearTimeout(closeTimeout.current);
+                  setIsProfileOpen(true);
+                }}
+                onMouseLeave={() => {
+                  closeTimeout.current = setTimeout(() => setIsProfileOpen(false), 200);
+                }}
               >
                 <Link
                   href="/configuracoes/perfil"

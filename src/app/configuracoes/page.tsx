@@ -1,6 +1,7 @@
 'use client';
+export const dynamic = "force-dynamic"; // disable prerendering
 
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
 
 import UsuariosConfigPage from './usuarios/page';
@@ -15,6 +16,8 @@ type TabConfig = {
 };
 
 export default function ConfiguracoesPage() {
+  const [tab, setTab] = useState('usuarios');
+
   const tabs: TabConfig[] = [
     { id: 'usuarios', label: 'Usuários', content: <UsuariosConfigPage /> },
     { id: 'categorias', label: 'Categorias de Produtos', content: <CategoriasConfigPage /> },
@@ -25,7 +28,8 @@ export default function ConfiguracoesPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Configurações</h1>
-      <Tabs tabs={tabs} />
+      <Tabs tabs={tabs} active={tab} onChange={setTab} />
+      {tabs.find(t => t.id === tab)?.content}
     </div>
   );
 }

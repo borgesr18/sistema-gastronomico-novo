@@ -11,7 +11,7 @@ type MenuItem = {
 };
 
 const Sidebar: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 

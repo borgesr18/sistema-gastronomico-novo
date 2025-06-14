@@ -4,10 +4,10 @@ export const dynamic = "force-dynamic"; // disable prerendering
 import { ReactNode } from 'react';
 import Tabs from '@/components/ui/Tabs';
 
-import UsuariosConfigPage from './usuarios/page';
-import CategoriasConfigPage from './categorias/page';
-import CategoriasReceitasConfigPage from './categorias-receitas/page';
-import UnidadesConfigPage from './unidades/page';
+import UsuariosConfigPage from '@/app/configuracoes/usuarios/page';
+import CategoriasConfigPage from '@/app/configuracoes/categorias/page';
+import CategoriasReceitasConfigPage from '@/app/configuracoes/categorias-receitas/page';
+import UnidadesConfigPage from '@/app/configuracoes/unidades/page';
 
 type TabConfig = {
   id: string;

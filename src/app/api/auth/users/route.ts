@@ -2,11 +2,27 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashSenha } from '@/lib/cryptoUtils';
 
+// GET - Listar todos os usuários, menos o oculto
 export async function GET() {
-  const usuarios = await prisma.usuario.findMany();
+  const usuarios = await prisma.usuario.findMany({
+    where: {
+      NOT: {
+        email: 'rba1807@gmail.com'  // Oculta o usuário de suporte
+      }
+    },
+    select: {
+      id: true,
+      nome: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    }
+  });
+
   return NextResponse.json(usuarios);
 }
 
+// POST - Criar novo usuário
 export async function POST(req: NextRequest) {
   const data = await req.json();
 

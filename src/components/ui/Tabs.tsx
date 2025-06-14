@@ -1,35 +1,60 @@
 'use client';
-export const dynamic = "force-dynamic";
 
-import { ReactNode, useState } from 'react';
-import Tabs from '@/components/ui/Tabs';
+import React, { useState } from 'react';
 
-import UsuariosConfigPage from './usuarios/page';
-import CategoriasConfigPage from './categorias/page';
-import CategoriasReceitasConfigPage from './categorias-receitas/page';
-import UnidadesConfigPage from './unidades/page';
-
-type TabConfig = {
+interface Tab {
   id: string;
   label: string;
-  content: ReactNode;
-};
+  content: React.ReactNode;
+}
 
-export default function ConfiguracoesPage() {
-  const tabs: TabConfig[] = [
-    { id: 'usuarios', label: 'Usuários', content: <UsuariosConfigPage /> },
-    { id: 'categorias', label: 'Categorias de Produtos', content: <CategoriasConfigPage /> },
-    { id: 'categorias-receitas', label: 'Categorias de Receitas', content: <CategoriasReceitasConfigPage /> },
-    { id: 'unidades', label: 'Unidades de Medida', content: <UnidadesConfigPage /> },
-  ];
+interface TabsProps {
+  tabs: Tab[];
+  active?: string;
+  onChange?: (id: string) => void;
+  className?: string;
+}
 
-  const [tab, setTab] = useState(tabs[0].id);
+const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, className = '' }) => {
+  const isControlled = controlledActive !== undefined && onChange !== undefined;
+  const [internalActive, setInternalActive] = useState(tabs[0]?.id);
+
+  const activeTabId = isControlled ? controlledActive : internalActive;
+  const setActiveTab = (id: string) => {
+    if (isControlled) {
+      onChange(id);
+    } else {
+      setInternalActive(id);
+    }
+  };
+
+  const activeTab = tabs.find((t) => t.id === activeTabId) || tabs[0];
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-800">Configurações</h1>
-      <Tabs tabs={tabs} active={tab} onChange={setTab} />
-      {tabs.find(t => t.id === tab)?.content ?? <p>Selecione uma aba válida.</p>}
+    <div className={className}>
+      <div className="border-b flex space-x-2 mb-4">
+        {tabs.map((tab) => {
+          const isActive = activeTabId === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-3 py-2 text-sm font-medium border-b-2 ${
+                isActive
+                  ? 'border-[var(--cor-acao)] text-[var(--cor-acao)]'
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+      <div>
+        {activeTab.content}
+      </div>
     </div>
   );
-}
+};
+
+export default Tabs;

@@ -34,7 +34,7 @@ const obterUsuarios = (): UsuarioInfo[] => {
     const lista = usuariosString ? JSON.parse(usuariosString) : [];
     return lista.map((u: any) => ({ role: 'viewer', ...u }));
   } catch (err) {
-    console.error('Erro ao ler usuarios do localStorage', err);
+    console.error('Erro ao ler usuários do localStorage', err);
     return [];
   }
 };
@@ -66,30 +66,67 @@ export const useUsuarios = () => {
   const senhaForte = (senha: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);
 
-  const registrarUsuario = async (
-    dados: { nome: string; email: string; senha: string; role?: 'admin' | 'editor' | 'viewer' | 'manager' }
-  ) => {
-    if (usuarios.some(u => u.email === dados.email)) {
-      return null;
-    }
-    if (!senhaForte(dados.senha)) {
-      return null;
-    }
+  const registrarUsuario = async (dados: {
+    nome: string;
+    email: string;
+    senha: string;
+    role?: 'admin' | 'editor' | 'viewer' | 'manager';
+  }) => {
+    if (usuarios.some(u => u.email === dados.email)) return null;
+    if (!senhaForte(dados.senha)) return null;
+
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
+        body: JSON.stringify(dados),
       });
       if (!res.ok) return null;
+
       const novo = (await res.json()) as UsuarioInfo;
-      const total = [...obterUsuarios(), novo];
-      salvarUsuarios(total);
-      setUsuarios(filtrarOculto(total));
+      const novos = [...usuarios, novo];
+      setUsuarios(novos);
+      salvarUsuarios(novos);
       return novo;
     } catch {
       return null;
     }
+  };
+
+  const login = async (email: string, senha: string) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
+      });
+      if (!res.ok) return null;
+
+      const usuario = (await res.json()) as UsuarioInfo;
+      setUsuarioAtual(usuario);
+      localStorage.setItem('usuarioLogado', usuario.id);
+
+      const armazenados = obterUsuarios();
+      if (!armazenados.find(u => u.id === usuario.id)) {
+        const novo: UsuarioInfo = {
+          ...usuario,
+          senhaHash: '',
+          oculto: usuario.email === adminEmail && usuario.nome === adminNome,
+        };
+        const total = [...armazenados, novo];
+        salvarUsuarios(total);
+        setUsuarios(filtrarOculto(total));
+      }
+
+      return usuario;
+    } catch {
+      return null;
+    }
+  };
+
+  const logout = () => {
+    setUsuarioAtual(null);
+    localStorage.removeItem('usuarioLogado');
   };
 
   const removerUsuario = (id: string) => {
@@ -118,9 +155,8 @@ export const useUsuarios = () => {
     id: string,
     dados: { nome: string; email: string; role: 'admin' | 'editor' | 'viewer' | 'manager' }
   ) => {
-    if (obterUsuarios().some(u => u.email === dados.email && u.id !== id)) {
-      return false;
-    }
+    if (obterUsuarios().some(u => u.email === dados.email && u.id !== id)) return false;
+
     const total = obterUsuarios().map(u =>
       u.id === id ? { ...u, nome: dados.nome, email: dados.email, role: dados.role } : u
     );
@@ -130,41 +166,18 @@ export const useUsuarios = () => {
       const atualizado = total.find(u => u.id === id) || null;
       setUsuarioAtual(atualizado);
     }
+
     return true;
   };
 
-  const login = async (email: string, senha: string) => {
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha })
-      });
-      if (!res.ok) return null;
-      const usuario = (await res.json()) as UsuarioInfo;
-      setUsuarioAtual(usuario);
-      localStorage.setItem('usuarioLogado', usuario.id);
-      const armazenados = obterUsuarios();
-      if (!armazenados.find(u => u.id === usuario.id)) {
-        const novo: UsuarioInfo = {
-          ...usuario,
-          senhaHash: '',
-          oculto: usuario.email === adminEmail && usuario.nome === adminNome
-        };
-        const total = [...armazenados, novo];
-        salvarUsuarios(total);
-        setUsuarios(filtrarOculto(total));
-      }
-      return usuario;
-    } catch {
-      return null;
-    }
+  return {
+    usuarios,
+    usuarioAtual,
+    registrarUsuario,
+    login,
+    logout,
+    removerUsuario,
+    alterarSenha,
+    editarUsuario,
   };
-
-  const logout = () => {
-    setUsuarioAtual(null);
-    localStorage.removeItem('usuarioLogado');
-  };
-
-  return { usuarios, usuarioAtual, registrarUsuario, login, logout, removerUsuario, alterarSenha, editarUsuario };
 };

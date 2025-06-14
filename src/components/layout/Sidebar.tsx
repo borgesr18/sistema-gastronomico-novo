@@ -4,111 +4,63 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Logo from '../ui/Logo';
 
+type MenuItem = {
+  href: string;
+  icon: string;
+  label: string;
+};
+
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
+
+  const menuItems: MenuItem[] = [
+    { href: '/', icon: 'dashboard', label: 'Dashboard' },
+    { href: '/fichas-tecnicas', icon: 'receipt', label: 'Fichas Técnicas' },
+    { href: '/produtos', icon: 'inventory', label: 'Insumos' },
+    { href: '/estoque', icon: 'store', label: 'Estoque de Insumos' },
+    { href: '/producao', icon: 'factory', label: 'Produção' },
+    { href: '/estoque-producao', icon: 'warehouse', label: 'Estoque de Produção' },
+    { href: '/precos', icon: 'attach_money', label: 'Preços de Venda' },
+    { href: '/relatorios', icon: 'bar_chart', label: 'Relatórios' },
+    { href: '/configuracoes', icon: 'settings', label: 'Configurações' },
+  ];
 
   return (
     <aside
-      className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen`}
+      className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen flex flex-col`}
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
+      {/* Topo com logo e botão de colapso */}
       <div className="p-4 flex items-center justify-between">
         {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
         <button
           onClick={toggleSidebar}
-          className="p-1 rounded-full hover:bg-[var(--cor-secundaria)]"
+          className="p-2 rounded-full hover:bg-[var(--cor-secundaria)] focus:outline-none"
+          aria-label="Alternar menu lateral"
+          aria-expanded={!isCollapsed}
         >
-          {isCollapsed ? '→' : '←'}
+          <span className="material-icons">
+            {isCollapsed ? 'chevron_right' : 'chevron_left'}
+          </span>
         </button>
       </div>
 
-      <nav className="mt-6">
+      {/* Menu de navegação */}
+      <nav className="mt-4 flex-1">
         <ul>
-          <li>
-            <Link 
-              href="/"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">dashboard</span>
-              {!isCollapsed && <span>Dashboard</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/fichas-tecnicas"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">receipt</span>
-              {!isCollapsed && <span>Fichas Técnicas</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/produtos"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">inventory</span>
-              {!isCollapsed && <span>Insumos</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/estoque"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">store</span>
-              {!isCollapsed && <span>Estoque de Insumos</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/producao"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">factory</span>
-              {!isCollapsed && <span>Produção</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/estoque-producao"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">warehouse</span>
-              {!isCollapsed && <span>Estoque de Produção</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/precos"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">attach_money</span>
-              {!isCollapsed && <span>Preços de Venda</span>}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/relatorios"
-              className="flex items-center p-4 hover:bg-[var(--cor-secundaria)]"
-            >
-              <span className="material-icons mr-3">bar_chart</span>
-              {!isCollapsed && <span>Relatórios</span>}
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/configuracoes"
-              className="flex items-center p-4 hover:bg-gray-700"
-            >
-              <span className="material-icons mr-3">settings</span>
-              {!isCollapsed && <span>Configurações</span>}
-            </Link>
-          </li>
+          {menuItems.map(({ href, icon, label }) => (
+            <li key={href}>
+              <Link
+                href={href}
+                className="flex items-center px-4 py-3 hover:bg-[var(--cor-secundaria)] transition-colors"
+              >
+                <span className="material-icons mr-3">{icon}</span>
+                {!isCollapsed && <span className="text-sm">{label}</span>}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </aside>

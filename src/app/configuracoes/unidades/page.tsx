@@ -68,41 +68,89 @@ export default function UnidadesConfigPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Unidades de Medida</h1>
-      <div className="flex flex-wrap items-end gap-2">
-        <Button onClick={openModal} variant="primary">Nova Unidade</Button>
-        <Button onClick={handleExport} variant="secondary">Exportar Lista</Button>
-        <Button onClick={() => fileInput.current?.click()} variant="secondary">Importar Lista</Button>
-        <div className="flex-1 min-w-[150px]">
-          <Input label="Buscar" value={filtro} onChange={e => setFiltro(e.target.value)} className="mb-0" />
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={openModal} variant="primary">➕ Nova Unidade</Button>
+          <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
+          <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
+        </div>
+        <div className="w-full sm:w-[220px]">
+          <Input
+            label=""
+            placeholder="Buscar..."
+            value={filtro}
+            onChange={e => setFiltro(e.target.value)}
+            className="h-[38px]"
+          />
         </div>
       </div>
-      <input type="file" ref={fileInput} className="hidden" accept="application/json" onChange={handleImport} />
-      <Table headers={["Sigla", "Nome", "Ações"]}>
-        {filtradas.map(u => (
-          <TableRow key={u.id}>
-            <TableCell>{u.id}</TableCell>
-            <TableCell>{u.nome}</TableCell>
-            <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)}>Editar</Button>
-              <Button size="sm" variant="danger" onClick={() => removerUnidade(u.id)}>Excluir</Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
+
+      <input
+        type="file"
+        ref={fileInput}
+        className="hidden"
+        accept="application/json"
+        onChange={handleImport}
+      />
+
+      <div className="pt-2">
+        <Table headers={["Sigla", "Nome", "Ações"]}>
+          {filtradas.map(u => (
+            <TableRow key={u.id}>
+              <TableCell>{u.id}</TableCell>
+              <TableCell>{u.nome}</TableCell>
+              <TableCell className="flex items-center space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)}>
+                  ✏️ Editar
+                </Button>
+                <Button size="sm" variant="danger" onClick={() => removerUnidade(u.id)}>
+                  🗑️ Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </div>
+
       <Modal isOpen={isOpen} onClose={closeModal} title="Nova Unidade">
         <form onSubmit={handleAdd} className="space-y-4">
-          <Input label="Sigla" value={nova.id} onChange={e => setNova({ ...nova, id: e.target.value })} required />
-          <Input label="Nome" value={nova.nome} onChange={e => setNova({ ...nova, nome: e.target.value })} required />
+          <Input
+            label="Sigla"
+            value={nova.id}
+            onChange={e => setNova({ ...nova, id: e.target.value })}
+            required
+            className="h-[38px]"
+          />
+          <Input
+            label="Nome"
+            value={nova.nome}
+            onChange={e => setNova({ ...nova, nome: e.target.value })}
+            required
+            className="h-[38px]"
+          />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>
           </div>
         </form>
       </Modal>
+
       <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Unidade">
         <form onSubmit={handleEdit} className="space-y-4">
-          <Input label="Sigla" value={editar.id} disabled />
-          <Input label="Nome" value={editar.nome} onChange={e => setEditar({ ...editar, nome: e.target.value })} required />
+          <Input
+            label="Sigla"
+            value={editar.id}
+            disabled
+            className="h-[38px]"
+          />
+          <Input
+            label="Nome"
+            value={editar.nome}
+            onChange={e => setEditar({ ...editar, nome: e.target.value })}
+            required
+            className="h-[38px]"
+          />
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="secondary" onClick={closeEdit}>Cancelar</Button>
             <Button type="submit" variant="primary">Salvar</Button>

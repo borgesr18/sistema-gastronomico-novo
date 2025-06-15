@@ -77,7 +77,6 @@ export default function CategoriasReceitasConfigPage() {
         </div>
         <div className="w-full sm:w-[220px]">
           <Input
-            label=""
             placeholder="Buscar..."
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}

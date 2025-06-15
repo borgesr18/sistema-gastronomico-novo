@@ -1,5 +1,5 @@
 'use client';
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 import { useState, useRef } from 'react';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
@@ -77,7 +77,6 @@ export default function CategoriasConfigPage() {
         </div>
         <div className="w-full sm:w-[220px]">
           <Input
-            label=""
             placeholder="Buscar..."
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}

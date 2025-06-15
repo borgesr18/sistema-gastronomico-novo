@@ -20,6 +20,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, c
   const [internalActive, setInternalActive] = useState(tabs[0]?.id);
 
   const activeTabId = isControlled ? controlledActive : internalActive;
+
   const setActiveTab = (id: string) => {
     if (isControlled) {
       onChange(id);
@@ -32,6 +33,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, c
 
   return (
     <div className={className}>
+      {/* Header das abas */}
       <div className="border-b flex space-x-2 mb-4">
         {tabs.map((tab) => {
           const isActive = activeTabId === tab.id;
@@ -50,9 +52,9 @@ const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, c
           );
         })}
       </div>
-      <div>
-        {activeTab.content}
-      </div>
+
+      {/* Conteúdo da aba ativa */}
+      <div>{activeTab.content}</div>
     </div>
   );
 };

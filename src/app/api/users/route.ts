@@ -15,8 +15,8 @@ export async function GET() {
       nome: true,
       email: true,
       role: true,
-      createdAt: true
-    }
+      createdAt: true,
+    },
   });
 
   return NextResponse.json(usuarios);
@@ -42,6 +42,6 @@ export async function POST(req: NextRequest) {
     id: user.id,
     nome: user.nome,
     email: user.email,
-    role: user.role
+    role: user.role,
   });
 }

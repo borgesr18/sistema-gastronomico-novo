@@ -15,25 +15,18 @@ export default function UsuariosConfigPage() {
   const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal();
 
   const [filtro, setFiltro] = useState('');
-  const [novo, setNovo] = useState<{
-    nome: string;
-    email: string;
-    senha: string;
-    role: Usuario['role'];
-  }>({
+  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; role: Usuario['role'] }>({
     nome: '',
     email: '',
     senha: '',
     role: 'viewer',
   });
-
   const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: Usuario['role'] }>({
     id: '',
     nome: '',
     email: '',
     role: 'viewer',
   });
-
   const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
   const [erroSenha, setErroSenha] = useState('');
   const [sucesso, setSucesso] = useState('');
@@ -78,13 +71,13 @@ export default function UsuariosConfigPage() {
     e.preventDefault();
     const ok = editarUsuario(editar.id, editar);
     if (!ok) {
-      setErro('Email já cadastrado');
+      setErroSenha('Email já cadastrado');
       return;
     }
     closeEditModal();
   };
 
-  const filtrados = usuarios.filter(u =>
+  const filtrados = usuarios.filter((u) =>
     u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
     u.email.toLowerCase().includes(filtro.toLowerCase())
   );
@@ -109,21 +102,15 @@ export default function UsuariosConfigPage() {
       {erro && <p className="text-red-600">{erro}</p>}
 
       <Table headers={['Nome', 'Email', 'Perfil', 'Ações']}>
-        {filtrados.map(u => (
+        {filtrados.map((u) => (
           <TableRow key={u.id}>
             <TableCell>{u.nome}</TableCell>
             <TableCell>{u.email}</TableCell>
             <TableCell>{u.role}</TableCell>
             <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u)}>
-                ✏️ Editar
-              </Button>
-              <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>
-                🔑 Alterar Senha
-              </Button>
-              <Button size="sm" variant="danger" onClick={() => removerUsuario(u.id)}>
-                🗑️ Excluir
-              </Button>
+              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u)}>✏️ Editar</Button>
+              <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>🔑 Alterar Senha</Button>
+              <Button size="sm" variant="danger" onClick={() => removerUsuario(u.id)}>🗑️ Excluir</Button>
             </TableCell>
           </TableRow>
         ))}

@@ -1,10 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
 declare global {
+  // Garantimos que o Prisma não gere múltiplas instâncias em modo dev
   var prisma: PrismaClient | undefined;
 }
 
-// Garantir DATABASE_URL para evitar erros em ambientes locais de build/teste
+// Garantir DATABASE_URL para evitar erros em builds locais ou testes
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = 'file:./dev.db';
 }

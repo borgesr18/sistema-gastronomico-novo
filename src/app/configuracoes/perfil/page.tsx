@@ -36,8 +36,8 @@ export default function PerfilPage() {
 
   useEffect(() => {
     if (!toast) return;
-    const t = setTimeout(() => setToast(''), 3000);
-    return () => clearTimeout(t);
+    const timeout = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(timeout);
   }, [toast]);
 
   if (!usuarioAtual) return <p className="p-4">Nenhum usuário logado.</p>;
@@ -70,7 +70,7 @@ export default function PerfilPage() {
       <Toast message={toast} onClose={() => setToast('')} />
       <h1 className="text-2xl font-bold text-gray-800">Perfil</h1>
 
-      {/* Formulário de dados do perfil */}
+      {/* Formulário de edição de perfil */}
       <form onSubmit={handlePerfil} className="space-y-4 max-w-sm">
         <Input
           label="Nome"

@@ -11,7 +11,7 @@ type MenuItem = {
 };
 
 const Sidebar: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 
@@ -29,7 +29,9 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
-      className={`text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} min-h-screen flex flex-col`}
+      className={`text-white transition-all duration-300 ${
+        isCollapsed ? 'w-16' : 'w-64'
+      } min-h-screen flex flex-col`}
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
       {/* Topo com logo e botão de colapso */}

@@ -1,39 +1,56 @@
 'use client';
 
-import React from 'react';
-import { Dialog } from '@headlessui/react';
+import React, { ReactNode } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import { X } from 'lucide-react';
 
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
+  footer?: ReactNode;
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+    <Transition show={isOpen} appear>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
+        <Transition.Child
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
+        </Transition.Child>
 
-      <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-full max-w-md bg-white rounded p-4 relative">
-          <div className="flex justify-between items-center mb-4">
-            <Dialog.Title className="text-lg font-semibold">{title}</Dialog.Title>
-            <button onClick={onClose}>
-              <X size={20} />
-            </button>
-          </div>
-          {children}
-        </Dialog.Panel>
-      </div>
-    </Dialog>
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Transition.Child
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+              <div className="flex justify-between items-center mb-4">
+                <Dialog.Title className="text-lg font-bold">{title}</Dialog.Title>
+                <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div>{children}</div>
+
+              {footer && <div className="mt-4">{footer}</div>}
+            </Dialog.Panel>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition>
   );
-}
-
-export function useModal() {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-  return { isOpen, openModal, closeModal };
 }

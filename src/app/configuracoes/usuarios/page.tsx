@@ -1,235 +1,249 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Table from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
-import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Input from '@/components/ui/Input';
 import Modal, { useModal } from '@/components/ui/Modal';
-import { useUsuarios, Usuario } from '@/lib/useUsuariosApi';
+import { useUsuarios, Usuario, Role } from '@/lib/useUsuarios';
 
 export default function UsuariosConfigPage() {
-  const { usuarios, listarUsuarios, criarUsuario, removerUsuario, alterarSenha, editarUsuario, erro, loading } = useUsuarios();
-  const { isOpen, openModal, closeModal } = useModal();
-  const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
-  const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal();
+  const {
+    usuarios,
+    listarUsuarios,
+    criarUsuario,
+    removerUsuario,
+    alterarSenha,
+    editarUsuario,
+    erro,
+    loading,
+  } = useUsuarios();
 
+  const { isOpen, openModal, closeModal } = useModal();
   const [filtro, setFiltro] = useState('');
-  const [novo, setNovo] = useState<{
-    nome: string;
-    email: string;
-    senha: string;
-    role: Usuario['role'];
-  }>({
+  const [novo, setNovo] = useState({
     nome: '',
     email: '',
     senha: '',
-    role: 'viewer',
+    role: 'viewer' as Role,
   });
-
-  const [editar, setEditar] = useState<{ id: string; nome: string; email: string; role: Usuario['role'] }>({
-    id: '',
-    nome: '',
-    email: '',
-    role: 'viewer',
-  });
-
-  const [senhaForm, setSenhaForm] = useState({ id: '', senha: '', confirmarSenha: '' });
-  const [erroSenha, setErroSenha] = useState('');
-  const [sucesso, setSucesso] = useState('');
+  const [senhaNova, setSenhaNova] = useState('');
+  const [editando, setEditando] = useState<Usuario | null>(null);
 
   useEffect(() => {
     listarUsuarios();
-  }, []);
+  }, [listarUsuarios]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await criarUsuario(novo);
-    if (res) {
-      setSucesso('Usuário criado com sucesso!');
+    const criado = await criarUsuario(novo);
+    if (criado) {
       setNovo({ nome: '', email: '', senha: '', role: 'viewer' });
       closeModal();
-      listarUsuarios();
     }
   };
 
-  const iniciarAlterarSenha = (id: string) => {
-    setSenhaForm({ id, senha: '', confirmarSenha: '' });
-    setErroSenha('');
-    openSenhaModal();
-  };
-
-  const iniciarEdicao = (u: { id: string; nome: string; email: string; role: Usuario['role'] }) => {
-    setEditar(u);
-    openEditModal();
-  };
-
-  const handleAlterarSenha = (e: React.FormEvent) => {
+  const handleEditar = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (senhaForm.senha !== senhaForm.confirmarSenha) {
-      setErroSenha('Senhas não conferem');
-      return;
-    }
-    alterarSenha(senhaForm.id, senhaForm.senha);
-    closeSenhaModal();
+    if (!editando) return;
+    await editarUsuario(editando.id, {
+      nome: editando.nome,
+      email: editando.email,
+      role: editando.role,
+    });
+    setEditando(null);
+    closeModal();
   };
 
-  const handleEditar = (e: React.FormEvent) => {
+  const handleAlterarSenha = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = editarUsuario(editar.id, editar);
-    if (!ok) {
-      return;
-    }
-    closeEditModal();
+    if (!editando) return;
+    await alterarSenha(editando.id, senhaNova);
+    setSenhaNova('');
+    setEditando(null);
+    closeModal();
   };
 
-  const usuariosFiltrados = usuarios.filter((u) =>
-    u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-    u.email.toLowerCase().includes(filtro.toLowerCase())
+  const usuariosFiltrados = usuarios.filter(
+    (u) =>
+      u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+      u.email.toLowerCase().includes(filtro.toLowerCase())
   );
 
   return (
-    <div className="space-y-4 p-4">
-      <h1 className="text-2xl font-bold text-gray-800">Controle de Usuários</h1>
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold">Gerenciar Usuários</h2>
 
-      <div className="flex flex-wrap gap-2 items-center">
-        <Button onClick={openModal} variant="primary">➕ Novo Usuário</Button>
-        <div className="flex-1 min-w-[150px]">
-          <Input
-            label=""
-            placeholder="Buscar..."
-            value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
-          />
-        </div>
+      <div className="flex space-x-2">
+        <Input
+          placeholder="Filtrar usuários"
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+        />
+        <Button onClick={openModal}>Novo Usuário</Button>
       </div>
 
-      {loading && <p>Carregando usuários...</p>}
-      {erro && <p className="text-red-600">{erro}</p>}
-
-      <Table headers={['Nome', 'Email', 'Perfil', 'Ações']}>
-        {usuariosFiltrados.map((u) => (
-          <TableRow key={u.id}>
-            <TableCell>{u.nome}</TableCell>
-            <TableCell>{u.email}</TableCell>
-            <TableCell>{u.role}</TableCell>
-            <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u)}>
-                ✏️ Editar
-              </Button>
-              <Button size="sm" variant="secondary" onClick={() => iniciarAlterarSenha(u.id)}>
-                🔑 Alterar Senha
-              </Button>
-              <Button size="sm" variant="danger" onClick={() => removerUsuario(u.id)}>
-                🗑️ Excluir
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
-
-      {/* Modal Novo Usuário */}
-      <Modal isOpen={isOpen} onClose={closeModal} title="Novo Usuário">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {sucesso && <p className="text-green-600">{sucesso}</p>}
-          <Input
-            label="Nome"
-            value={novo.nome}
-            onChange={(e) => setNovo({ ...novo, nome: e.target.value })}
-            required
-          />
-          <Input
-            label="Email"
-            value={novo.email}
-            onChange={(e) => setNovo({ ...novo, email: e.target.value })}
-            required
-          />
-          <Input
-            label="Senha"
-            type="password"
-            value={novo.senha}
-            onChange={(e) => setNovo({ ...novo, senha: e.target.value })}
-            required
-          />
-          <div>
-            <label className="block text-sm mb-1">Perfil</label>
-            <select
-              value={novo.role}
-              onChange={(e) => setNovo({ ...novo, role: e.target.value as Usuario['role'] })}
-              className="border rounded p-2 w-full"
+      <Table
+        headers={['Nome', 'Email', 'Perfil', 'Ações']}
+        rows={usuariosFiltrados.map((u) => [
+          u.nome,
+          u.email,
+          u.role,
+          <div key={u.id} className="flex space-x-2">
+            <Button
+              size="xs"
+              variant="secondary"
+              onClick={() => {
+                setEditando(u);
+                openModal();
+              }}
             >
-              <option value="viewer">Visualizador</option>
-              <option value="editor">Editor</option>
-              <option value="manager">Gerente</option>
-              <option value="admin">Administrador</option>
-            </select>
-          </div>
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
-            <Button type="submit" variant="primary">Salvar</Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Modal Alterar Senha */}
-      <Modal isOpen={isSenhaOpen} onClose={closeSenhaModal} title="Alterar Senha">
-        <form onSubmit={handleAlterarSenha} className="space-y-4">
-          {erroSenha && <p className="text-sm text-red-600">{erroSenha}</p>}
-          <Input
-            label="Nova Senha"
-            type="password"
-            value={senhaForm.senha}
-            onChange={(e) => setSenhaForm({ ...senhaForm, senha: e.target.value })}
-            required
-          />
-          <Input
-            label="Confirmar Senha"
-            type="password"
-            value={senhaForm.confirmarSenha}
-            onChange={(e) => setSenhaForm({ ...senhaForm, confirmarSenha: e.target.value })}
-            required
-          />
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="secondary" onClick={closeSenhaModal}>Cancelar</Button>
-            <Button type="submit" variant="primary">Salvar</Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Modal Editar Usuário */}
-      <Modal isOpen={isEditOpen} onClose={closeEditModal} title="Editar Usuário">
-        <form onSubmit={handleEditar} className="space-y-4">
-          <Input
-            label="Nome"
-            value={editar.nome}
-            onChange={(e) => setEditar({ ...editar, nome: e.target.value })}
-            required
-          />
-          <Input
-            label="Email"
-            type="email"
-            value={editar.email}
-            onChange={(e) => setEditar({ ...editar, email: e.target.value })}
-            required
-          />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
-            <select
-              value={editar.role}
-              onChange={(e) => setEditar({ ...editar, role: e.target.value as Usuario['role'] })}
-              className="border border-[var(--cor-borda)] rounded-md p-2 w-full"
+              Editar
+            </Button>
+            <Button
+              size="xs"
+              variant="secondary"
+              onClick={() => removerUsuario(u.id)}
             >
-              <option value="viewer">Visualizador</option>
-              <option value="editor">Editor</option>
-              <option value="manager">Gerente</option>
-              <option value="admin">Administrador</option>
-            </select>
-          </div>
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="secondary" onClick={closeEditModal}>Cancelar</Button>
-            <Button type="submit" variant="primary">Salvar</Button>
-          </div>
-        </form>
-      </Modal>
+              Remover
+            </Button>
+          </div>,
+        ])}
+      />
+
+      {/* Modal Novo ou Editar */}
+      {isOpen && (
+        <Modal onClose={closeModal}>
+          {editando ? (
+            <form
+              onSubmit={
+                senhaNova
+                  ? handleAlterarSenha
+                  : handleEditar
+              }
+              className="space-y-2"
+            >
+              <h3 className="text-lg font-bold">
+                {senhaNova ? 'Alterar Senha' : 'Editar Usuário'}
+              </h3>
+
+              {!senhaNova && (
+                <>
+                  <Input
+                    label="Nome"
+                    value={editando.nome}
+                    onChange={(e) =>
+                      setEditando({ ...editando, nome: e.target.value })
+                    }
+                    required
+                  />
+                  <Input
+                    label="Email"
+                    value={editando.email}
+                    onChange={(e) =>
+                      setEditando({ ...editando, email: e.target.value })
+                    }
+                    required
+                  />
+                  <div>
+                    <label className="block text-sm mb-1">Perfil</label>
+                    <select
+                      value={editando.role}
+                      onChange={(e) =>
+                        setEditando({
+                          ...editando,
+                          role: e.target.value as Role,
+                        })
+                      }
+                      className="border rounded w-full p-2"
+                    >
+                      <option value="viewer">Visualizador</option>
+                      <option value="editor">Editor</option>
+                      <option value="manager">Gerente</option>
+                      <option value="admin">Administrador</option>
+                    </select>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setSenhaNova('')}
+                  >
+                    Alterar Senha
+                  </Button>
+                </>
+              )}
+
+              {senhaNova && (
+                <>
+                  <Input
+                    label="Nova Senha"
+                    type="password"
+                    value={senhaNova}
+                    onChange={(e) => setSenhaNova(e.target.value)}
+                    required
+                  />
+                </>
+              )}
+
+              <Button type="submit" variant="primary">
+                Salvar
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-2">
+              <h3 className="text-lg font-bold">Novo Usuário</h3>
+              <Input
+                label="Nome"
+                value={novo.nome}
+                onChange={(e) =>
+                  setNovo({ ...novo, nome: e.target.value })
+                }
+                required
+              />
+              <Input
+                label="Email"
+                value={novo.email}
+                onChange={(e) =>
+                  setNovo({ ...novo, email: e.target.value })
+                }
+                required
+              />
+              <Input
+                label="Senha"
+                type="password"
+                value={novo.senha}
+                onChange={(e) =>
+                  setNovo({ ...novo, senha: e.target.value })
+                }
+                required
+              />
+              <div>
+                <label className="block text-sm mb-1">Perfil</label>
+                <select
+                  value={novo.role}
+                  onChange={(e) =>
+                    setNovo({
+                      ...novo,
+                      role: e.target.value as Role,
+                    })
+                  }
+                  className="border rounded w-full p-2"
+                >
+                  <option value="viewer">Visualizador</option>
+                  <option value="editor">Editor</option>
+                  <option value="manager">Gerente</option>
+                  <option value="admin">Administrador</option>
+                </select>
+              </div>
+              <Button type="submit" variant="primary">
+                Criar
+              </Button>
+            </form>
+          )}
+        </Modal>
+      )}
+
+      {erro && <p className="text-sm text-red-600">{erro}</p>}
     </div>
   );
 }

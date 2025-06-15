@@ -8,10 +8,18 @@ generator client {
 }
 
 model Usuario {
-  id        String  @id @default(uuid())
+  id        String   @id @default(cuid())          // Mantido o cuid() mais moderno da main
   nome      String
-  email     String  @unique
+  email     String   @unique
   senhaHash String
-  role      String  @default("viewer")
-  oculto    Boolean @default(false)
+  role      Role
+  createdAt DateTime @default(now())
+  oculto    Boolean  @default(false)
+}
+
+enum Role {
+  admin
+  editor
+  viewer
+  manager
 }

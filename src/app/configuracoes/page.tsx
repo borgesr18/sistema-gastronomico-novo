@@ -1,36 +1,51 @@
 'use client';
-import Link from 'next/link';
+export const dynamic = "force-dynamic";
 
-export default function ConfiguracoesPage() {
+import { Suspense, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Tabs from '@/components/ui/Tabs';
+import UsuariosConfigPage from './usuarios/page';
+import CategoriasConfigPage from './categorias/page';
+import CategoriasReceitasConfigPage from './categorias-receitas/page';
+import UnidadesConfigPage from './unidades/page';
+
+function ConfiguracoesContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [tab, setTab] = useState(searchParams.get('tab') || 'usuarios');
+
+  const tabs = [
+    { id: 'usuarios', label: 'Usuários' },
+    { id: 'categorias', label: 'Categorias de Produtos' },
+    { id: 'categorias-receitas', label: 'Categorias de Receitas' },
+    { id: 'unidades', label: 'Unidades de Medida' },
+  ];
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Configurações</h1>
-      <div className="space-y-2">
-        <Link
-          href="/configuracoes/usuarios"
-          className="inline-flex items-center justify-center rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[var(--cor-acao)] text-white hover:brightness-90 focus:ring-[var(--cor-acao)] px-4 py-2"
-        >
-          Controle de Usuários
-        </Link>
-        <Link
-          href="/configuracoes/categorias"
-          className="inline-flex items-center justify-center rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[var(--cor-acao)] text-white hover:brightness-90 focus:ring-[var(--cor-acao)] px-4 py-2"
-        >
-          Categorias de Produtos
-        </Link>
-        <Link
-          href="/configuracoes/categorias-receitas"
-          className="inline-flex items-center justify-center rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[var(--cor-acao)] text-white hover:brightness-90 focus:ring-[var(--cor-acao)] px-4 py-2"
-        >
-          Categorias de Receitas
-        </Link>
-        <Link
-          href="/configuracoes/unidades"
-          className="inline-flex items-center justify-center rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[var(--cor-acao)] text-white hover:brightness-90 focus:ring-[var(--cor-acao)] px-4 py-2"
-        >
-          Unidades de Medida
-        </Link>
-      </div>
+      <Tabs
+        tabs={tabs}
+        active={tab}
+        onChange={(id) => {
+          setTab(id);
+          const params = new URLSearchParams(searchParams);
+          params.set('tab', id);
+          router.replace(`?${params.toString()}`);
+        }}
+      />
+      {tab === 'usuarios' && <UsuariosConfigPage />}
+      {tab === 'categorias' && <CategoriasConfigPage />}
+      {tab === 'categorias-receitas' && <CategoriasReceitasConfigPage />}
+      {tab === 'unidades' && <UnidadesConfigPage />}
     </div>
+  );
+}
+
+export default function ConfiguracoesPage() {
+  return (
+    <Suspense>
+      <ConfiguracoesContent />
+    </Suspense>
   );
 }

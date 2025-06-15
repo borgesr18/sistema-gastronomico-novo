@@ -1,15 +1,13 @@
 import { PrismaClient } from '@prisma/client';
-import { createHash } from 'crypto';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const senhaHash = createHash('sha256').update('Rb180780@').digest('hex');
+  const senhaHash = await bcrypt.hash('Rb180780@', 10);
 
-  await prisma.usuario.upsert({
-    where: { email: 'rba1807@gmail.com' },
-    update: {},
-    create: {
+  await prisma.usuario.create({
+    data: {
       nome: 'Admin',
       email: 'rba1807@gmail.com',
       senhaHash: senhaHash,
@@ -18,7 +16,7 @@ async function main() {
     },
   });
 
-  console.log('Usuário admin criado ou já existente.');
+  console.log('Usuário admin criado com sucesso!');
 }
 
 main()

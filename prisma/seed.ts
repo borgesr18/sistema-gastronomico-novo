@@ -1,24 +1,23 @@
-import { PrismaClient, Role } from '@prisma/client';
-import { createHash } from 'crypto';
+import { PrismaClient } from '@prisma/client';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const senhaHash = createHash('sha256').update('Rb180780@').digest('hex');
+  const senha = 'Rb180780@';
+  const senhaHash = crypto.createHash('sha256').update(senha).digest('hex');
 
-  await prisma.usuario.upsert({
-    where: { email: 'rba1807@gmail.com' },
-    update: {},
-    create: {
+  await prisma.usuario.create({
+    data: {
       nome: 'Admin',
       email: 'rba1807@gmail.com',
       senhaHash: senhaHash,
-      role: Role.admin,
-      oculto: true,
-    },
+      role: 'admin',
+      oculto: true
+    }
   });
 
-  console.log('✅ Usuário administrador seed criado com sucesso!');
+  console.log('Usuário Admin criado com sucesso!');
 }
 
 main()
@@ -29,3 +28,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

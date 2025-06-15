@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Toast from '@/components/ui/Toast';
-import { useUsuarios } from '@/lib/usuariosService';
+import { useUsuarios, Usuario } from '@/lib/useUsuarios';
 
 export default function PerfilPage() {
   const { usuarioAtual, alterarSenha, editarUsuario } = useUsuarios();

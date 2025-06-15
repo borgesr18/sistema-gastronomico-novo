@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Tabs from '@/components/ui/Tabs';
 import UsuariosConfigPage from './usuarios/page';
 import CategoriasConfigPage from './categorias/page';
 import CategoriasReceitasConfigPage from './categorias-receitas/page';
 import UnidadesConfigPage from './unidades/page';
 
-  const [tab, setTab] = useState('usuarios');
-
+function ConfiguracoesContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [tab, setTab] = useState(searchParams.get('tab') || 'usuarios');
   const tabs = [
     { id: 'usuarios', label: 'Usuários' },
     { id: 'categorias', label: 'Categorias de Produtos' },
@@ -16,11 +19,28 @@ import UnidadesConfigPage from './unidades/page';
     { id: 'unidades', label: 'Unidades de Medida' },
   ];
 
-      <Tabs tabs={tabs} active={tab} onChange={setTab} />
+      <Tabs
+        tabs={tabs}
+        active={tab}
+        onChange={(id) => {
+          setTab(id);
+          const params = new URLSearchParams(searchParams);
+          params.set('tab', id);
+          router.replace(`?${params.toString()}`);
+        }}
+      />
       {tab === 'usuarios' && <UsuariosConfigPage />}
       {tab === 'categorias' && <CategoriasConfigPage />}
       {tab === 'categorias-receitas' && <CategoriasReceitasConfigPage />}
       {tab === 'unidades' && <UnidadesConfigPage />}
     </div>
+  );
+}
+
+export default function ConfiguracoesPage() {
+  return (
+    <Suspense>
+      <ConfiguracoesContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { X } from 'lucide-react';
 
@@ -10,6 +10,33 @@ export interface ModalProps {
   title: string;
   children: ReactNode;
   footer?: ReactNode;
+}
+
+const ModalContext = createContext<{
+  isOpen: boolean;
+  openModal: () => void;
+  closeModal: () => void;
+} | null>(null);
+
+export function useModal() {
+  const context = useContext(ModalContext);
+  if (!context) {
+    throw new Error('useModal must be used within a ModalProvider');
+  }
+  return context;
+}
+
+export function ModalProvider({ children }: { children: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+
+  return (
+    <ModalContext.Provider value={{ isOpen, openModal, closeModal }}>
+      {children}
+    </ModalContext.Provider>
+  );
 }
 
 export default function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {

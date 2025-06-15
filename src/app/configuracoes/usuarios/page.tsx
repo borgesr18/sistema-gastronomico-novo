@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Modal, { useModal } from '@/components/ui/Modal';
-import { useUsuarios, Usuario, Role } from '@/lib/useUsuarios';
+import { useUsuarios, Role, Usuario } from '@/lib/useUsuarios';
 
 export default function UsuariosConfigPage() {
   const {
@@ -32,7 +32,13 @@ export default function UsuariosConfigPage() {
 
   useEffect(() => {
     listarUsuarios();
-  }, [listarUsuarios]);
+  }, []);
+
+  const usuariosFiltrados = usuarios.filter(
+    (u) =>
+      u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+      u.email.toLowerCase().includes(filtro.toLowerCase())
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,12 +69,6 @@ export default function UsuariosConfigPage() {
     setEditando(null);
     closeModal();
   };
-
-  const usuariosFiltrados = usuarios.filter(
-    (u) =>
-      u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-      u.email.toLowerCase().includes(filtro.toLowerCase())
-  );
 
   return (
     <div className="space-y-4">
@@ -113,12 +113,10 @@ export default function UsuariosConfigPage() {
       </Table>
 
       {isOpen && (
-        <Modal onClose={closeModal}>
+        <Modal isOpen={isOpen} onClose={closeModal} title={editando ? 'Editar Usuário' : 'Novo Usuário'}>
           {editando ? (
             <form
-              onSubmit={
-                senhaNova ? handleAlterarSenha : handleEditar
-              }
+              onSubmit={senhaNova ? handleAlterarSenha : handleEditar}
               className="space-y-2"
             >
               <h3 className="text-lg font-bold">
@@ -172,15 +170,13 @@ export default function UsuariosConfigPage() {
               )}
 
               {senhaNova && (
-                <>
-                  <Input
-                    label="Nova Senha"
-                    type="password"
-                    value={senhaNova}
-                    onChange={(e) => setSenhaNova(e.target.value)}
-                    required
-                  />
-                </>
+                <Input
+                  label="Nova Senha"
+                  type="password"
+                  value={senhaNova}
+                  onChange={(e) => setSenhaNova(e.target.value)}
+                  required
+                />
               )}
 
               <Button type="submit" variant="primary">
@@ -193,26 +189,20 @@ export default function UsuariosConfigPage() {
               <Input
                 label="Nome"
                 value={novo.nome}
-                onChange={(e) =>
-                  setNovo({ ...novo, nome: e.target.value })
-                }
+                onChange={(e) => setNovo({ ...novo, nome: e.target.value })}
                 required
               />
               <Input
                 label="Email"
                 value={novo.email}
-                onChange={(e) =>
-                  setNovo({ ...novo, email: e.target.value })
-                }
+                onChange={(e) => setNovo({ ...novo, email: e.target.value })}
                 required
               />
               <Input
                 label="Senha"
                 type="password"
                 value={novo.senha}
-                onChange={(e) =>
-                  setNovo({ ...novo, senha: e.target.value })
-                }
+                onChange={(e) => setNovo({ ...novo, senha: e.target.value })}
                 required
               />
               <div>
@@ -220,10 +210,7 @@ export default function UsuariosConfigPage() {
                 <select
                   value={novo.role}
                   onChange={(e) =>
-                    setNovo({
-                      ...novo,
-                      role: e.target.value as Role,
-                    })
+                    setNovo({ ...novo, role: e.target.value as Role })
                   }
                   className="border rounded w-full p-2"
                 >
@@ -238,10 +225,10 @@ export default function UsuariosConfigPage() {
               </Button>
             </form>
           )}
+
+          {erro && <p className="text-sm text-red-600">{erro}</p>}
         </Modal>
       )}
-
-      {erro && <p className="text-sm text-red-600">{erro}</p>}
     </div>
   );
 }

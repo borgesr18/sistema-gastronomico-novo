@@ -5,7 +5,7 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Modal, { useModal } from '@/components/ui/Modal';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
-import { useUsuarios } from '@/lib/usuariosService';
+import { useUsuarios } from '@/lib/useUsuarios';
 import Toast from '@/components/ui/Toast';
 
 export default function UsuariosConfigPage() {

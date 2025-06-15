@@ -1,16 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuração otimizada para o Vercel
-  reactStrictMode: true,
-  images: {
-    domains: [],
-    unoptimized: false, // O Vercel suporta otimização de imagens nativamente
-  },
-  eslint: {
-    ignoreDuringBuilds: true, // Evita que erros de lint interrompam o build
+  experimental: {
+    appDir: true,
+    serverActions: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Evita que erros de TypeScript interrompam o build
+    ignoreBuildErrors: false, // Se estiver em desenvolvimento pode ajustar para true, mas o correto para produção é false
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

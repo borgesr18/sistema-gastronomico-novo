@@ -5,6 +5,7 @@ import { useUsuarios } from '@/lib/useUsuarios';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import { Role } from '@prisma/client';  // IMPORTANTE: importa o tipo Role
 
 export default function NovoUsuarioPage() {
   const router = useRouter();
@@ -14,12 +15,15 @@ export default function NovoUsuarioPage() {
     nome: '',
     email: '',
     senha: '',
-    role: 'viewer',
+    role: 'viewer',  // valor inicial válido
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const criado = await criarUsuario(form);
+    const criado = await criarUsuario({
+      ...form,
+      role: form.role as Role,  // Aqui convertemos explicitamente
+    });
     if (criado) {
       router.push('/login');
     }

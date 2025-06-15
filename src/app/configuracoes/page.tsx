@@ -1,32 +1,26 @@
 'use client';
-export const dynamic = "force-dynamic"; // disable prerendering
 
-import { ReactNode } from 'react';
+import { useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
+import UsuariosConfigPage from './usuarios/page';
+import CategoriasConfigPage from './categorias/page';
+import CategoriasReceitasConfigPage from './categorias-receitas/page';
+import UnidadesConfigPage from './unidades/page';
 
-import UsuariosConfigPage from '@/app/configuracoes/usuarios/page';
-import CategoriasConfigPage from '@/app/configuracoes/categorias/page';
-import CategoriasReceitasConfigPage from '@/app/configuracoes/categorias-receitas/page';
-import UnidadesConfigPage from '@/app/configuracoes/unidades/page';
+  const [tab, setTab] = useState('usuarios');
 
-type TabConfig = {
-  id: string;
-  label: string;
-  content: ReactNode;
-};
-
-export default function ConfiguracoesPage() {
-  const tabs: TabConfig[] = [
-    { id: 'usuarios', label: 'Usuários', content: <UsuariosConfigPage /> },
-    { id: 'categorias', label: 'Categorias de Produtos', content: <CategoriasConfigPage /> },
-    { id: 'categorias-receitas', label: 'Categorias de Receitas', content: <CategoriasReceitasConfigPage /> },
-    { id: 'unidades', label: 'Unidades de Medida', content: <UnidadesConfigPage /> },
+  const tabs = [
+    { id: 'usuarios', label: 'Usuários' },
+    { id: 'categorias', label: 'Categorias de Produtos' },
+    { id: 'categorias-receitas', label: 'Categorias de Receitas' },
+    { id: 'unidades', label: 'Unidades de Medida' },
   ];
 
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-800">Configurações</h1>
-      <Tabs tabs={tabs} />
+      <Tabs tabs={tabs} active={tab} onChange={setTab} />
+      {tab === 'usuarios' && <UsuariosConfigPage />}
+      {tab === 'categorias' && <CategoriasConfigPage />}
+      {tab === 'categorias-receitas' && <CategoriasReceitasConfigPage />}
+      {tab === 'unidades' && <UnidadesConfigPage />}
     </div>
   );
 }

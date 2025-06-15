@@ -3,7 +3,7 @@
 import React, { ReactNode, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { useUsuarios } from '@/lib/usuariosService';
+import { useUsuarios } from '@/lib/useUsuarios';
 import { useRouter, usePathname } from 'next/navigation';
 
 interface MainLayoutProps {

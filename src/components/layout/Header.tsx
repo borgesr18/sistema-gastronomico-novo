@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useUsuarios } from '@/lib/usuariosService';
+import { useUsuarios } from '@/lib/useUsuarios';
 import Logo from '../ui/Logo';
 
 const Header: React.FC = () => {

@@ -5,7 +5,7 @@ import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Modal, { useModal } from '@/components/ui/Modal';
-import { useUsuariosApi, Usuario } from '@/lib/useUsuariosApi';
+import { useUsuarios, Usuario } from '@/lib/useUsuarios';
 
 export default function UsuariosConfigPage() {
   const { usuarios, listarUsuarios, criarUsuario, removerUsuario, alterarSenha, editarUsuario, erro, loading } = useUsuariosApi();

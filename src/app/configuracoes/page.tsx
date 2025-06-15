@@ -1,12 +1,13 @@
 'use client';
 export const dynamic = "force-dynamic";
 
-import { ReactNode, Suspense, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
-import UsuariosConfigPage from '@/app/configuracoes/usuarios/page';
-import CategoriasConfigPage from '@/app/configuracoes/categorias/page';
-import CategoriasReceitasConfigPage from '@/app/configuracoes/categorias-receitas/page';
-import UnidadesConfigPage from '@/app/configuracoes/unidades/page';
+
+import UsuariosConfigPage from './_components/UsuariosConfigPage';
+import CategoriasConfigPage from './_components/CategoriasConfigPage';
+import CategoriasReceitasConfigPage from './_components/CategoriasReceitasConfigPage';
+import UnidadesConfigPage from './_components/UnidadesConfigPage';
 
 type TabConfig = {
   id: string;
@@ -14,8 +15,8 @@ type TabConfig = {
   content: ReactNode;
 };
 
-function ConfiguracoesContent() {
-  const [activeTab, setActiveTab] = useState<string>('usuarios');
+export default function ConfiguracoesPage() {
+  const [tab, setTab] = useState('usuarios');
 
   const tabs: TabConfig[] = [
     { id: 'usuarios', label: 'Usuários', content: <UsuariosConfigPage /> },
@@ -24,25 +25,11 @@ function ConfiguracoesContent() {
     { id: 'unidades', label: 'Unidades de Medida', content: <UnidadesConfigPage /> },
   ];
 
-  const activeContent = tabs.find((t) => t.id === activeTab)?.content;
-
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Configurações</h1>
-      <Tabs
-        tabs={tabs.map(({ id, label }) => ({ id, label }))}
-        active={activeTab}
-        onChange={setActiveTab}
-      />
-      {activeContent}
+      <Tabs tabs={tabs} active={tab} onChange={setTab} />
+      {tabs.find(t => t.id === tab)?.content}
     </div>
-  );
-}
-
-export default function ConfiguracoesPage() {
-  return (
-    <Suspense fallback={<p>Carregando...</p>}>
-      <ConfiguracoesContent />
-    </Suspense>
   );
 }

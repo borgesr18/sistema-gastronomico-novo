@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import { useUsuarios } from '@/lib/usuariosService';
+import { useUsuarios, Usuario } from '@/lib/useUsuarios';
 import Logo from '@/components/ui/Logo';
 
 export default function LoginPage() {

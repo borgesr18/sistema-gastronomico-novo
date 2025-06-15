@@ -8,7 +8,7 @@ generator client {
 }
 
 model Usuario {
-  id        String   @id @default(cuid())          // Mantido o cuid() mais moderno da main
+  id        String   @id @default(cuid())
   nome      String
   email     String   @unique
   senhaHash String

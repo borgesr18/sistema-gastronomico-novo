@@ -11,7 +11,7 @@ import Toast from '@/components/ui/Toast';
 export default function UsuariosConfigPage() {
   const {
     usuarios,
-    registrarUsuario,
+    criarUsuario,
     removerUsuario,
     alterarSenha,
     editarUsuario,

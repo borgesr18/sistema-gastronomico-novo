@@ -1,137 +1,78 @@
 'use client';
-export const dynamic = "force-dynamic";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useUsuarios } from '@/lib/useUsuarios';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import Toast from '@/components/ui/Toast';
-import { useUsuarios, Usuario } from '@/lib/useUsuarios';
 
 export default function PerfilPage() {
-  const { usuarioAtual, alterarSenha, editarUsuario } = useUsuarios();
-
-  const [perfilForm, setPerfilForm] = useState<{
-    nome: string;
-    email: string;
-    role: 'admin' | 'editor' | 'viewer' | 'manager';
-  }>({
-    nome: '',
-    email: '',
-    role: 'viewer',
+  const { usuarioAtual, editarUsuario } = useUsuarios();
+  const [perfilForm, setPerfilForm] = useState({
+    nome: usuarioAtual?.nome ?? '',
+    email: usuarioAtual?.email ?? '',
+    role: usuarioAtual?.role ?? 'viewer',
   });
-
-  const [senhaForm, setSenhaForm] = useState({ senha: '', confirmar: '' });
   const [erro, setErro] = useState('');
   const [toast, setToast] = useState('');
 
-  useEffect(() => {
-    if (usuarioAtual) {
-      setPerfilForm({
-        nome: usuarioAtual.nome,
-        email: usuarioAtual.email,
-        role: usuarioAtual.role,
-      });
-    }
-  }, [usuarioAtual]);
+  if (!usuarioAtual) {
+    return <p>Carregando perfil...</p>;
+  }
 
-  useEffect(() => {
-    if (!toast) return;
-    const timeout = setTimeout(() => setToast(''), 3000);
-    return () => clearTimeout(timeout);
-  }, [toast]);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPerfilForm((prev) => ({ ...prev, [name]: value }));
+  };
 
-  if (!usuarioAtual) return <p className="p-4">Nenhum usuário logado.</p>;
-
-  const handlePerfil = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = editarUsuario(usuarioAtual.id, perfilForm);
+    const ok = await editarUsuario(usuarioAtual.id, perfilForm);
     if (ok) {
       setToast('Perfil atualizado');
       setErro('');
     } else {
-      setErro('Email já cadastrado');
+      setErro('Falha ao atualizar perfil');
     }
-  };
-
-  const handleSenha = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (senhaForm.senha !== senhaForm.confirmar) {
-      setErro('Senhas não conferem');
-      return;
-    }
-    alterarSenha(usuarioAtual.id, senhaForm.senha);
-    setSenhaForm({ senha: '', confirmar: '' });
-    setErro('');
-    setToast('Senha alterada');
   };
 
   return (
-    <div className="space-y-6">
-      <Toast message={toast} onClose={() => setToast('')} />
-      <h1 className="text-2xl font-bold text-gray-800">Perfil</h1>
+    <div className="p-4 max-w-md mx-auto space-y-4">
+      <h1 className="text-2xl font-bold">Meu Perfil</h1>
 
-      {/* Formulário de edição de perfil */}
-      <form onSubmit={handlePerfil} className="space-y-4 max-w-sm">
+      {erro && <p className="text-sm text-red-600">{erro}</p>}
+      {toast && <p className="text-sm text-green-600">{toast}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-2">
         <Input
           label="Nome"
+          name="nome"
           value={perfilForm.nome}
-          onChange={(e) => setPerfilForm({ ...perfilForm, nome: e.target.value })}
+          onChange={handleChange}
           required
-          className="h-[38px]"
         />
+
         <Input
           label="Email"
+          name="email"
           type="email"
           value={perfilForm.email}
-          onChange={(e) => setPerfilForm({ ...perfilForm, email: e.target.value })}
+          onChange={handleChange}
           required
-          className="h-[38px]"
         />
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
-          <select
-            value={perfilForm.role}
-            onChange={(e) =>
-              setPerfilForm({ ...perfilForm, role: e.target.value as 'admin' | 'editor' | 'viewer' | 'manager' })
-            }
-            className="border border-[var(--cor-borda)] rounded-md p-2 w-full h-[38px] text-sm"
-          >
-            <option value="viewer">Visualizador</option>
-            <option value="editor">Editor</option>
-            <option value="manager">Gerente</option>
-            <option value="admin">Administrador</option>
-          </select>
-        </div>
 
-        {erro && <p className="text-sm text-red-600">{erro}</p>}
-
-        <div className="flex justify-end">
-          <Button type="submit" variant="primary">Salvar Perfil</Button>
-        </div>
-      </form>
-
-      {/* Formulário de alteração de senha */}
-      <form onSubmit={handleSenha} className="space-y-4 max-w-sm">
         <Input
-          label="Nova Senha"
-          type="password"
-          value={senhaForm.senha}
-          onChange={(e) => setSenhaForm({ ...senhaForm, senha: e.target.value })}
-          required
-          className="h-[38px]"
+          label="Perfil"
+          name="role"
+          value={perfilForm.role}
+          readOnly
+          disabled
         />
-        <Input
-          label="Confirmar Senha"
-          type="password"
-          value={senhaForm.confirmar}
-          onChange={(e) => setSenhaForm({ ...senhaForm, confirmar: e.target.value })}
-          required
-          className="h-[38px]"
-        />
-        <div className="flex justify-end">
-          <Button type="submit" variant="primary">Alterar Senha</Button>
-        </div>
+
+        <Button type="submit" variant="primary" fullWidth>
+          Salvar Alterações
+        </Button>
       </form>
     </div>
   );
 }
+

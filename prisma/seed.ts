@@ -18,7 +18,7 @@ async function main() {
     },
   });
 
-  console.log('Usuário admin criado com sucesso.');
+  console.log('Usuário admin criado ou já existente.');
 }
 
 main()

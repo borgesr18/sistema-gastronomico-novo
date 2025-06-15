@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import { useUsuariosApi } from '@/lib/useUsuariosApi';
+import { useUsuarios, Usuario } from '@/lib/useUsuarios';
 
 export default function NovoUsuarioPage() {
   const router = useRouter();

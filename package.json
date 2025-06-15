@@ -1,35 +1,42 @@
 {
   "name": "sistema-gastronomico",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "prisma generate"
+    "lint": "next lint"
+  },
+  "prisma": {
+    "seed": "ts-node ./prisma/seed.ts"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "^1.7.15",
     "@prisma/client": "^5.22.0",
+    "@types/react": "^18.2.37",
+    "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
-    "jspdf": "^2.5.1",
-    "jspdf-autotable": "^3.5.25",
-    "lucide-react": "^0.366.0",
+    "lucide-react": "^0.293.0",
     "next": "14.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "styled-jsx": "^5.1.0",
+    "zod": "^3.22.4",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.2",
-    "@types/node": "20.4.2",
-    "@types/react": "18.2.14",
-    "@types/react-dom": "18.2.7",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.24",
+    "@types/node": "^20.10.5",
+    "@types/react-dom": "^18.2.4",
+    "autoprefixer": "^10.4.17",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.1.0",
+    "postcss": "^8.4.33",
     "prisma": "^5.22.0",
-    "tailwindcss": "^3.4.1",
-    "typescript": "5.3.3"
+    "tailwindcss": "^3.4.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }
+

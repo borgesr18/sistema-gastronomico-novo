@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@/components/ui/Table';
-import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 import Modal, { useModal } from '@/components/ui/Modal';
 import { useUsuarios, Usuario, Role } from '@/lib/useUsuarios';
 
@@ -20,27 +20,19 @@ export default function UsuariosConfigPage() {
   } = useUsuarios();
 
   const { isOpen, openModal, closeModal } = useModal();
-
   const [filtro, setFiltro] = useState('');
-  const [novo, setNovo] = useState<{ nome: string; email: string; senha: string; role: Role }>({
+  const [novo, setNovo] = useState({
     nome: '',
     email: '',
     senha: '',
-    role: 'viewer',
+    role: 'viewer' as Role,
   });
-
-  const [editando, setEditando] = useState<Usuario | null>(null);
   const [senhaNova, setSenhaNova] = useState('');
+  const [editando, setEditando] = useState<Usuario | null>(null);
 
   useEffect(() => {
     listarUsuarios();
-  }, []);
-
-  const usuariosFiltrados = usuarios.filter(
-    (u) =>
-      u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-      u.email.toLowerCase().includes(filtro.toLowerCase())
-  );
+  }, [listarUsuarios]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,13 +64,19 @@ export default function UsuariosConfigPage() {
     closeModal();
   };
 
+  const usuariosFiltrados = usuarios.filter(
+    (u) =>
+      u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+      u.email.toLowerCase().includes(filtro.toLowerCase())
+  );
+
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold">Gerenciar Usuários</h1>
+      <h2 className="text-xl font-bold">Gerenciar Usuários</h2>
 
       <div className="flex space-x-2">
         <Input
-          placeholder="Filtrar por nome ou email"
+          placeholder="Filtrar usuários"
           value={filtro}
           onChange={(e) => setFiltro(e.target.value)}
         />
@@ -93,18 +91,17 @@ export default function UsuariosConfigPage() {
             <td>{u.role}</td>
             <td className="space-x-2">
               <Button
-                size="xs"
+                size="sm"
                 variant="secondary"
                 onClick={() => {
                   setEditando(u);
-                  setSenhaNova('');
                   openModal();
                 }}
               >
                 Editar
               </Button>
               <Button
-                size="xs"
+                size="sm"
                 variant="secondary"
                 onClick={() => removerUsuario(u.id)}
               >
@@ -116,78 +113,83 @@ export default function UsuariosConfigPage() {
       </Table>
 
       {isOpen && (
-        <Modal onClose={() => {
-          setEditando(null);
-          setSenhaNova('');
-          closeModal();
-        }}>
+        <Modal onClose={closeModal}>
           {editando ? (
-            senhaNova ? (
-              <form onSubmit={handleAlterarSenha} className="space-y-2">
-                <h3 className="font-bold">Alterar Senha</h3>
-                <Input
-                  type="password"
-                  placeholder="Nova Senha"
-                  value={senhaNova}
-                  onChange={(e) => setSenhaNova(e.target.value)}
-                  required
-                />
-                <Button type="submit" variant="primary">
-                  Salvar Senha
-                </Button>
-              </form>
-            ) : (
-              <form onSubmit={handleEditar} className="space-y-2">
-                <h3 className="font-bold">Editar Usuário</h3>
-                <Input
-                  label="Nome"
-                  value={editando.nome}
-                  onChange={(e) =>
-                    setEditando({ ...editando, nome: e.target.value })
-                  }
-                  required
-                />
-                <Input
-                  label="Email"
-                  value={editando.email}
-                  onChange={(e) =>
-                    setEditando({ ...editando, email: e.target.value })
-                  }
-                  required
-                />
-                <div>
-                  <label className="block text-sm">Perfil</label>
-                  <select
-                    value={editando.role}
+            <form
+              onSubmit={
+                senhaNova ? handleAlterarSenha : handleEditar
+              }
+              className="space-y-2"
+            >
+              <h3 className="text-lg font-bold">
+                {senhaNova ? 'Alterar Senha' : 'Editar Usuário'}
+              </h3>
+
+              {!senhaNova && (
+                <>
+                  <Input
+                    label="Nome"
+                    value={editando.nome}
                     onChange={(e) =>
-                      setEditando({
-                        ...editando,
-                        role: e.target.value as Role,
-                      })
+                      setEditando({ ...editando, nome: e.target.value })
                     }
-                    className="border rounded w-full p-2"
+                    required
+                  />
+                  <Input
+                    label="Email"
+                    value={editando.email}
+                    onChange={(e) =>
+                      setEditando({ ...editando, email: e.target.value })
+                    }
+                    required
+                  />
+                  <div>
+                    <label className="block text-sm mb-1">Perfil</label>
+                    <select
+                      value={editando.role}
+                      onChange={(e) =>
+                        setEditando({
+                          ...editando,
+                          role: e.target.value as Role,
+                        })
+                      }
+                      className="border rounded w-full p-2"
+                    >
+                      <option value="viewer">Visualizador</option>
+                      <option value="editor">Editor</option>
+                      <option value="manager">Gerente</option>
+                      <option value="admin">Administrador</option>
+                    </select>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setSenhaNova('')}
                   >
-                    <option value="viewer">Visualizador</option>
-                    <option value="editor">Editor</option>
-                    <option value="manager">Gerente</option>
-                    <option value="admin">Administrador</option>
-                  </select>
-                </div>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setSenhaNova('iniciando')}
-                >
-                  Alterar Senha
-                </Button>
-                <Button type="submit" variant="primary">
-                  Salvar Alterações
-                </Button>
-              </form>
-            )
+                    Alterar Senha
+                  </Button>
+                </>
+              )}
+
+              {senhaNova && (
+                <>
+                  <Input
+                    label="Nova Senha"
+                    type="password"
+                    value={senhaNova}
+                    onChange={(e) => setSenhaNova(e.target.value)}
+                    required
+                  />
+                </>
+              )}
+
+              <Button type="submit" variant="primary">
+                Salvar
+              </Button>
+            </form>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-2">
-              <h3 className="font-bold">Novo Usuário</h3>
+              <h3 className="text-lg font-bold">Novo Usuário</h3>
               <Input
                 label="Nome"
                 value={novo.nome}
@@ -214,7 +216,7 @@ export default function UsuariosConfigPage() {
                 required
               />
               <div>
-                <label className="block text-sm">Perfil</label>
+                <label className="block text-sm mb-1">Perfil</label>
                 <select
                   value={novo.role}
                   onChange={(e) =>
@@ -232,13 +234,14 @@ export default function UsuariosConfigPage() {
                 </select>
               </div>
               <Button type="submit" variant="primary">
-                Criar Usuário
+                Criar
               </Button>
             </form>
           )}
-          {erro && <p className="text-red-500">{erro}</p>}
         </Modal>
       )}
+
+      {erro && <p className="text-sm text-red-600">{erro}</p>}
     </div>
   );
 }

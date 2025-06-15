@@ -58,7 +58,7 @@ export default function UsuariosConfigPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const criado = await registrarUsuario({
+    const criado = await criarUsuario({
       ...novo,
       role: novo.role as 'admin' | 'editor' | 'viewer' | 'manager',
     });

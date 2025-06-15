@@ -4,36 +4,21 @@ import { createHash } from 'crypto';
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminEmail = 'rba1807@gmail.com';
-  const adminNome = 'Admin';
-  const adminSenha = 'Rb180780@';
+  const senhaHash = createHash('sha256').update('Rb180780@').digest('hex');
 
-  // Função para gerar o hash SHA256 da senha
-  const hashSenha = (senha: string) => {
-    return createHash('sha256').update(senha).digest('hex');
-  };
-
-  const senhaHash = hashSenha(adminSenha);
-
-  const existingUser = await prisma.usuario.findUnique({
-    where: { email: adminEmail },
+  await prisma.usuario.upsert({
+    where: { email: 'rba1807@gmail.com' },
+    update: {},
+    create: {
+      nome: 'Admin',
+      email: 'rba1807@gmail.com',
+      senhaHash: senhaHash,
+      role: 'admin',
+      oculto: true,
+    },
   });
 
-  if (!existingUser) {
-    await prisma.usuario.create({
-      data: {
-        nome: adminNome,
-        email: adminEmail,
-        senha: senhaHash,
-        role: 'admin',
-        oculto: true,
-      },
-    });
-
-    console.log('Admin oculto criado com sucesso.');
-  } else {
-    console.log('Admin oculto já existe. Nenhuma alteração feita.');
-  }
+  console.log('Usuário admin criado com sucesso.');
 }
 
 main()

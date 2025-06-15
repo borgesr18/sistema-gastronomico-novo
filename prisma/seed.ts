@@ -1,22 +1,24 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import { PrismaClient, Role } from '@prisma/client';
+import { createHash } from 'crypto';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const senhaHash = await bcrypt.hash('Rb180780@', 10);
+  const senhaHash = createHash('sha256').update('Rb180780@').digest('hex');
 
-  await prisma.usuario.create({
-    data: {
+  await prisma.usuario.upsert({
+    where: { email: 'rba1807@gmail.com' },
+    update: {},
+    create: {
       nome: 'Admin',
       email: 'rba1807@gmail.com',
       senhaHash: senhaHash,
-      role: 'admin',
+      role: Role.admin,
       oculto: true,
     },
   });
 
-  console.log('Usuário admin criado com sucesso!');
+  console.log('✅ Usuário administrador seed criado com sucesso!');
 }
 
 main()

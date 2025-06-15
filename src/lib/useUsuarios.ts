@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { prisma } from './prisma';
-import { hashSenha } from './cryptoUtils';
+import { createHash } from 'crypto';
 
 export type Role = 'admin' | 'editor' | 'viewer' | 'manager';
 
@@ -15,173 +14,171 @@ export interface Usuario {
   oculto?: boolean;
 }
 
-const ADMIN_EMAIL = 'rba1807@gmail.com';
-const ADMIN_NOME = 'Admin';
-const ADMIN_SENHA = 'Rb180780@';
+const adminEmail = 'rba1807@gmail.com';
+const adminNome = 'Admin';
+const adminSenha = 'Rb180780@';
+
+const gerarId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
+const hashSenha = (senha: string) => createHash('sha256').update(senha).digest('hex');
+
+const getUsuariosStorage = (): Usuario[] => {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem('usuarios');
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+};
+
+const saveUsuarios = (lista: Usuario[]) => {
+  localStorage.setItem('usuarios', JSON.stringify(lista));
+};
+
+const senhaForte = (senha: string) =>
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);
 
 export const useUsuarios = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [usuarioAtual, setUsuarioAtual] = useState<Usuario | null>(null);
-  const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const ensureAdmin = async () => {
-    const admin = await prisma.usuario.findUnique({ where: { email: ADMIN_EMAIL } });
-    if (!admin) {
-      await prisma.usuario.create({
-        data: {
-          nome: ADMIN_NOME,
-          email: ADMIN_EMAIL,
-          senhaHash: hashSenha(ADMIN_SENHA),
-          role: 'admin',
-          oculto: true,
-        },
-      });
+  // Cria admin fixo
+  const ensureAdmin = () => {
+    const lista = getUsuariosStorage();
+    const existe = lista.some(u => u.email === adminEmail);
+    if (!existe) {
+      const novoAdmin: Usuario = {
+        id: 'admin',
+        nome: adminNome,
+        email: adminEmail,
+        senhaHash: hashSenha(adminSenha),
+        role: 'admin',
+        oculto: true,
+      };
+      const total = [...lista, novoAdmin];
+      saveUsuarios(total);
+      setUsuarios(total.filter(u => !u.oculto));
     }
   };
+
+  useEffect(() => {
+    const lista = getUsuariosStorage();
+    setUsuarios(lista.filter(u => !u.oculto));
+
+    const idLogado = localStorage.getItem('usuarioLogado');
+    if (idLogado) {
+      const user = lista.find(u => u.id === idLogado) || null;
+      setUsuarioAtual(user);
+    }
+
+    ensureAdmin();
+  }, []);
 
   const listarUsuarios = async () => {
-    setLoading(true);
-    try {
-      await ensureAdmin();
-      const lista = await prisma.usuario.findMany({ where: { oculto: false } });
-      setUsuarios(lista);
-    } catch (error) {
-      setErro('Erro ao listar usuários');
-    } finally {
-      setLoading(false);
-    }
+    setUsuarios(getUsuariosStorage().filter(u => !u.oculto));
   };
 
-  const criarUsuario = async (dados: { nome: string; email: string; senha: string; role?: Role }) => {
-    setLoading(true);
-    try {
-      const existe = await prisma.usuario.findUnique({ where: { email: dados.email } });
-      if (existe) {
-        setErro('Email já cadastrado');
-        return null;
-      }
+  const criarUsuario = async (novo: { nome: string; email: string; senha: string; role?: Role }) => {
+    setErro(null);
+    const lista = getUsuariosStorage();
 
-      const novo = await prisma.usuario.create({
-        data: {
-          nome: dados.nome,
-          email: dados.email,
-          senhaHash: hashSenha(dados.senha),
-          role: dados.role ?? 'viewer',
-        },
-      });
-      await listarUsuarios();
-      return novo;
-    } catch {
-      setErro('Erro ao criar usuário');
+    if (lista.some(u => u.email === novo.email)) {
+      setErro('Email já cadastrado');
       return null;
-    } finally {
-      setLoading(false);
     }
+
+    if (!senhaForte(novo.senha)) {
+      setErro('Senha fraca: precisa ter maiúscula, minúscula, número e símbolo');
+      return null;
+    }
+
+    const user: Usuario = {
+      id: gerarId(),
+      nome: novo.nome,
+      email: novo.email,
+      senhaHash: hashSenha(novo.senha),
+      role: novo.role ?? 'viewer',
+    };
+
+    const total = [...lista, user];
+    saveUsuarios(total);
+    setUsuarios(total.filter(u => !u.oculto));
+    return user;
   };
 
-  const editarUsuario = async (
-    id: string,
-    dados: { nome: string; email: string; role: Role }
-  ) => {
-    setLoading(true);
-    try {
-      const existe = await prisma.usuario.findFirst({
-        where: {
-          email: dados.email,
-          NOT: { id },
-        },
-      });
-      if (existe) {
-        setErro('Email já está sendo usado por outro usuário');
-        return false;
-      }
+  const editarUsuario = async (id: string, dados: { nome: string; email: string; role: Role }) => {
+    const lista = getUsuariosStorage();
 
-      await prisma.usuario.update({
-        where: { id },
-        data: {
-          nome: dados.nome,
-          email: dados.email,
-          role: dados.role,
-        },
-      });
-
-      await listarUsuarios();
-      return true;
-    } catch {
-      setErro('Erro ao editar usuário');
+    if (lista.some(u => u.email === dados.email && u.id !== id)) {
+      setErro('Email já cadastrado');
       return false;
-    } finally {
-      setLoading(false);
     }
-  };
 
-  const removerUsuario = async (id: string) => {
-    setLoading(true);
-    try {
-      await prisma.usuario.delete({ where: { id } });
-      await listarUsuarios();
-    } catch {
-      setErro('Erro ao remover usuário');
-    } finally {
-      setLoading(false);
-    }
+    const novaLista = lista.map(u =>
+      u.id === id ? { ...u, nome: dados.nome, email: dados.email, role: dados.role } : u
+    );
+
+    saveUsuarios(novaLista);
+    setUsuarios(novaLista.filter(u => !u.oculto));
+    return true;
   };
 
   const alterarSenha = async (id: string, novaSenha: string) => {
-    setLoading(true);
-    try {
-      await prisma.usuario.update({
-        where: { id },
-        data: { senhaHash: hashSenha(novaSenha) },
-      });
-      await listarUsuarios();
-    } catch {
-      setErro('Erro ao alterar senha');
-    } finally {
-      setLoading(false);
+    if (!senhaForte(novaSenha)) {
+      setErro('Senha fraca');
+      return;
     }
+
+    const lista = getUsuariosStorage();
+    const novaLista = lista.map(u =>
+      u.id === id ? { ...u, senhaHash: hashSenha(novaSenha) } : u
+    );
+
+    saveUsuarios(novaLista);
+    setUsuarios(novaLista.filter(u => !u.oculto));
+  };
+
+  const removerUsuario = async (id: string) => {
+    const lista = getUsuariosStorage().filter(u => u.id !== id);
+    saveUsuarios(lista);
+    setUsuarios(lista.filter(u => !u.oculto));
+
+    const idLogado = localStorage.getItem('usuarioLogado');
+    if (idLogado === id) logout();
   };
 
   const login = async (email: string, senha: string) => {
-    setLoading(true);
-    try {
-      await ensureAdmin();
-      const usuario = await prisma.usuario.findUnique({ where: { email } });
-      if (usuario && usuario.senhaHash === hashSenha(senha)) {
-        setUsuarioAtual(usuario);
-        return usuario;
-      } else {
-        setErro('Credenciais inválidas');
-        return null;
-      }
-    } catch {
-      setErro('Erro ao fazer login');
+    const lista = getUsuariosStorage();
+    const user = lista.find(u => u.email === email && u.senhaHash === hashSenha(senha));
+
+    if (user) {
+      setUsuarioAtual(user);
+      localStorage.setItem('usuarioLogado', user.id);
+      return user;
+    } else {
+      setErro('Credenciais inválidas');
       return null;
-    } finally {
-      setLoading(false);
     }
   };
 
   const logout = () => {
     setUsuarioAtual(null);
+    localStorage.removeItem('usuarioLogado');
   };
-
-  useEffect(() => {
-    listarUsuarios();
-  }, []);
 
   return {
     usuarios,
-    usuarioAtual,
-    loading,
-    erro,
     listarUsuarios,
     criarUsuario,
-    editarUsuario,
     removerUsuario,
     alterarSenha,
+    editarUsuario,
     login,
     logout,
+    usuarioAtual,
+    erro,
+    loading,
   };
 };

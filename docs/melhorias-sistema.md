@@ -41,6 +41,8 @@ As páginas de configuração (categorias, unidades, usuários) seguem estrutura
 2. Permitir exportar configurações para JSON e importar de arquivos.
 3. Consolidar as páginas em um layout de abas para facilitar a navegação.
 
+- O menu de perfil agora fecha automaticamente quando o ponteiro sai de sua área,
+  evitando que permaneça aberto acidentalmente.
 **Exemplo de estrutura atual**【F:src/app/configuracoes/page.tsx†L1-L34】
 
 ---

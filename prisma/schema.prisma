@@ -29,3 +29,9 @@ model Categoria {
   nome      String
   createdAt DateTime @default(now())
 }
+
+model CategoriaReceita {
+  id        String   @id @default(cuid())
+  nome      String
+  createdAt DateTime @default(now())
+}

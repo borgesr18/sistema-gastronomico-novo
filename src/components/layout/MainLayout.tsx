@@ -3,35 +3,40 @@
 import React, { ReactNode, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { useUsuarios } from '@/lib/useUsuarios';
 import { useRouter, usePathname } from 'next/navigation';
-import { ModalProvider } from '@/components/ui/Modal';  // <-- IMPORTANTE: adicionar isso
+import { ModalProvider } from '@/components/ui/Modal';
+import { AuthProvider, useAuth } from '@/lib/useAuth';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { usuarioAtual } = useUsuarios();
+const LayoutContent: React.FC<MainLayoutProps> = ({ children }) => {
+  const { usuario, carregando } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!usuarioAtual && pathname !== '/login' && pathname !== '/usuarios/novo') {
-      router.push('/login');
+    if (!carregando) {
+      if (!usuario && pathname !== '/login') {
+        router.push('/login');
+      }
+      if (usuario && pathname === '/login') {
+        router.push('/');
+      }
     }
-    if (usuarioAtual && (pathname === '/login' || pathname === '/usuarios/novo')) {
-      router.push('/');
-    }
-  }, [usuarioAtual, pathname, router]);
+  }, [usuario, carregando, pathname, router]);
+
+  if (carregando) {
+    return <div>Carregando...</div>;
+  }
 
   const hideLayout =
     pathname === '/login' ||
-    pathname === '/usuarios/novo' ||
     pathname.includes('/imprimir');
 
   return (
-    <ModalProvider>  {/* <-- ENVOLVE TODO O APP */}
+    <ModalProvider>
       <div className="flex h-screen" style={{ backgroundColor: 'var(--cor-fundo)' }}>
         {!hideLayout && <Sidebar />}
         <div className="flex flex-col flex-1 overflow-hidden">
@@ -52,6 +57,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </div>
       </div>
     </ModalProvider>
+  );
+};
+
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  return (
+    <AuthProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </AuthProvider>
   );
 };
 

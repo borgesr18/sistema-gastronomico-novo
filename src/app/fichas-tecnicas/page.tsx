@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
-import Table, { TableRow, TableCell } from '@/components/ui/Table';
+import { Table,  TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import SlideOver from '@/components/ui/SlideOver';
 import {

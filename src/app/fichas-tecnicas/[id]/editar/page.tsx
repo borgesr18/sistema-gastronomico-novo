@@ -11,7 +11,7 @@ import { useFichasTecnicas, unidadesRendimento, FichaTecnicaInfo, IngredienteFic
 import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
-import Table, { TableRow, TableCell } from '@/components/ui/Table';
+import { Table,  TableRow, TableCell } from '@/components/ui/Table';
 import { useModal } from '@/components/ui/Modal';
 import Modal from '@/components/ui/Modal';
 import Toast from '@/components/ui/Toast';

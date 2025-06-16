@@ -8,7 +8,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
 import { useRelatorios } from '@/lib/relatoriosService';
-import Table, { TableRow, TableCell } from '@/components/ui/Table';
+import { Table,  TableRow, TableCell } from '@/components/ui/Table';
 import Link from 'next/link';
 
 export default function RelatoriosPage() {

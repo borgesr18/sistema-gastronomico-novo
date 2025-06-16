@@ -6,7 +6,7 @@ import { useModal } from '@/components/ui/Modal';
 import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import Table from '@/components/ui/Table';
+import { Table, TableRow, TableCell } from '@/components/ui/Table';
 import Toast from '@/components/ui/Toast';
 import CategoriaForm from './CategoriaForm';
 

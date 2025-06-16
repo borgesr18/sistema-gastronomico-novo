@@ -4,7 +4,9 @@ import React, { useEffect, useState } from 'react';
 import Modal, { useModal } from '@/components/ui/Modal';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Toast from '@/components/ui/Toast';
-import Button from '@/components/ui/Button';
+import UsuarioForm from './UsuarioForm';
+import SenhaForm from './SenhaForm';
+import { useModal as useSenhaModal } from '@/components/ui/Modal';
 
 interface Usuario {
   id: string;
@@ -13,45 +15,44 @@ interface Usuario {
   role: string;
 }
 
-const UsuariosConfigPage: React.FC = () => {
+export default function UsuariosConfigPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const { isOpen, openModal, closeModal } = useModal();
 
-  // Buscar usuários da API
-  const fetchUsuarios = async () => {
-    try {
-      const res = await fetch('/api/usuarios');
-      const data = await res.json();
-      setUsuarios(data.usuarios);
-    } catch (error) {
-      console.error('Erro ao buscar usuários:', error);
-    }
+  const { isOpen, openModal, closeModal } = useModal();
+  const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useSenhaModal();
+
+  const listarUsuarios = async () => {
+    const res = await fetch('/api/usuarios');
+    const data = await res.json();
+    setUsuarios(data);
   };
 
   useEffect(() => {
-    fetchUsuarios();
+    listarUsuarios();
   }, []);
 
-  // Deletar usuário
-  const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+  const handleCriar = () => {
+    setUsuarioSelecionado(null);
+    openModal();
+  };
 
-    try {
-      const res = await fetch(`/api/usuarios/${id}`, {
-        method: 'DELETE',
-      });
+  const handleEditar = (user: Usuario) => {
+    setUsuarioSelecionado(user);
+    openModal();
+  };
 
-      if (res.ok) {
-        setToast('Usuário excluído com sucesso!');
-        fetchUsuarios();
-      } else {
-        setToast('Erro ao excluir usuário');
-      }
-    } catch (error) {
-      console.error('Erro ao excluir:', error);
-      setToast('Erro inesperado');
+  const handleAlterarSenha = (user: Usuario) => {
+    setUsuarioSelecionado(user);
+    openSenhaModal();
+  };
+
+  const handleRemover = async (id: string) => {
+    if (confirm('Tem certeza que deseja excluir este usuário?')) {
+      await fetch(`/api/usuarios/${id}`, { method: 'DELETE' });
+      setToast('Usuário removido com sucesso');
+      listarUsuarios();
     }
   };
 
@@ -59,14 +60,14 @@ const UsuariosConfigPage: React.FC = () => {
     <div>
       <h1 className="text-xl font-bold mb-4">Gerenciar Usuários</h1>
 
-      {toast && <Toast>{toast}</Toast>}
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
 
       <Table>
         <thead>
           <tr>
             <th>Nome</th>
             <th>Email</th>
-            <th>Role</th>
+            <th>Função</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -77,20 +78,48 @@ const UsuariosConfigPage: React.FC = () => {
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleDelete(user.id)}
-                >
+                <button onClick={() => handleEditar(user)} className="text-blue-500 mr-2">
+                  Editar
+                </button>
+                <button onClick={() => handleAlterarSenha(user)} className="text-yellow-500 mr-2">
+                  Alterar Senha
+                </button>
+                <button onClick={() => handleRemover(user.id)} className="text-red-500">
                   Excluir
-                </Button>
+                </button>
               </TableCell>
             </TableRow>
           ))}
         </tbody>
       </Table>
+
+      {isOpen && (
+        <Modal isOpen={isOpen} onClose={closeModal}>
+          <UsuarioForm
+            usuario={usuarioSelecionado}
+            onSuccess={() => {
+              listarUsuarios();
+              closeModal();
+            }}
+          />
+        </Modal>
+      )}
+
+      {isSenhaOpen && usuarioSelecionado && (
+        <Modal isOpen={isSenhaOpen} onClose={closeSenhaModal}>
+          <SenhaForm
+            usuario={usuarioSelecionado}
+            onSuccess={() => {
+              listarUsuarios();
+              closeSenhaModal();
+            }}
+          />
+        </Modal>
+      )}
+
+      <button onClick={handleCriar} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+        Novo Usuário
+      </button>
     </div>
   );
-};
-
-export default UsuariosConfigPage;
+}

@@ -1,47 +1,61 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Usuario } from '@prisma/client';
 
 export function useUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [usuarioAtual, setUsuarioAtual] = useState<Usuario | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [carregando, setCarregando] = useState(false);
 
-  useEffect(() => {
-    async function fetchUsuarios() {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/usuarios');
-        const data = await res.json();
-        setUsuarios(data.usuarios);
-      } catch (error) {
-        console.error('Erro ao carregar usuários:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUsuarios();
-  }, []);
-
-  const editarUsuario = async (usuario: Usuario) => {
+  async function carregarUsuarios() {
+    setCarregando(true);
     try {
-      await fetch(`/api/usuarios/${usuario.id}`, {
+      const res = await fetch('/api/usuarios');
+      const data = await res.json();
+      setUsuarios(data);
+    } finally {
+      setCarregando(false);
+    }
+  }
+
+  async function editarUsuario(id: string, dados: Partial<Usuario>) {
+    setCarregando(true);
+    try {
+      const res = await fetch(`/api/usuarios/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(usuario),
+        body: JSON.stringify(dados),
       });
-    } catch (error) {
-      console.error('Erro ao editar usuário:', error);
+
+      if (!res.ok) throw new Error('Erro ao editar usuário');
+
+      const usuarioAtualizado = await res.json();
+
+      setUsuarios((prev) =>
+        prev.map((u) => (u.id === id ? usuarioAtualizado : u))
+      );
+
+      // Se o usuário editado for o atual logado, atualiza também
+      if (usuarioAtual && usuarioAtual.id === id) {
+        setUsuarioAtual(usuarioAtualizado);
+      }
+    } finally {
+      setCarregando(false);
     }
-  };
+  }
+
+  function setUsuarioLogado(usuario: Usuario | null) {
+    setUsuarioAtual(usuario);
+  }
 
   return {
     usuarios,
     usuarioAtual,
-    setUsuarioAtual,
+    carregando,
+    carregarUsuarios,
     editarUsuario,
-    loading,
+    setUsuarioLogado,
   };
 }
+

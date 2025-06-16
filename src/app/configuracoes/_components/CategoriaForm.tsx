@@ -3,11 +3,13 @@
 import React, { useState, FormEvent } from 'react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import { Categoria } from '@prisma/client';
 
 interface CategoriaFormProps {
-  categoria: Categoria | null;
-  onSave: (categoria: Partial<Categoria>) => void;
+  categoria: {
+    id?: string;
+    nome: string;
+  } | null;
+  onSave: (categoria: { id?: string; nome: string }) => void;
   onCancel: () => void;
 }
 
@@ -16,13 +18,7 @@ export default function CategoriaForm({ categoria, onSave, onCancel }: Categoria
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    const dados: Partial<Categoria> = {
-      id: categoria?.id,
-      nome,
-    };
-
-    onSave(dados);
+    onSave({ id: categoria?.id, nome });
   };
 
   return (

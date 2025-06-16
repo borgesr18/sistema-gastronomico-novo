@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
-import { Usuario } from '@prisma/client';
+import { Usuario, Role } from '@prisma/client';
 
 interface UsuarioFormProps {
   usuario: Usuario | null;
@@ -12,12 +12,12 @@ interface UsuarioFormProps {
   onCancel: () => void;
 }
 
-const roles = ['admin', 'editor', 'viewer', 'manager'];
+const roles: Role[] = ['admin', 'editor', 'viewer', 'manager'];
 
 export default function UsuarioForm({ usuario, onSave, onCancel }: UsuarioFormProps) {
   const [nome, setNome] = useState(usuario?.nome ?? '');
   const [email, setEmail] = useState(usuario?.email ?? '');
-  const [role, setRole] = useState(usuario?.role ?? 'viewer');
+  const [role, setRole] = useState<Role>(usuario?.role ?? 'viewer');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ export default function UsuarioForm({ usuario, onSave, onCancel }: UsuarioFormPr
       <Input label="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
       <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-      <Select label="Função" value={role} onChange={(e) => setRole(e.target.value)}>
+      <Select label="Função" value={role} onChange={(e) => setRole(e.target.value as Role)}>
         {roles.map((r) => (
           <option key={r} value={r}>
             {r}

@@ -1,7 +1,6 @@
-'use server';
+'use client';
 
-import { prisma } from '@/lib/prisma';
-import crypto from 'crypto';
+import { useState, useEffect } from 'react';
 
 export type Role = 'admin' | 'editor' | 'viewer' | 'manager';
 
@@ -9,120 +8,163 @@ export interface Usuario {
   id: string;
   nome: string;
   email: string;
-  senhaHash: string;
   role: Role;
+  createdAt: string;
   oculto?: boolean;
 }
 
-// Função para gerar o hash da senha
-const hashSenha = (senha: string) =>
-  crypto.createHash('sha256').update(senha).digest('hex');
-
-// Função para validar força da senha
-const senhaForte = (senha: string) =>
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(senha);
-
 export const useUsuarios = () => {
-  // Listar todos os usuários visíveis
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [usuarioAtual, setUsuarioAtual] = useState<Usuario | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Carregar lista de usuários
   const listarUsuarios = async () => {
-    return await prisma.usuario.findMany({
-      where: { oculto: false },
-      orderBy: { createdAt: 'desc' },
-    });
+    setLoading(true);
+    try {
+      const response = await fetch('/api/usuarios/listar');
+      const data = await response.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error('Erro ao listar usuários:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Criar novo usuário
   const criarUsuario = async (novo: { nome: string; email: string; senha: string; role?: Role }) => {
-    if (!senhaForte(novo.senha)) {
-      throw new Error('Senha fraca: precisa ter maiúscula, minúscula, número e símbolo');
+    setErro(null);
+    try {
+      const response = await fetch('/api/usuarios/criar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(novo),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErro(data.error || 'Erro ao criar usuário');
+        return null;
+      }
+
+      await listarUsuarios();
+      return data;
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+      setErro('Erro inesperado');
+      return null;
     }
-
-    const existente = await prisma.usuario.findUnique({
-      where: { email: novo.email },
-    });
-
-    if (existente) {
-      throw new Error('Email já cadastrado');
-    }
-
-    const senhaHash = hashSenha(novo.senha);
-
-    const user = await prisma.usuario.create({
-      data: {
-        nome: novo.nome,
-        email: novo.email,
-        senhaHash,
-        role: novo.role ?? 'viewer',
-      },
-    });
-
-    return user;
   };
 
   // Editar usuário
   const editarUsuario = async (id: string, dados: { nome: string; email: string; role: Role }) => {
-    const existente = await prisma.usuario.findFirst({
-      where: {
-        email: dados.email,
-        NOT: { id },
-      },
-    });
+    try {
+      const response = await fetch(`/api/usuarios/editar?id=${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados),
+      });
 
-    if (existente) {
-      throw new Error('Email já cadastrado');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErro(data.error || 'Erro ao editar usuário');
+        return false;
+      }
+
+      await listarUsuarios();
+      return true;
+    } catch (error) {
+      console.error('Erro ao editar usuário:', error);
+      setErro('Erro inesperado');
+      return false;
     }
-
-    return await prisma.usuario.update({
-      where: { id },
-      data: {
-        nome: dados.nome,
-        email: dados.email,
-        role: dados.role,
-      },
-    });
-  };
-
-  // Alterar senha
-  const alterarSenha = async (id: string, novaSenha: string) => {
-    if (!senhaForte(novaSenha)) {
-      throw new Error('Senha fraca');
-    }
-
-    const senhaHash = hashSenha(novaSenha);
-
-    return await prisma.usuario.update({
-      where: { id },
-      data: { senhaHash },
-    });
   };
 
   // Remover usuário
   const removerUsuario = async (id: string) => {
-    return await prisma.usuario.delete({
-      where: { id },
-    });
+    try {
+      const response = await fetch(`/api/usuarios/remover?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        await listarUsuarios();
+      } else {
+        const data = await response.json();
+        setErro(data.error || 'Erro ao remover usuário');
+      }
+    } catch (error) {
+      console.error('Erro ao remover usuário:', error);
+    }
+  };
+
+  // Alterar senha
+  const alterarSenha = async (id: string, novaSenha: string) => {
+    try {
+      const response = await fetch(`/api/usuarios/alterarSenha?id=${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ novaSenha }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setErro(data.error || 'Erro ao alterar senha');
+      }
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+    }
   };
 
   // Login
   const login = async (email: string, senha: string) => {
-    const senhaHash = hashSenha(senha);
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
+      });
 
-    const usuario = await prisma.usuario.findFirst({
-      where: {
-        email,
-        senhaHash,
-      },
-    });
+      const data = await response.json();
 
-    return usuario;
+      if (response.ok) {
+        setUsuarioAtual(data.usuario);
+        return data.usuario;
+      } else {
+        setErro(data.error || 'Credenciais inválidas');
+        return null;
+      }
+    } catch (error) {
+      console.error('Erro no login:', error);
+      setErro('Erro inesperado no login');
+      return null;
+    }
   };
 
+  // Logout
+  const logout = () => {
+    setUsuarioAtual(null);
+  };
+
+  useEffect(() => {
+    listarUsuarios();
+  }, []);
+
   return {
+    usuarios,
     listarUsuarios,
     criarUsuario,
     editarUsuario,
-    alterarSenha,
     removerUsuario,
+    alterarSenha,
     login,
+    logout,
+    usuarioAtual,
+    erro,
+    loading,
   };
 };

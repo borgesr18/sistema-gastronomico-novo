@@ -1,6 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import { SignJWT } from 'jose';
+
+const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || 'chave_secreta_forte');
+
+async function generateJWT(userId: string) {
+  return await new SignJWT({ userId })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('7d')
+    .sign(secretKey);
+}
 
 export async function POST(request: Request) {
   const { email, senha } = await request.json();
@@ -11,16 +21,13 @@ export async function POST(request: Request) {
     where: { email },
   });
 
-  if (!usuario) {
-    return NextResponse.json({ sucesso: false, mensagem: 'Usuário não encontrado' }, { status: 401 });
+  if (!usuario || usuario.senhaHash !== senhaHash) {
+    return NextResponse.json({ sucesso: false, mensagem: 'Credenciais inválidas' }, { status: 401 });
   }
 
-  if (usuario.senhaHash !== senhaHash) {
-    return NextResponse.json({ sucesso: false, mensagem: 'Senha incorreta' }, { status: 401 });
-  }
+  const token = await generateJWT(usuario.id);
 
-  // Opcional: Você pode devolver só os campos que quiser
-  return NextResponse.json({
+  const response = NextResponse.json({
     sucesso: true,
     usuario: {
       id: usuario.id,
@@ -29,4 +36,14 @@ export async function POST(request: Request) {
       role: usuario.role,
     },
   });
+
+  response.cookies.set('token', token, {
+    httpOnly: true,
+    secure: true,
+    path: '/',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 7, // 7 dias
+  });
+
+  return response;
 }

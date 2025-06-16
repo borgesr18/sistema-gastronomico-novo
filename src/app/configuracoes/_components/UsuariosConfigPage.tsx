@@ -1,39 +1,75 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Button from '@/components/ui/Button';
 import Modal, { useModal } from '@/components/ui/Modal';
 import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Toast from '@/components/ui/Toast';
 import UsuarioForm from './UsuarioForm';
 import SenhaForm from './SenhaForm';
-import { Usuario, Role } from '@prisma/client';
+import { Usuario } from '@prisma/client';
 
 export default function UsuariosConfigPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);
-  const [usuarioAlterandoSenha, setUsuarioAlterandoSenha] = useState<Usuario | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-
+  const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);
   const { isOpen, openModal, closeModal } = useModal();
   const { isOpen: isSenhaOpen, openModal: openSenhaModal, closeModal: closeSenhaModal } = useModal();
+  const [usuarioAlterandoSenha, setUsuarioAlterandoSenha] = useState<Usuario | null>(null);
 
-  const listarUsuarios = async () => {
+  // Buscar lista de usuários
+  const fetchUsuarios = async () => {
     try {
       const res = await fetch('/api/usuarios');
       const data = await res.json();
-      setUsuarios(data.usuarios);
+      setUsuarios(data);
     } catch (error) {
-      console.error('Erro ao listar usuários:', error);
+      setToast('Erro ao carregar usuários');
     }
   };
 
   useEffect(() => {
-    listarUsuarios();
+    fetchUsuarios();
   }, []);
 
-  const handleNovo = () => {
-    setUsuarioEditando(null);
-    openModal();
+  const handleSalvar = async (usuario: Usuario) => {
+    try {
+      const method = usuario.id ? 'PUT' : 'POST';
+      const endpoint = usuario.id ? `/api/usuarios/${usuario.id}` : '/api/usuarios';
+
+      const res = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(usuario),
+      });
+
+      if (res.ok) {
+        setToast('Usuário salvo com sucesso');
+        closeModal();
+        fetchUsuarios();
+      } else {
+        const errorData = await res.json();
+        setToast(errorData.message || 'Erro ao salvar usuário');
+      }
+    } catch (error) {
+      setToast('Erro ao salvar usuário');
+    }
+  };
+
+  const handleExcluir = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+    try {
+      const res = await fetch(`/api/usuarios/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setToast('Usuário excluído com sucesso');
+        fetchUsuarios();
+      } else {
+        const errorData = await res.json();
+        setToast(errorData.message || 'Erro ao excluir usuário');
+      }
+    } catch (error) {
+      setToast('Erro ao excluir usuário');
+    }
   };
 
   const handleEditar = (usuario: Usuario) => {
@@ -41,47 +77,37 @@ export default function UsuariosConfigPage() {
     openModal();
   };
 
-  const handleAlterarSenha = (usuario: Usuario) => {
+  const handleNovo = () => {
+    setUsuarioEditando(null);
+    openModal();
+  };
+
+  const handleAbrirAlterarSenha = (usuario: Usuario) => {
     setUsuarioAlterandoSenha(usuario);
     openSenhaModal();
   };
 
-  const handleRemover = async (id: string) => {
-    if (confirm('Tem certeza que deseja remover este usuário?')) {
-      await fetch(`/api/usuarios/remover/${id}`, { method: 'DELETE' });
-      listarUsuarios();
-      setToast('Usuário removido com sucesso.');
-    }
-  };
-
-  const handleSalvar = async (dados: { nome: string; email: string; role: Role }) => {
-    if (usuarioEditando) {
-      // Editando
-      await fetch(`/api/usuarios/editar/${usuarioEditando.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(dados),
-      });
-      setToast('Usuário atualizado com sucesso.');
-    } else {
-      // Criando novo
-      await fetch('/api/usuarios/criar', {
-        method: 'POST',
-        body: JSON.stringify(dados),
-      });
-      setToast('Usuário criado com sucesso.');
-    }
-    closeModal();
-    listarUsuarios();
-  };
-
   const handleSalvarSenha = async (novaSenha: string) => {
-    if (usuarioAlterandoSenha) {
-      await fetch(`/api/usuarios/alterarSenha/${usuarioAlterandoSenha.id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ novaSenha }),
+    if (!usuarioAlterandoSenha) return;
+    try {
+      const res = await fetch(`/api/usuarios/alterarSenha`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: usuarioAlterandoSenha.id,
+          novaSenha,
+        }),
       });
-      setToast('Senha atualizada com sucesso.');
-      closeSenhaModal();
+
+      if (res.ok) {
+        setToast('Senha alterada com sucesso');
+        closeSenhaModal();
+      } else {
+        const errorData = await res.json();
+        setToast(errorData.message || 'Erro ao alterar senha');
+      }
+    } catch (error) {
+      setToast('Erro ao alterar senha');
     }
   };
 
@@ -91,15 +117,11 @@ export default function UsuariosConfigPage() {
 
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
 
+      <Button variant="primary" onClick={handleNovo}>
+        Novo Usuário
+      </Button>
+
       <Table headers={['Nome', 'Email', 'Role', 'Ações']}>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
         <tbody>
           {usuarios.map((usuario) => (
             <TableRow key={usuario.id}>
@@ -107,39 +129,23 @@ export default function UsuariosConfigPage() {
               <TableCell>{usuario.email}</TableCell>
               <TableCell>{usuario.role}</TableCell>
               <TableCell>
-                <button
-                  className="text-blue-500 mr-2"
-                  onClick={() => handleEditar(usuario)}
-                >
+                <Button variant="secondary" onClick={() => handleEditar(usuario)}>
                   Editar
-                </button>
-                <button
-                  className="text-yellow-500 mr-2"
-                  onClick={() => handleAlterarSenha(usuario)}
-                >
-                  Senha
-                </button>
-                <button
-                  className="text-red-500"
-                  onClick={() => handleRemover(usuario.id)}
-                >
-                  Remover
-                </button>
+                </Button>
+                <Button variant="danger" onClick={() => handleExcluir(usuario.id)}>
+                  Excluir
+                </Button>
+                <Button variant="primary" onClick={() => handleAbrirAlterarSenha(usuario)}>
+                  Alterar Senha
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </tbody>
       </Table>
 
-      <button
-        className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
-        onClick={handleNovo}
-      >
-        Novo Usuário
-      </button>
-
       {isOpen && (
-        <Modal onClose={closeModal}>
+        <Modal isOpen={isOpen} title="Usuário" onClose={closeModal}>
           <UsuarioForm
             usuario={usuarioEditando}
             onSave={handleSalvar}
@@ -149,7 +155,7 @@ export default function UsuariosConfigPage() {
       )}
 
       {isSenhaOpen && (
-        <Modal onClose={closeSenhaModal}>
+        <Modal isOpen={isSenhaOpen} title="Alterar Senha" onClose={closeSenhaModal}>
           <SenhaForm
             onSave={handleSalvarSenha}
             onCancel={closeSenhaModal}

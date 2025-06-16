@@ -1,47 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
-import Table, { TableRow, TableCell } from '@/components/ui/Table';
-import Button from '@/components/ui/Button';
-import Modal, { useModal } from '@/components/ui/Modal';
+import React, { useEffect, useState, ChangeEvent } from 'react';
+import { Categoria } from '@prisma/client';
+import { useModal } from '@/components/ui/Modal';
+import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
-import { useCategorias } from '@/lib/categoriasService';
+import Button from '@/components/ui/Button';
+import Table from '@/components/ui/Table';
+import Toast from '@/components/ui/Toast';
+import CategoriaForm from './CategoriaForm';
 
 export default function CategoriasConfigPage() {
-  const { categorias, adicionarCategoria } = useCategorias();
-  const { isOpen, openModal, closeModal } = useModal();
-  const [nova, setNova] = useState('');
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [filtro, setFiltro] = useState('');
+  const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const { isOpen, openModal, closeModal } = useModal();
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    adicionarCategoria(nova);
-    setNova('');
-    closeModal();
+  useEffect(() => {
+    listarCategorias();
+  }, []);
+
+  const listarCategorias = async () => {
+    const res = await fetch('/api/categorias');
+    const data = await res.json();
+    setCategorias(data);
   };
 
-  const filtradas = categorias.filter(c => c.nome.toLowerCase().includes(filtro.toLowerCase()));
-
-  return (
-    <div>
-      <h2 className="text-xl font-bold">Categorias de Produtos</h2>
-      <Button onClick={openModal}>Nova Categoria</Button>
-      <Input value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="Buscar..." />
-
-      <Table headers={['Nome']}>
-        {filtradas.map(c => (
-          <TableRow key={c.id}>
-            <TableCell>{c.nome}</TableCell>
-          </TableRow>
-        ))}
-      </Table>
-
-      <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
-        <form onSubmit={handleAdd} className="space-y-2">
-          <Input value={nova} onChange={(e) => setNova(e.target.value)} placeholder="Nome da Categoria" />
-          <Button type="submit">Salvar</Button>
-        </form>
-      </Modal>
-    </div>
-  );
-}
+  const handleSalvar = async (categoria: Partial<Categoria>) => {
+    const method = categoria.id ? 'PUT' : 'POST';
+    const url = categoria.id ? `/api/categor

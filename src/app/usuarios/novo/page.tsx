@@ -1,75 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useAuth } from '@/lib/useAuth';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
-import { Role } from '@prisma/client';  // IMPORTANTE: importa o tipo Role
 
 export default function NovoUsuarioPage() {
   const router = useRouter();
-  const { criarUsuario, erro, loading } = useAuth();
-
-  const [form, setForm] = useState({
-    nome: '',
-    email: '',
-    senha: '',
-    role: 'viewer',  // valor inicial válido
-  });
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [role, setRole] = useState('viewer');
+  const [mensagem, setMensagem] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const criado = await criarUsuario({
-      ...form,
-      role: form.role as Role,  // Aqui convertemos explicitamente
+
+    const response = await fetch('/api/usuarios', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, email, senha, role }),
     });
-    if (criado) {
-      router.push('/login');
+
+    const resultado = await response.json();
+
+    if (response.ok) {
+      setMensagem('Usuário criado com sucesso!');
+      router.push('/configuracoes/usuarios'); // Ou qualquer rota que você queira
+    } else {
+      setMensagem(`Erro: ${resultado.mensagem}`);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 space-y-4">
-      <h2 className="text-xl font-bold">Criar Novo Usuário</h2>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <Input
-          label="Nome"
-          value={form.nome}
-          onChange={(e) => setForm({ ...form, nome: e.target.value })}
-          required
-        />
-        <Input
-          label="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-        <Input
-          label="Senha"
-          type="password"
-          value={form.senha}
-          onChange={(e) => setForm({ ...form, senha: e.target.value })}
-          required
-        />
-        <div>
-          <label className="block text-sm mb-1">Perfil</label>
-          <select
-            value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-            className="border rounded w-full p-2"
-          >
-            <option value="viewer">Visualizador</option>
-            <option value="editor">Editor</option>
-            <option value="manager">Gerente</option>
-            <option value="admin">Administrador</option>
-          </select>
-        </div>
-        <Button type="submit" disabled={loading}>
-          {loading ? 'Criando...' : 'Criar Usuário'}
-        </Button>
+    <div>
+      <h1>Criar Novo Usuário</h1>
+      <form onSubmit={handleSubmit}>
+        <input placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
+        <input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input placeholder="Senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="viewer">Viewer</option>
+          <option value="editor">Editor</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Criar Usuário</button>
       </form>
-      {erro && <p className="text-red-600 text-sm">{erro}</p>}
+      {mensagem && <p>{mensagem}</p>}
     </div>
   );
 }

@@ -6,33 +6,66 @@ import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import { useUsuarios, Usuario } from '@/lib/useUsuarios';
 import Logo from '@/components/ui/Logo';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, usuarioAtual } = useUsuarios();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  // Verificar se o usuário já está logado
   useEffect(() => {
-    if (usuarioAtual) {
-      router.replace('/');
-    }
-  }, [usuarioAtual, router]);
+    const checkLogin = async () => {
+      try {
+        const res = await fetch('/api/me');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.sucesso) {
+            router.replace('/');
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao verificar login:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (usuarioAtual) return null;
+    checkLogin();
+  }, [router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const usuario = await login(email, senha);
-    if (usuario) {
-      router.push('/');
-    } else {
-      setErro('Credenciais inválidas');
+    setErro('');
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
+      });
+
+      const json = await res.json();
+
+      if (res.ok && json.sucesso) {
+        router.push('/');
+      } else {
+        setErro(json.mensagem || 'Erro ao fazer login');
+      }
+    } catch (error) {
+      setErro('Erro de rede ao tentar login');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>Verificando login...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">

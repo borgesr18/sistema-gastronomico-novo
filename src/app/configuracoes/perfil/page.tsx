@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useUsuarios } from '@/lib/useUsuarios';
+import { useAuth } from '@/lib/useAuth'
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 

@@ -2,13 +2,13 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useUsuarios } from '@/lib/useUsuarios';
+import { useAuth } from '@/lib/useAuth';
 import Logo from '../ui/Logo';
 
 const Header: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const closeTimeout = useRef<NodeJS.Timeout | null>(null);
-  const { usuarioAtual, logout } = useUsuarios();
+  const { usuarioAtual, logout } = useAuth();
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);

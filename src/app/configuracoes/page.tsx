@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { ReactNode, useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
+import { useAuth } from '@/lib/useAuth'
 
 import UsuariosConfigPage from './_components/UsuariosConfigPage';
 import CategoriasConfigPage from './_components/CategoriasConfigPage';

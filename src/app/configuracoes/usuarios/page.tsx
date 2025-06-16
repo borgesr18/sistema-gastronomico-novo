@@ -1,234 +1,101 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Table from '@/components/ui/Table';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import Modal, { useModal } from '@/components/ui/Modal';
-import { useAuth, Role, Usuario } from '@/lib/useAuth';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function UsuariosConfigPage() {
-  const {
-    usuarios,
-    listarUsuarios,
-    criarUsuario,
-    removerUsuario,
-    alterarSenha,
-    editarUsuario,
-    erro,
-    loading,
-  } = useUsuarios();
+interface Usuario {
+  id: string;
+  nome: string;
+  email: string;
+  role: string;
+}
 
-  const { isOpen, openModal, closeModal } = useModal();
-  const [filtro, setFiltro] = useState('');
-  const [novo, setNovo] = useState({
-    nome: '',
-    email: '',
-    senha: '',
-    role: 'viewer' as Role,
-  });
-  const [senhaNova, setSenhaNova] = useState('');
-  const [editando, setEditando] = useState<Usuario | null>(null);
+export default function UsuariosPage() {
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+  const router = useRouter();
+
+  const carregarUsuarios = async () => {
+    setCarregando(true);
+    try {
+      const res = await fetch('/api/usuarios');
+      const data = await res.json();
+      if (res.ok) {
+        setUsuarios(data.usuarios);
+      } else {
+        setErro(data.mensagem || 'Erro ao carregar usuários');
+      }
+    } catch (error) {
+      setErro('Erro ao conectar com a API');
+    }
+    setCarregando(false);
+  };
 
   useEffect(() => {
-    listarUsuarios();
+    carregarUsuarios();
   }, []);
 
-  const usuariosFiltrados = usuarios.filter(
-    (u) =>
-      u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-      u.email.toLowerCase().includes(filtro.toLowerCase())
-  );
+  const excluirUsuario = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const criado = await criarUsuario(novo);
-    if (criado) {
-      setNovo({ nome: '', email: '', senha: '', role: 'viewer' });
-      closeModal();
+    const res = await fetch(`/api/usuarios/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+
+    if (res.ok) {
+      alert('Usuário excluído com sucesso');
+      carregarUsuarios();
+    } else {
+      alert(data.mensagem || 'Erro ao excluir');
     }
   };
 
-  const handleEditar = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editando) return;
-    await editarUsuario(editando.id, {
-      nome: editando.nome,
-      email: editando.email,
-      role: editando.role,
-    });
-    setEditando(null);
-    closeModal();
-  };
-
-  const handleAlterarSenha = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editando) return;
-    await alterarSenha(editando.id, senhaNova);
-    setSenhaNova('');
-    setEditando(null);
-    closeModal();
-  };
-
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Gerenciar Usuários</h2>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Lista de Usuários</h1>
 
-      <div className="flex space-x-2">
-        <Input
-          placeholder="Filtrar usuários"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-        />
-        <Button onClick={openModal}>Novo Usuário</Button>
-      </div>
+      {carregando && <p>Carregando...</p>}
+      {erro && <p className="text-red-600">{erro}</p>}
 
-      <Table headers={['Nome', 'Email', 'Perfil', 'Ações']}>
-        {usuariosFiltrados.map((u) => (
-          <tr key={u.id}>
-            <td>{u.nome}</td>
-            <td>{u.email}</td>
-            <td>{u.role}</td>
-            <td className="space-x-2">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  setEditando(u);
-                  openModal();
-                }}
-              >
-                Editar
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => removerUsuario(u.id)}
-              >
-                Remover
-              </Button>
-            </td>
+      <table className="w-full border">
+        <thead>
+          <tr>
+            <th className="border p-2">Nome</th>
+            <th className="border p-2">Email</th>
+            <th className="border p-2">Role</th>
+            <th className="border p-2">Ações</th>
           </tr>
-        ))}
-      </Table>
-
-      {isOpen && (
-        <Modal isOpen={isOpen} onClose={closeModal} title={editando ? 'Editar Usuário' : 'Novo Usuário'}>
-          {editando ? (
-            <form
-              onSubmit={senhaNova ? handleAlterarSenha : handleEditar}
-              className="space-y-2"
-            >
-              <h3 className="text-lg font-bold">
-                {senhaNova ? 'Alterar Senha' : 'Editar Usuário'}
-              </h3>
-
-              {!senhaNova && (
-                <>
-                  <Input
-                    label="Nome"
-                    value={editando.nome}
-                    onChange={(e) =>
-                      setEditando({ ...editando, nome: e.target.value })
-                    }
-                    required
-                  />
-                  <Input
-                    label="Email"
-                    value={editando.email}
-                    onChange={(e) =>
-                      setEditando({ ...editando, email: e.target.value })
-                    }
-                    required
-                  />
-                  <div>
-                    <label className="block text-sm mb-1">Perfil</label>
-                    <select
-                      value={editando.role}
-                      onChange={(e) =>
-                        setEditando({
-                          ...editando,
-                          role: e.target.value as Role,
-                        })
-                      }
-                      className="border rounded w-full p-2"
-                    >
-                      <option value="viewer">Visualizador</option>
-                      <option value="editor">Editor</option>
-                      <option value="manager">Gerente</option>
-                      <option value="admin">Administrador</option>
-                    </select>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setSenhaNova('')}
-                  >
-                    Alterar Senha
-                  </Button>
-                </>
-              )}
-
-              {senhaNova && (
-                <Input
-                  label="Nova Senha"
-                  type="password"
-                  value={senhaNova}
-                  onChange={(e) => setSenhaNova(e.target.value)}
-                  required
-                />
-              )}
-
-              <Button type="submit" variant="primary">
-                Salvar
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-2">
-              <h3 className="text-lg font-bold">Novo Usuário</h3>
-              <Input
-                label="Nome"
-                value={novo.nome}
-                onChange={(e) => setNovo({ ...novo, nome: e.target.value })}
-                required
-              />
-              <Input
-                label="Email"
-                value={novo.email}
-                onChange={(e) => setNovo({ ...novo, email: e.target.value })}
-                required
-              />
-              <Input
-                label="Senha"
-                type="password"
-                value={novo.senha}
-                onChange={(e) => setNovo({ ...novo, senha: e.target.value })}
-                required
-              />
-              <div>
-                <label className="block text-sm mb-1">Perfil</label>
-                <select
-                  value={novo.role}
-                  onChange={(e) =>
-                    setNovo({ ...novo, role: e.target.value as Role })
-                  }
-                  className="border rounded w-full p-2"
+        </thead>
+        <tbody>
+          {usuarios.map((user) => (
+            <tr key={user.id}>
+              <td className="border p-2">{user.nome}</td>
+              <td className="border p-2">{user.email}</td>
+              <td className="border p-2">{user.role}</td>
+              <td className="border p-2">
+                <button
+                  onClick={() => excluirUsuario(user.id)}
+                  className="bg-red-500 text-white px-2 py-1 rounded"
                 >
-                  <option value="viewer">Visualizador</option>
-                  <option value="editor">Editor</option>
-                  <option value="manager">Gerente</option>
-                  <option value="admin">Administrador</option>
-                </select>
-              </div>
-              <Button type="submit" variant="primary">
-                Criar
-              </Button>
-            </form>
+                  Excluir
+                </button>
+              </td>
+            </tr>
+          ))}
+          {usuarios.length === 0 && !carregando && (
+            <tr>
+              <td colSpan={4} className="text-center p-4">Nenhum usuário encontrado.</td>
+            </tr>
           )}
+        </tbody>
+      </table>
 
-          {erro && <p className="text-sm text-red-600">{erro}</p>}
-        </Modal>
-      )}
+      <button
+        onClick={() => router.push('/usuarios/novo')}
+        className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+      >
+        Novo Usuário
+      </button>
     </div>
   );
 }

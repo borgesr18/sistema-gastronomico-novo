@@ -5,7 +5,7 @@ import Table from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Modal, { useModal } from '@/components/ui/Modal';
-import { useUsuarios, Role, Usuario } from '@/lib/useUsuarios';
+import { useAuth, Role, Usuario } from '@/lib/useAuth';
 
 export default function UsuariosConfigPage() {
   const {

@@ -1,35 +1,31 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { jwtVerify } from 'jose';
+import { verifyJwt } from '@/lib/jwt';
+import { cookies } from 'next/headers'; // <-- Importa o helper correto
 
-const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || 'chave_secreta_forte');
-
-async function verifyJWT(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, secretKey);
-    return payload as { userId: string };
-  } catch {
-    return null;
-  }
-}
-
-export async function GET(req: Request) {
-  const token = req.cookies.get('token')?.value;
+export async function GET() {
+  const cookieStore = cookies();
+  const token = cookieStore.get('token')?.value;
 
   if (!token) {
     return NextResponse.json({ user: null });
   }
 
-  const payload = await verifyJWT(token);
+  const decoded = await verifyJwt(token);
 
-  if (!payload) {
+  if (!decoded) {
     return NextResponse.json({ user: null });
   }
 
-  const usuario = await prisma.usuario.findUnique({
-    where: { id: payload.userId },
-    select: { id: true, nome: true, email: true, role: true },
+  const user = await prisma.usuario.findUnique({
+    where: { id: decoded.id },
+    select: {
+      id: true,
+      nome: true,
+      email: true,
+      role: true,
+    },
   });
 
-  return NextResponse.json({ user: usuario });
+  return NextResponse.json({ user });
 }

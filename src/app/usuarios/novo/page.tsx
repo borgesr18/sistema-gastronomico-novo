@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useUsuarios } from '@/lib/useUsuarios';
+import { useAuth } from '@/lib/useAuth';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -9,7 +9,7 @@ import { Role } from '@prisma/client';  // IMPORTANTE: importa o tipo Role
 
 export default function NovoUsuarioPage() {
   const router = useRouter();
-  const { criarUsuario, erro, loading } = useUsuarios();
+  const { criarUsuario, erro, loading } = useAuth();
 
   const [form, setForm] = useState({
     nome: '',

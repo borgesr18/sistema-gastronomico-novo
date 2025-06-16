@@ -1,49 +1,43 @@
 'use client';
 
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Tipo para o usuário logado
-export interface Usuario {
+interface User {
   id: string;
   nome: string;
   email: string;
-  role: 'admin' | 'editor' | 'viewer' | 'manager';
+  role: string;
 }
 
 interface AuthContextType {
-  usuario: Usuario | null;
+  usuario: User | null;
   carregando: boolean;
   login: (email: string, senha: string) => Promise<boolean>;
-  logout: () => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [usuario, setUsuario] = useState<User | null>(null);
   const [carregando, setCarregando] = useState(true);
   const router = useRouter();
 
-  // Verificar se o usuário está logado ao abrir o app
-  useEffect(() => {
-    const carregarUsuario = async () => {
-      try {
-        const res = await fetch('/api/me');
-        if (res.ok) {
-          const json = await res.json();
-          if (json.sucesso) {
-            setUsuario(json.usuario);
-          }
-        }
-      } catch (error) {
-        console.error('Erro ao verificar sessão:', error);
-      } finally {
-        setCarregando(false);
-      }
-    };
+  const verificarUsuarioLogado = async () => {
+    try {
+      const res = await fetch('/api/me', { cache: 'no-store' });
+      const data = await res.json();
+      setUsuario(data.user || null);
+    } catch (error) {
+      setUsuario(null);
+    } finally {
+      setCarregando(false);
+    }
+  };
 
-    carregarUsuario();
+  useEffect(() => {
+    verificarUsuarioLogado();
   }, []);
 
   const login = async (email: string, senha: string) => {
@@ -54,10 +48,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, senha }),
       });
 
-      const json = await res.json();
+      const data = await res.json();
 
-      if (res.ok && json.sucesso) {
-        setUsuario(json.usuario);
+      if (data.sucesso) {
+        await verificarUsuarioLogado();
         router.push('/');
         return true;
       } else {
@@ -80,12 +74,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth(): AuthContextType {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de AuthProvider');
+  if (context === undefined) {
+    throw new Error('useAuth precisa estar dentro de AuthProvider');
   }
   return context;
-}
+};

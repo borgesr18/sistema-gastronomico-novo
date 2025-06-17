@@ -1,148 +1,82 @@
 'use client';
 
-import React, { useState } from 'react';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import * as XLSX from 'xlsx';
+import React, { useState, ChangeEvent } from 'react';
 import Card from '@/components/ui/Card';
-import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
-import { useRelatorios } from '@/lib/relatoriosService';
+import Button from '@/components/ui/Button';
 import { Table, TableRow, TableCell } from '@/components/ui/Table';
-import Link from 'next/link';
 
 export default function RelatoriosPage() {
-  const { 
-    gerarRelatorioCompleto, 
-    gerarRelatorioCustos,
-    gerarRelatorioIngredientes,
-    gerarRelatorioReceitas,
-    gerarRelatorioEstoque
-  } = useRelatorios();
+  const [tipoRelatorio, setTipoRelatorio] = useState<string>('estoque');
+  const [resultado, setResultado] = useState<any[]>([]);
 
-  const [tipoRelatorio, setTipoRelatorio] = useState('completo');
-
-  const formatarPreco = (preco: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(preco);
-  };
-
-  const renderizarRelatorioCompleto = () => {
-    const relatorio = gerarRelatorioCompleto();
-    return (
-      <div>
-        <h2>Relatório Completo</h2>
-        {/* Exemplo simples */}
-        <p>Total de Produtos: {relatorio.totalProdutos}</p>
-      </div>
-    );
-  };
-
-  const renderizarRelatorioCustos = () => {
-    const relatorio = gerarRelatorioCustos();
-    return (
-      <div>
-        <h2>Relatório de Custos</h2>
-        <p>Custo Total: {formatarPreco(relatorio.custoTotalEstoque)}</p>
-      </div>
-    );
-  };
-
-  const renderizarRelatorioIngredientes = () => {
-    const relatorio = gerarRelatorioIngredientes();
-    return (
-      <div>
-        <h2>Relatório de Ingredientes</h2>
-        <p>Total Ingredientes: {relatorio.ingredientesMaisUsados.length}</p>
-      </div>
-    );
-  };
-
-  const renderizarRelatorioReceitas = () => {
-    const relatorio = gerarRelatorioReceitas();
-    return (
-      <div>
-        <h2>Relatório de Receitas</h2>
-        <p>Total Fichas Técnicas: {relatorio.totalFichasTecnicas}</p>
-      </div>
-    );
-  };
-
-  const renderizarRelatorioEstoque = () => {
-    const relatorio = gerarRelatorioEstoque();
-    return (
-      <div>
-        <h2>Relatório de Estoque</h2>
-        <p>Total em Estoque: {formatarPreco(relatorio.valorTotalEstoque)}</p>
-      </div>
-    );
-  };
-
-  const renderizarRelatorio = () => {
-    switch (tipoRelatorio) {
-      case 'completo':
-        return renderizarRelatorioCompleto();
-      case 'custos':
-        return renderizarRelatorioCustos();
-      case 'ingredientes':
-        return renderizarRelatorioIngredientes();
-      case 'receitas':
-        return renderizarRelatorioReceitas();
-      case 'estoque':
-        return renderizarRelatorioEstoque();
-      default:
-        return renderizarRelatorioCompleto();
+  const handleGerarRelatorio = () => {
+    // Aqui você pode colocar sua lógica de geração de relatório
+    if (tipoRelatorio === 'estoque') {
+      setResultado([
+        { nome: 'Farinha', quantidade: 10, unidade: 'kg' },
+        { nome: 'Açúcar', quantidade: 5, unidade: 'kg' },
+      ]);
+    } else if (tipoRelatorio === 'producoes') {
+      setResultado([
+        { produto: 'Bolo de Chocolate', quantidade: 20, data: '2025-06-15' },
+        { produto: 'Bolo de Cenoura', quantidade: 15, data: '2025-06-14' },
+      ]);
+    } else {
+      setResultado([]);
     }
-  };
-
-  const handleExportarPDF = () => {
-    const doc = new jsPDF();
-    doc.text('Relatório: ' + tipoRelatorio, 10, 10);
-    doc.save('relatorio.pdf');
-  };
-
-  const handleExportarExcel = () => {
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet([['Relatório:', tipoRelatorio]]);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Relatorio');
-    XLSX.writeFile(workbook, 'relatorio.xlsx');
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Relatórios</h1>
 
-      <div className="flex space-x-3">
-        <Button variant="outline" onClick={handleExportarPDF}>
-          Exportar PDF
-        </Button>
-        <Button variant="outline" onClick={handleExportarExcel}>
-          Exportar Excel
-        </Button>
-      </div>
-
       <Card>
-        <div className="flex items-center space-x-4">
-          <label className="font-medium text-gray-700">Tipo de Relatório:</label>
-          <div className="w-64">
-            <Select name="autoFix" label="Tipo de Relatório"
-              value={tipoRelatorio}
-              onChange={(e) =/> setTipoRelatorio(e.target.value)}
-              options={[
-                { value: 'completo', label: 'Relatório Completo' },
-                { value: 'custos', label: 'Relatório de Custos' },
-                { value: 'ingredientes', label: 'Relatório de Ingredientes' },
-                { value: 'receitas', label: 'Relatório de Receitas' },
-                { value: 'estoque', label: 'Relatório de Estoque' },
-              ]}
-            />
-          </div>
+        <div className="flex space-x-3 items-end">
+          <Select
+            label="Tipo de Relatório"
+            name="tipoRelatorio"
+            value={tipoRelatorio}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => setTipoRelatorio(e.target.value)}
+            options={[
+              { value: 'estoque', label: 'Estoque Atual' },
+              { value: 'producoes', label: 'Produções' },
+            ]}
+          />
+
+          <Button type="button" variant="primary" onClick={handleGerarRelatorio}>
+            Gerar Relatório
+          </Button>
         </div>
       </Card>
 
-      {renderizarRelatorio()}
+      {resultado.length > 0 && (
+        <Card title="Resultado">
+          {tipoRelatorio === 'estoque' && (
+            <Table headers={['Nome', 'Quantidade', 'Unidade']} emptyMessage="Nenhum item.">
+              {resultado.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.nome}</TableCell>
+                  <TableCell>{item.quantidade}</TableCell>
+                  <TableCell>{item.unidade}</TableCell>
+                </TableRow>
+              ))}
+            </Table>
+          )}
+
+          {tipoRelatorio === 'producoes' && (
+            <Table headers={['Produto', 'Quantidade', 'Data']} emptyMessage="Nenhuma produção.">
+              {resultado.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.produto}</TableCell>
+                  <TableCell>{item.quantidade}</TableCell>
+                  <TableCell>{item.data}</TableCell>
+                </TableRow>
+              ))}
+            </Table>
+          )}
+        </Card>
+      )}
     </div>
   );
 }

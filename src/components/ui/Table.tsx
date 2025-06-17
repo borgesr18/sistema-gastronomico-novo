@@ -1,43 +1,48 @@
 'use client';
 
 import React, { ReactNode } from 'react';
-import clsx from 'clsx';
 
-interface TableProps {
+export interface TableProps {
   headers: string[];
   children: ReactNode;
+  emptyMessage?: string;
 }
 
-export function Table({ headers, children }: TableProps) {
+export function Table({ headers, children, emptyMessage }: TableProps) {
+  const isEmpty = Array.isArray(children) ? children.length === 0 : !children;
+
   return (
-    <table className="min-w-full divide-y divide-gray-200 border">
-      <thead className="bg-gray-50">
-        <tr>
-          {headers.map((header) => (
-            <th key={header} className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-              {header}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-100">{children}</tbody>
-    </table>
+    <div className="overflow-x-auto rounded border">
+      <table className="min-w-full table-auto border-collapse">
+        <thead className="bg-gray-100">
+          <tr>
+            {headers.map((header) => (
+              <th key={header} className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {isEmpty && emptyMessage ? (
+            <tr>
+              <td colSpan={headers.length} className="px-4 py-2 text-center text-sm text-gray-500">
+                {emptyMessage}
+              </td>
+            </tr>
+          ) : (
+            children
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
-interface TableRowProps {
-  children: ReactNode;
+export function TableRow({ children }: { children: ReactNode }) {
+  return <tr className="border-t">{children}</tr>;
 }
 
-export function TableRow({ children }: TableRowProps) {
-  return <tr className="hover:bg-gray-50">{children}</tr>;
-}
-
-interface TableCellProps {
-  children: ReactNode;
-  className?: string;  // ✅ Aqui permitimos className
-}
-
-export function TableCell({ children, className }: TableCellProps) {
-  return <td className={clsx('px-4 py-2 text-sm text-gray-800', className)}>{children}</td>;
+export function TableCell({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <td className={`px-4 py-2 text-sm text-gray-700 ${className}`}>{children}</td>;
 }

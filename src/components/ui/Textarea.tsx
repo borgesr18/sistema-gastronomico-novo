@@ -1,9 +1,12 @@
-import React, { TextareaHTMLAttributes, forwardRef } from 'react';
+'use client';
 
-interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+import React, { forwardRef } from 'react';
+
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
   helperText?: string;
+  className?: string;
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -11,18 +14,19 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="mb-4">
         {label && (
-          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--cor-texto-principal)' }}>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             {label}
           </label>
         )}
-        <textarea ref={ref} ${className} />
-          rows={4}
+        <textarea
+          ref={ref}
           {...props}
-        />
-        {error && <p className="mt-1 text-sm" style={{ color: 'var(--cor-erro)' }}>{error}</p>}
-        {helperText && !error && (
-          <p className="mt-1 text-sm" style={{ color: 'var(--cor-texto-secundario)' }}>{helperText}</p>
-        )}
+          className={`block w-full border px-3 py-2 rounded ${
+            error ? 'border-red-500' : 'border-gray-300'
+          } ${className}`}
+        ></textarea>
+        {helperText && <p className="text-sm text-gray-500">{helperText}</p>}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
     );
   }

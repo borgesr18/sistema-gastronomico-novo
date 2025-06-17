@@ -12,8 +12,8 @@ import { Table, TableRow, TableCell } from '@/components/ui/Table';
 import Link from 'next/link';
 
 export default function RelatoriosPage() {
-  const {
-    gerarRelatorioCompleto,
+  const { 
+    gerarRelatorioCompleto, 
     gerarRelatorioCustos,
     gerarRelatorioIngredientes,
     gerarRelatorioReceitas,
@@ -29,78 +29,55 @@ export default function RelatoriosPage() {
     }).format(preco);
   };
 
-  const gerarDadosExportacao = () => {
-    switch (tipoRelatorio) {
-      case 'estoque': {
-        const r = gerarRelatorioEstoque();
-        return {
-          titulo: 'Relatório de Estoque',
-          cabecalho: ['Produto', 'Quantidade', 'Preço', 'Valor Total'],
-          linhas: r.itens.map((i) => [i.nome, String(i.quantidade), formatarPreco(i.preco), formatarPreco(i.valorTotal)]),
-          rodape: `Total em estoque: ${formatarPreco(r.valorTotalEstoque)}`
-        };
-      }
-      case 'ingredientes': {
-        const r = gerarRelatorioIngredientes();
-        return {
-          titulo: 'Relatório de Ingredientes',
-          cabecalho: ['Ingrediente', 'Quantidade', 'Ocorrências'],
-          linhas: r.ingredientesMaisUsados.map((i) => [i.nome, `${i.quantidade} ${i.unidade}`, String(i.ocorrencias)]),
-          rodape: ''
-        };
-      }
-      case 'custos': {
-        const r = gerarRelatorioCustos();
-        const linhasMais = r.fichasMaisCustos.map((f) => [f.nome, formatarPreco(f.custo)]);
-        const linhasMenos = r.fichasMenosCustos.map((f) => [f.nome, formatarPreco(f.custo)]);
-        return {
-          titulo: 'Relatório de Custos',
-          cabecalho: ['Nome', 'Custo'],
-          linhas: [...linhasMais, ...linhasMenos],
-          rodape: `Custo total estimado: ${formatarPreco(r.custoTotalEstoque)}`
-        };
-      }
-      case 'receitas': {
-        const r = gerarRelatorioReceitas();
-        return {
-          titulo: 'Relatório de Receitas',
-          cabecalho: ['Categoria', 'Quantidade'],
-          linhas: r.distribuicaoCategoriasReceitas.map((c) => [c.categoria, String(c.quantidade)]),
-          rodape: `Total de fichas técnicas: ${r.totalFichasTecnicas}`
-        };
-      }
-      default: {
-        const r = gerarRelatorioCompleto();
-        const linhas = r.fichasMaisCustos.map((f) => [f.nome, formatarPreco(f.custo)]);
-        return {
-          titulo: 'Relatório Completo',
-          cabecalho: ['Nome', 'Custo'],
-          linhas,
-          rodape: `Total de produtos: ${r.totalProdutos}`
-        };
-      }
-    }
+  const renderizarRelatorioCompleto = () => {
+    const relatorio = gerarRelatorioCompleto();
+    return (
+      <div>
+        <h2>Relatório Completo</h2>
+        {/* Exemplo simples */}
+        <p>Total de Produtos: {relatorio.totalProdutos}</p>
+      </div>
+    );
   };
 
-  const handleExportarPDF = async () => {
-    const dados = gerarDadosExportacao();
-    const doc = new jsPDF();
-    doc.text(dados.titulo, 10, 10);
-    // @ts-ignore - autoTable typed separately
-    autoTable(doc, { head: [dados.cabecalho], body: dados.linhas, startY: 20 });
-    if (dados.rodape) {
-      const finalY = (doc as any).lastAutoTable.finalY || 20;
-      doc.text(dados.rodape, 10, finalY + 10);
-    }
-    doc.save('relatorio.pdf');
+  const renderizarRelatorioCustos = () => {
+    const relatorio = gerarRelatorioCustos();
+    return (
+      <div>
+        <h2>Relatório de Custos</h2>
+        <p>Custo Total: {formatarPreco(relatorio.custoTotalEstoque)}</p>
+      </div>
+    );
   };
 
-  const handleExportarExcel = () => {
-    const dados = gerarDadosExportacao();
-    const worksheet = XLSX.utils.aoa_to_sheet([dados.cabecalho, ...dados.linhas]);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Relatorio');
-    XLSX.writeFile(workbook, 'relatorio.xlsx');
+  const renderizarRelatorioIngredientes = () => {
+    const relatorio = gerarRelatorioIngredientes();
+    return (
+      <div>
+        <h2>Relatório de Ingredientes</h2>
+        <p>Total Ingredientes: {relatorio.ingredientesMaisUsados.length}</p>
+      </div>
+    );
+  };
+
+  const renderizarRelatorioReceitas = () => {
+    const relatorio = gerarRelatorioReceitas();
+    return (
+      <div>
+        <h2>Relatório de Receitas</h2>
+        <p>Total Fichas Técnicas: {relatorio.totalFichasTecnicas}</p>
+      </div>
+    );
+  };
+
+  const renderizarRelatorioEstoque = () => {
+    const relatorio = gerarRelatorioEstoque();
+    return (
+      <div>
+        <h2>Relatório de Estoque</h2>
+        <p>Total em Estoque: {formatarPreco(relatorio.valorTotalEstoque)}</p>
+      </div>
+    );
   };
 
   const renderizarRelatorio = () => {
@@ -120,20 +97,30 @@ export default function RelatoriosPage() {
     }
   };
 
+  const handleExportarPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Relatório: ' + tipoRelatorio, 10, 10);
+    doc.save('relatorio.pdf');
+  };
+
+  const handleExportarExcel = () => {
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([['Relatório:', tipoRelatorio]]);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Relatorio');
+    XLSX.writeFile(workbook, 'relatorio.xlsx');
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Relatórios</h1>
-        <div className="flex space-x-3">
-          <Button variant="outline" onClick={handleExportarPDF}>
-            <span className="material-icons mr-1 text-sm">picture_as_pdf</span>
-            Exportar PDF
-          </Button>
-          <Button variant="outline" onClick={handleExportarExcel}>
-            <span className="material-icons mr-1 text-sm">table_chart</span>
-            Exportar Excel
-          </Button>
-        </div>
+      <h1 className="text-2xl font-bold text-gray-800">Relatórios</h1>
+
+      <div className="flex space-x-3">
+        <Button variant="outline" onClick={handleExportarPDF}>
+          Exportar PDF
+        </Button>
+        <Button variant="outline" onClick={handleExportarExcel}>
+          Exportar Excel
+        </Button>
       </div>
 
       <Card>

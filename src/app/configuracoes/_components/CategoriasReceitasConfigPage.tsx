@@ -89,7 +89,7 @@ export default function CategoriasReceitasConfigPage() {
                 <Button variant="secondary" onClick={() => { setCategoriaEditando(c); openModal(); }}>
                   Editar
                 </Button>
-                <Button variant="danger" onClick={() => handleRemover(c.id)}>
+                <Button variant="danger" onClick={() => handleRemover(c.id)} >
                   Excluir
                 </Button>
               </div>

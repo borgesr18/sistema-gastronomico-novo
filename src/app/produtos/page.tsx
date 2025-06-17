@@ -83,7 +83,7 @@ export default function ProdutosPage() {
               <Link href={`/produtos/${selecionado.id}/editar`}>
                 <Button variant="primary">Editar</Button>
               </Link>
-              <Button variant="danger" onClick={() => handleRemover(selecionado.id)}>
+              <Button variant="danger" onClick={() => handleRemover(selecionado.id)} >
                 Excluir
               </Button>
             </div>

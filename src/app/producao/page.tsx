@@ -141,13 +141,13 @@ export default function ProducaoPage() {
     const custoUnitario = unidades ? custoTotal / unidades : 0;
 
     setEdit(prev => {
-      if (!prev) return prev;
+      if (!prev) return prev; }
       if (
         prev.unidadesGeradas === unidades &&
         prev.custoTotal === custoTotal &&
         prev.custoUnitario === custoUnitario
       ) {
-        return prev;
+        return prev; }
       }
       return { ...prev, unidadesGeradas: unidades, custoTotal, custoUnitario };
     });

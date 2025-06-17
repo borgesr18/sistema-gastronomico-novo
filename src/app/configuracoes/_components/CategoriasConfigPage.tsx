@@ -88,7 +88,7 @@ export default function CategoriasConfigPage() {
               <Button variant="secondary" onClick={() => { setCategoriaEditando(c); openModal(); }}>
                 Editar
               </Button>
-              <Button variant="danger" onClick={() => handleRemover(c.id)}>
+              <Button variant="danger" onClick={() => handleRemover(c.id)} >
                 Excluir
               </Button>
             </td>

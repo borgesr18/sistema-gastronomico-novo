@@ -98,7 +98,7 @@ export default function FichasTecnicasPage() {
               <Link href={`/fichas-tecnicas/${selecionada.id}/editar`}>
                 <Button variant="primary">Editar</Button>
               </Link>
-              <Button variant="danger" onClick={() => handleRemover(selecionada.id)}>
+              <Button variant="danger" onClick={() => handleRemover(selecionada.id)} >
                 Excluir
               </Button>
               <Link href={`/producao?ficha=${selecionada.id}`}>

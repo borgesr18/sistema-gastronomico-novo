@@ -19,7 +19,7 @@ export default function DetalheInsumoPage() {
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Insumo não encontrado</h2>
         <p className="text-gray-600 mb-6">O produto que você está procurando não existe ou foi removido.</p>
-        <Button variant="primary" onClick={() => router.push('/produtos')}>
+        <Button variant="primary" onClick={() => router.push('/produtos')} >
           Voltar para Insumos
         </Button>
       </div>

@@ -102,10 +102,10 @@ export default function UnidadesConfigPage() {
               <TableCell>{u.id}</TableCell>
               <TableCell>{u.nome}</TableCell>
               <TableCell>
-                <Button variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)}>
+                <Button variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)} >
                   ✏️ Editar
                 </Button>
-                <Button variant="danger" onClick={() => removerUnidade(u.id)}>
+                <Button variant="danger" onClick={() => removerUnidade(u.id)} >
                   🗑️ Excluir
                 </Button>
               </TableCell>

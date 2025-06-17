@@ -129,13 +129,13 @@ export default function UsuariosConfigPage() {
               <TableCell>{usuario.email}</TableCell>
               <TableCell>{usuario.role}</TableCell>
               <TableCell>
-                <Button variant="secondary" onClick={() => handleEditar(usuario)}>
+                <Button variant="secondary" onClick={() => handleEditar(usuario)} >
                   Editar
                 </Button>
-                <Button variant="danger" onClick={() => handleExcluir(usuario.id)}>
+                <Button variant="danger" onClick={() => handleExcluir(usuario.id)} >
                   Excluir
                 </Button>
-                <Button variant="primary" onClick={() => handleAbrirAlterarSenha(usuario)}>
+                <Button variant="primary" onClick={() => handleAbrirAlterarSenha(usuario)} >
                   Alterar Senha
                 </Button>
               </TableCell>

@@ -91,7 +91,7 @@ export default function UnidadesConfigPage() {
                 <Button variant="secondary" onClick={() => { setUnidadeEditando(u); openModal(); }}>
                   Editar
                 </Button>
-                <Button variant="danger" onClick={() => handleRemover(u.id)}>
+                <Button variant="danger" onClick={() => handleRemover(u.id)} >
                   Excluir
                 </Button>
               </div>

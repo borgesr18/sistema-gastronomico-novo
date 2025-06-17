@@ -80,10 +80,10 @@ export default function CategoriasReceitasPage() {
           <TableRow key={cat.id}>
             <TableCell>{cat.nome}</TableCell>
             <TableCell>
-              <Button variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
+              <Button variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)} >
                 ✏️ Editar
               </Button>
-              <Button variant="danger" onClick={() => handleRemover(cat.id)}>
+              <Button variant="danger" onClick={() => handleRemover(cat.id)} >
                 🗑️ Excluir
               </Button>
             </TableCell>
@@ -92,7 +92,7 @@ export default function CategoriasReceitasPage() {
       </Table>
 
       {modalAberto && (
-        <Modal title={editandoId ? 'Editar Categoria' : 'Nova Categoria'} isOpen={modalAberto} onClose={() => setModalAberto(false)}>
+        <Modal title={editandoId ? 'Editar Categoria' : 'Nova Categoria'} isOpen={modalAberto} onClose={() => setModalAberto(false)} >
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -107,7 +107,7 @@ export default function CategoriasReceitasPage() {
               required
             />
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="secondary" onClick={() => setModalAberto(false)}>
+              <Button type="button" variant="secondary" onClick={() => setModalAberto(false)} >
                 Cancelar
               </Button>
               <Button type="submit" variant="primary">

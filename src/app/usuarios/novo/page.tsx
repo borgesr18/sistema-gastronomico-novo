@@ -37,7 +37,7 @@ export default function NovoUsuarioPage() {
         <input placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
         <input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input placeholder="Senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <select value={role} onChange={(e) => setRole(e.target.value)} >
           <option value="viewer">Viewer</option>
           <option value="editor">Editor</option>
           <option value="manager">Manager</option>

@@ -3,42 +3,61 @@
 import React from 'react';
 import clsx from 'clsx';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success' | 'outline';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'outline' | 'success';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
+  size?: ButtonSize;
   fullWidth?: boolean;
   isLoading?: boolean;
 }
 
 export default function Button({
   variant = 'primary',
+  size = 'md',
   fullWidth = false,
   isLoading = false,
-  className = '',
+  className,
+  disabled,
   children,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'px-4 py-2 rounded font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed';
-  
-  const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
-    danger: 'bg-red-500 text-white hover:bg-red-600',
-    success: 'bg-green-500 text-white hover:bg-green-600',
-    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+  const baseClass =
+    'rounded px-4 py-2 font-medium transition duration-150 focus:outline-none focus:ring';
+
+  const sizeClasses: Record<ButtonSize, string> = {
+    sm: 'text-sm py-1 px-2',
+    md: 'text-base py-2 px-4',
+    lg: 'text-lg py-3 px-6',
   };
 
-  const finalClassName = clsx(
-    baseStyles,
-    variantStyles[variant],
+  const variantClasses: Record<ButtonVariant, string> = {
+    primary: 'bg-blue-500 text-white hover:bg-blue-600',
+    secondary: 'bg-gray-200 text-black hover:bg-gray-300',
+    danger: 'bg-red-500 text-white hover:bg-red-600',
+    outline: 'border border-gray-400 text-black hover:bg-gray-100',
+    success: 'bg-green-500 text-white hover:bg-green-600',
+  };
+
+  const finalClass = clsx(
+    baseClass,
+    sizeClasses[size],
+    variantClasses[variant],
     fullWidth && 'w-full',
+    isLoading && 'opacity-50 cursor-not-allowed',
     className
   );
 
   return (
-    <button className={finalClassName} disabled={isLoading || props.disabled} {...props}>
+    <button
+      {...props}
+      disabled={disabled || isLoading}
+      className={finalClass}
+    >
       {isLoading ? 'Carregando...' : children}
     </button>
   );
 }
+

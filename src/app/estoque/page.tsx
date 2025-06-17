@@ -130,7 +130,7 @@ export default function EstoquePage() {
             options={produtos
               .map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}
-            error={erros.produtoId}
+            
             className="flex-1 min-w-[150px]"
           />
           <Select
@@ -141,12 +141,12 @@ export default function EstoquePage() {
             options={[{ value: 'entrada', label: 'Entrada' }, { value: 'saida', label: 'Saída' }]}
             className="w-32"
           />
-          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} className="w-28" />
+          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange}   />
           {form.tipo === 'entrada' && (
             <>
-              <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange} error={erros.preco} className="w-32" />
-              <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange} error={erros.fornecedor} className="flex-1 min-w-[150px]" />
-              <Input label="Marca" name="marca" value={form.marca} onChange={handleChange} className="flex-1 min-w-[120px]" />
+              <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange}   />
+              <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange}   />
+              <Input label="Marca" name="marca" value={form.marca} onChange={handleChange}  />
             </>
           )}
           <div className="flex justify-end flex-1">
@@ -158,7 +158,7 @@ export default function EstoquePage() {
       <Card>
         <Table
           headers={["Data", "Produto", "Qtd", "Preço", "Fornecedor", "Marca", "Tipo", "Ações"]}
-          isLoading={isLoading}
+          
           emptyMessage="Nenhuma movimentação registrada"
         >
           {movimentacoes.map(m => {

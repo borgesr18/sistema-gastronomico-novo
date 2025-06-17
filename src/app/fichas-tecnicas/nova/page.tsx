@@ -251,7 +251,7 @@ export default function NovaFichaTecnicaPage() {
                   name="nome"
                   value={fichaTecnica.nome}
                   onChange={handleChange}
-                  error={erros.nome}
+                  
                   placeholder="Ex: Risoto de Cogumelos"
                 />
                 
@@ -263,7 +263,7 @@ export default function NovaFichaTecnicaPage() {
                   options={categorias
                     .map(c => ({ value: c.id, label: c.nome }))
                     .sort((a, b) => a.label.localeCompare(b.label))}
-                  error={erros.categoria}
+                  
                 />
               </div>
               
@@ -284,7 +284,7 @@ export default function NovaFichaTecnicaPage() {
                   min="1"
                   value={fichaTecnica.tempoPreparo}
                   onChange={handleChange}
-                  error={erros.tempoPreparo}
+                  
                   placeholder="Ex: 45"
                 />
                 
@@ -302,7 +302,7 @@ export default function NovaFichaTecnicaPage() {
                   value={fichaTecnica.unidadeRendimento}
                   onChange={handleChange}
                   options={unidadesRendimento}
-                  error={erros.unidadeRendimento}
+                  
                 />
               </div>
             </div>
@@ -354,7 +354,7 @@ export default function NovaFichaTecnicaPage() {
               name="modoPreparo"
               value={fichaTecnica.modoPreparo}
               onChange={handleChange}
-              error={erros.modoPreparo}
+              
               placeholder="Descreva passo a passo como preparar a receita"
               rows={6}
             />
@@ -382,7 +382,7 @@ export default function NovaFichaTecnicaPage() {
             <Button
               type="submit"
               variant="primary"
-              isLoading={isLoading}
+              
             >
               Salvar Ficha Técnica
             </Button>
@@ -412,7 +412,7 @@ export default function NovaFichaTecnicaPage() {
             name="produtoId"
             value={ingredienteAtual.produtoId}
             onChange={handleIngredienteChange}
-            error={erros.produtoId}
+            
             options={produtos
               .map(p => ({ value: p.id, label: `${p.nome} (${p.unidadeMedida})` }))
               .sort((a, b) => a.label.localeCompare(b.label))}
@@ -426,7 +426,7 @@ export default function NovaFichaTecnicaPage() {
             step="0.1"
             value={ingredienteAtual.quantidade}
             onChange={handleIngredienteChange}
-            error={erros.quantidade}
+            
             placeholder="Ex: 250"
           />
 
@@ -435,7 +435,7 @@ export default function NovaFichaTecnicaPage() {
             name="unidade"
             value={ingredienteAtual.unidade}
             onChange={handleIngredienteChange}
-            error={erros.unidade}
+            
             options={unidades
               .map(u => ({ value: u.id, label: u.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}

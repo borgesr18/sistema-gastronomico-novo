@@ -61,7 +61,7 @@ export default function FichasTecnicasPage() {
             'Custo Total',
             'Data de Modificação'
           ]}
-          isLoading={isLoading}
+          
           emptyMessage="Nenhuma ficha técnica cadastrada. Clique em 'Nova Ficha Técnica' para adicionar."
         >
           {fichasTecnicas.map((ficha: FichaTecnicaInfo) => (

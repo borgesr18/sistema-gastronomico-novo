@@ -174,14 +174,14 @@ export default function ProducaoPage() {
             options={fichasTecnicas
               .map((f: FichaTecnicaInfo) => ({ value: f.id, label: f.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}
-            error={erros.fichaId}
+            
           />
           <Input
             label="Quantidade *"
             name="quantidade"
             value={form.quantidade}
             onChange={handleChange}
-            error={erros.quantidade}
+            
           />
           <Select
             label="Unidade"
@@ -195,7 +195,7 @@ export default function ProducaoPage() {
             name="pesoUnitario"
             value={form.pesoUnitario}
             onChange={handleChange}
-            error={erros.pesoUnitario}
+            
           />
           <Select
             label="Unidade"
@@ -210,7 +210,7 @@ export default function ProducaoPage() {
             name="data"
             value={form.data}
             onChange={handleChange}
-            error={erros.data}
+            
           />
           <Input
             label="Validade *"
@@ -218,7 +218,7 @@ export default function ProducaoPage() {
             name="validade"
             value={form.validade}
             onChange={handleChange}
-            error={erros.validade}
+            
           />
           <div className="md:col-span-5 flex justify-end">
             <Button type="submit" variant="primary">Registrar Produção</Button>

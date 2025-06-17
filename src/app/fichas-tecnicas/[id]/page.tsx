@@ -89,7 +89,7 @@ export default function DetalheFichaTecnicaPage() {
             Editar
           </Button>
           <Button
-            variant="success"
+            variant="primary"
             onClick={() => router.push(`/fichas-tecnicas/${fichaId}/imprimir`)}
           >
             Imprimir

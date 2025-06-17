@@ -49,7 +49,7 @@ export default function EstoqueProducaoPage() {
             options={fichasTecnicas
               .map((f: FichaTecnicaInfo) => ({ value: f.id, label: f.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}
-            error={erro && !form.fichaId ? erro : undefined}
+            
           />
           <Select
             label="Tipo"
@@ -63,7 +63,7 @@ export default function EstoqueProducaoPage() {
             name="quantidade"
             value={form.quantidade}
             onChange={handleChange}
-            error={erro && !form.quantidade ? erro : undefined}
+            
           />
           {form.tipo === 'entrada' && (
             <Input

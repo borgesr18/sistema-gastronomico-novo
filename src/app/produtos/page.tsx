@@ -42,7 +42,7 @@ export default function ProdutosPage() {
       <Card>
         <Table
           headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor']}
-          isLoading={isLoading}
+          
           emptyMessage="Nenhum insumo cadastrado. Clique em 'Novo Insumo' para adicionar."
           className="text-sm"
         >

@@ -1,22 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 
-interface Tab {
+export interface Tab {
   id: string;
   title: string;
-  content: React.ReactNode;
+  content?: React.ReactNode;
 }
 
 interface TabsProps {
   tabs: Tab[];
+  activeTab: string;
+  onChange: (tabId: string) => void;
 }
 
-export default function Tabs({ tabs }: TabsProps) {
-  const [activeTabId, setActiveTabId] = useState(tabs[0]?.id);
-
-  const activeTab = tabs.find((t) => t.id === activeTabId) || tabs[0];
-
+export default function Tabs({ tabs, activeTab, onChange }: TabsProps) {
   return (
     <div>
       {/* Header das abas */}
@@ -24,11 +22,11 @@ export default function Tabs({ tabs }: TabsProps) {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTabId(tab.id)}
-            className={`px-3 py-2 text-sm font-medium ${
-              activeTabId === tab.id
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-600'
+            onClick={() => onChange(tab.id)}
+            className={`px-4 py-2 rounded-t ${
+              activeTab === tab.id
+                ? 'bg-white border-l border-t border-r font-semibold text-gray-800'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {tab.title}
@@ -37,7 +35,9 @@ export default function Tabs({ tabs }: TabsProps) {
       </div>
 
       {/* Conteúdo da aba ativa */}
-      <div>{activeTab?.content}</div>
+      <div className="p-4 border rounded-b bg-white">
+        {tabs.find((t) => t.id === activeTab)?.content}
+      </div>
     </div>
   );
 }

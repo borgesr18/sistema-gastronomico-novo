@@ -1,11 +1,21 @@
+import './globals.css';
+import type { Metadata } from 'next';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ModalProvider } from '@/contexts/ModalContext';
+
+export const metadata: Metadata = {
+  title: 'Sistema Gastronômico',
+  description: 'Sistema de gestão gastronômica',
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body>
         <AuthProvider>
-          {children}
+          <ModalProvider>
+            {children}
+          </ModalProvider>
         </AuthProvider>
       </body>
     </html>

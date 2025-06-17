@@ -12,7 +12,7 @@ export function Table({ headers, children, emptyMessage, className, ...props }: 
   const hasData = React.Children.count(children) > 0;
 
   return (
-    <table {...props} className={`min-w-full divide-y divide-gray-200 ${className`}`}>
+    <table>
       <thead>
         <tr>
           {headers.map((header, idx) => (
@@ -41,7 +41,7 @@ export function TableRow({ children }: { children: React.ReactNode }) {
 
 export function TableCell({ children, ...props }: { children: React.ReactNode } & React.TdHTMLAttributes<HTMLTableCellElement>) {
   return (
-    <td {...props} className={`px-6 py-4 whitespace-nowrap ${props.className || ''`}`}>
+    <td>
       {children}
     </td>
   );

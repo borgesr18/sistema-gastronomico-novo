@@ -11,6 +11,7 @@ export interface SelectProps {
   error?: string;
   className?: string;
   name?: string;
+  required?: boolean;
 }
 
 export default function Select({
@@ -22,6 +23,7 @@ export default function Select({
   error,
   className = '',
   name,
+  required,
 }: SelectProps) {
   return (
     <div className="space-y-1">
@@ -30,6 +32,7 @@ export default function Select({
         name={name}
         value={value}
         onChange={onChange}
+        required={required}
         className={`border rounded px-3 py-2 w-full ${error ? 'border-red-500' : 'border-gray-300'} ${className}`}
       >
         {options

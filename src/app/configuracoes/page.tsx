@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Tabs from '@/components/ui/Tabs';
+import { Tabs } from '@/components/ui/Tabs';
 import CategoriasConfigPage from './_components/CategoriasConfigPage';
 import UnidadesConfigPage from './_components/UnidadesConfigPage';
 import UsuariosConfigPage from './_components/UsuariosConfigPage';

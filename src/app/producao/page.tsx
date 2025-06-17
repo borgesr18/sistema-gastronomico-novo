@@ -235,14 +235,14 @@ export default function ProducaoPage() {
             const ficha = fichasTecnicas.find(f => f.id === p.fichaId);
             return (
               <TableRow key={p.id}>
-                <TableCell compact>{formatarData(p.data)}</TableCell>
-                <TableCell compact>{formatarData(p.validade)}</TableCell>
-                <TableCell compact>{ficha?.nome || 'Ficha removida'}</TableCell>
-                <TableCell compact>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
-                <TableCell compact>{p.pesoUnitario}{p.unidadePeso}</TableCell>
-                <TableCell compact>{p.unidadesGeradas}</TableCell>
-                <TableCell compact>{formatarMoeda(p.custoTotal)}</TableCell>
-                <TableCell compact>{formatarMoeda(p.custoUnitario)}</TableCell>
+                <TableCell>{formatarData(p.data)}</TableCell>
+                <TableCell>{formatarData(p.validade)}</TableCell>
+                <TableCell>{ficha?.nome || 'Ficha removida'}</TableCell>
+                <TableCell>{p.quantidadeTotal}{p.unidadeQuantidade}</TableCell>
+                <TableCell>{p.pesoUnitario}{p.unidadePeso}</TableCell>
+                <TableCell>{p.unidadesGeradas}</TableCell>
+                <TableCell>{formatarMoeda(p.custoTotal)}</TableCell>
+                <TableCell>{formatarMoeda(p.custoUnitario)}</TableCell>
                 <TableCell>
                   <button
                     className="p-1 rounded hover:bg-gray-100"

@@ -1,52 +1,118 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
-import Button from '@/components/ui/Button';
+import React, { useEffect, useState } from 'react';
+import { Unidade } from '@prisma/client';
 import Modal, { useModal } from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { useUnidadesMedida } from '@/lib/unidadesService';
+import Toast from '@/components/ui/Toast';
+import { Table, TableRow, TableCell } from '@/components/ui/Table';
+import UnidadeForm from './UnidadeForm';
 
 export default function UnidadesConfigPage() {
-  const { unidades, adicionarUnidade } = useUnidadesMedida();
-  const { isOpen, openModal, closeModal } = useModal();
-  const [nova, setNova] = useState({ id: '', nome: '' });
+  const [unidades, setUnidades] = useState<Unidade[]>([]);
   const [filtro, setFiltro] = useState('');
+  const [toast, setToast] = useState<string | null>(null);
+  const [unidadeEditando, setUnidadeEditando] = useState<Unidade | null>(null);
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    adicionarUnidade(nova.id, nova.nome);
-    setNova({ id: '', nome: '' });
-    closeModal();
+  const { isOpen, openModal, closeModal } = useModal();
+
+  const carregarUnidades = async () => {
+    const res = await fetch('/api/unidades');
+    const data = await res.json();
+    setUnidades(data);
   };
 
-  const filtradas = unidades.filter(u =>
-    u.id.toLowerCase().includes(filtro.toLowerCase()) ||
-    u.nome.toLowerCase().includes(filtro.toLowerCase())
+  useEffect(() => {
+    carregarUnidades();
+  }, []);
+
+  const handleSalvar = async (unidade: Partial<Unidade>) => {
+    const method = unidade.id ? 'PUT' : 'POST';
+    const url = unidade.id ? `/api/unidades/${unidade.id}` : '/api/unidades';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(unidade),
+    });
+
+    if (res.ok) {
+      setToast('Unidade salva com sucesso!');
+      closeModal();
+      carregarUnidades();
+    } else {
+      setToast('Erro ao salvar unidade.');
+    }
+  };
+
+  const handleRemover = async (id: string) => {
+    if (!confirm('Tem certeza que deseja remover esta unidade?')) return;
+
+    const res = await fetch(`/api/unidades/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (res.ok) {
+      setToast('Unidade removida.');
+      carregarUnidades();
+    } else {
+      setToast('Erro ao remover unidade.');
+    }
+  };
+
+  const filtradas = unidades.filter((u) =>
+    u.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+    u.sigla.toLowerCase().includes(filtro.toLowerCase())
   );
 
   return (
     <div>
       <h2 className="text-xl font-bold">Unidades de Medida</h2>
-      <Button onClick={openModal}>Nova Unidade</Button>
-      <Input value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="Buscar..." />
 
-      <Table headers={['Sigla', 'Nome']}>
-        {filtradas.map(u => (
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+
+      <Button onClick={() => { setUnidadeEditando(null); openModal(); }}>Nova Unidade</Button>
+
+      <Input
+        label="Buscar"
+        value={filtro}
+        onChange={(e) => setFiltro(e.target.value)}
+        placeholder="Buscar..."
+      />
+
+      <Table headers={['Sigla', 'Nome', 'Ações']}>
+        {filtradas.map((u) => (
           <TableRow key={u.id}>
-            <TableCell>{u.id}</TableCell>
+            <TableCell>{u.sigla}</TableCell>
             <TableCell>{u.nome}</TableCell>
+            <TableCell>
+              <div className="flex space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => { setUnidadeEditando(u); openModal(); }}>
+                  Editar
+                </Button>
+                <Button size="sm" variant="danger" onClick={() => handleRemover(u.id)}>
+                  Excluir
+                </Button>
+              </div>
+            </TableCell>
           </TableRow>
         ))}
       </Table>
 
-      <Modal isOpen={isOpen} onClose={closeModal} title="Nova Unidade">
-        <form onSubmit={handleAdd} className="space-y-2">
-          <Input value={nova.id} onChange={(e) => setNova({ ...nova, id: e.target.value })} placeholder="Sigla" />
-          <Input value={nova.nome} onChange={(e) => setNova({ ...nova, nome: e.target.value })} placeholder="Nome da Unidade" />
-          <Button type="submit">Salvar</Button>
-        </form>
-      </Modal>
+      {isOpen && (
+        <Modal
+          isOpen={isOpen}
+          title={unidadeEditando ? 'Editar Unidade' : 'Nova Unidade'}
+          onClose={closeModal}
+        >
+          <UnidadeForm
+            unidade={unidadeEditando}
+            onSave={handleSalvar}
+            onCancel={closeModal}
+          />
+        </Modal>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
+import { Table, TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import SlideOver from '@/components/ui/SlideOver';
 import { useProdutos, ProdutoInfo, obterLabelCategoria } from '@/lib/produtosService';
@@ -10,7 +10,6 @@ import Link from 'next/link';
 
 export default function ProdutosPage() {
   const { produtos, isLoading, removerProduto } = useProdutos();
-
   const [selecionado, setSelecionado] = useState<ProdutoInfo | null>(null);
 
   const handleRemover = (id: string) => {
@@ -23,7 +22,7 @@ export default function ProdutosPage() {
   const formatarPreco = (preco: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(preco);
   };
 
@@ -42,7 +41,6 @@ export default function ProdutosPage() {
       <Card>
         <Table
           headers={['Nome', 'Categoria', 'Unidade', 'Preço', 'Fornecedor']}
-          
           emptyMessage="Nenhum insumo cadastrado. Clique em 'Novo Insumo' para adicionar."
           className="text-sm"
         >
@@ -64,6 +62,7 @@ export default function ProdutosPage() {
             ))}
         </Table>
       </Card>
+
       <SlideOver
         isOpen={!!selecionado}
         onClose={() => setSelecionado(null)}
@@ -71,12 +70,22 @@ export default function ProdutosPage() {
       >
         {selecionado && (
           <div className="space-y-4">
-            <p className="text-sm text-gray-600">Categoria: {obterLabelCategoria(selecionado.categoria)}</p>
-            <p className="text-sm text-gray-600">Preço: {formatarPreco(selecionado.preco)}</p>
+            <p className="text-sm text-gray-600">
+              Categoria: {obterLabelCategoria(selecionado.categoria)}
+            </p>
+            <p className="text-sm text-gray-600">
+              Preço: {formatarPreco(selecionado.preco)}
+            </p>
             <div className="flex flex-col space-y-2">
-              <Link href={`/produtos/${selecionado.id}}> <Button variant="secondary">Ver</Button> </Link>
-              <Link href={`/produtos/${selecionado.id}/editar}> <Button variant="primary">Editar</Button> </Link>
-              <Button variant="danger" onClick={() => handleRemover(selecionado.id)}>Excluir</Button>
+              <Link href={`/produtos/${selecionado.id}`}>
+                <Button variant="secondary">Ver</Button>
+              </Link>
+              <Link href={`/produtos/${selecionado.id}/editar`}>
+                <Button variant="primary">Editar</Button>
+              </Link>
+              <Button variant="danger" onClick={() => handleRemover(selecionado.id)}>
+                Excluir
+              </Button>
             </div>
           </div>
         )}

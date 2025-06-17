@@ -1,31 +1,46 @@
 'use client';
 
-import React, { SelectHTMLAttributes, ChangeEvent } from 'react';
+import React from 'react';
 
-interface Option {
+interface SelectOption {
   value: string;
   label: string;
 }
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label: string;
-  name?: string;
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  name: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: SelectOption[];
   error?: string;
-  options: Option[];
   required?: boolean;
 }
 
-export default function Select({ label, name, value, onChange, options, error, required, ...props }: SelectProps) {
+export default function Select({
+  label,
+  name,
+  value,
+  onChange,
+  options,
+  error,
+  required,
+  ...props
+}: SelectProps) {
   return (
     <div className="space-y-1">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      {label && (
+        <label className="block text-sm font-medium text-gray-700">{label}</label>
+      )}
       <select
         name={name}
         value={value}
         onChange={onChange}
         required={required}
         {...props}
-        className={`block w-full border px-3 py-2 rounded ${error ? 'border-red-500' : 'border-gray-300'`}`}
+        className={`block w-full border px-3 py-2 rounded ${
+          error ? 'border-red-500' : 'border-gray-300'
+        }`}
       >
         <option value="">Selecione...</option>
         {options.map((option) => (
@@ -34,7 +49,7 @@ export default function Select({ label, name, value, onChange, options, error, r
           </option>
         ))}
       </select>
-      {error && <p className="text-red-500 text-xs">{error}</p>}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 }

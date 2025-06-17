@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { ModalProvider } from '@/contexts/ModalContext';
+import { ModalProvider } from '@/components/ui/Modal';  // <-- Corrigido aqui
 
 export const metadata: Metadata = {
   title: 'Sistema Gastronômico',

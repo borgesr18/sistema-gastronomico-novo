@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Categoria } from '@prisma/client';
 import Button from '@/components/ui/Button';
 import Modal, { useModal } from '@/components/ui/Modal';
-import Input from '@/components/ui/Input';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Toast from '@/components/ui/Toast';
-import { Table, TableRow, TableCell } from '@/components/ui/Table';
+import Input from '@/components/ui/Input';
 import CategoriaForm from '../_components/CategoriaForm';
 
 export default function CategoriasPage() {
@@ -29,7 +29,7 @@ export default function CategoriasPage() {
 
   const handleSalvar = async (categoria: Partial<Categoria>) => {
     const metodo = categoria.id ? 'PUT' : 'POST';
-    const url = categoria.id ? `/api/categorias/${categoria.id}` : '/api/categorias`;
+    const url = categoria.id ? `/api/categorias/${categoria.id}` : '/api/categorias';
 
     await fetch(url, {
       method: metodo,
@@ -43,30 +43,38 @@ export default function CategoriasPage() {
   };
 
   const handleRemover = async (id: string) => {
+    if (!confirm('Tem certeza que deseja remover?')) return;
+
     await fetch(`/api/categorias/${id}`, { method: 'DELETE' });
+
     setToast('Categoria removida com sucesso!');
     carregarCategorias();
   };
 
-  const filtradas = categorias.filter((c) =>
+  const categoriasFiltradas = categorias.filter(c =>
     c.nome.toLowerCase().includes(filtro.toLowerCase())
   );
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Categorias de Produtos</h2>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Categorias de Produtos</h1>
 
-      <Button onClick={openModal}>Nova Categoria</Button>
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
 
-      <Input
-        label="Buscar"
-        placeholder="Buscar..."
-        value={filtro}
-        onChange={(e) => setFiltro(e.target.value)}
-      />
+      <div className="flex items-center space-x-2 mb-4">
+        <Button onClick={() => { setCategoriaEditando(null); openModal(); }}>
+          Nova Categoria
+        </Button>
+        <Input
+          label="Buscar"
+          placeholder="Digite para filtrar..."
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+        />
+      </div>
 
       <Table headers={['Nome', 'Ações']}>
-        {filtradas.map((c) => (
+        {categoriasFiltradas.map(c => (
           <TableRow key={c.id}>
             <TableCell>{c.nome}</TableCell>
             <TableCell className="flex space-x-2">
@@ -82,19 +90,15 @@ export default function CategoriasPage() {
       </Table>
 
       {isOpen && (
-        <Modal title={categoriaEditando ? 'Editar Categoria' : 'Nova Categoria'} onClose={closeModal}>
+        <Modal title={categoriaEditando ? 'Editar Categoria' : 'Nova Categoria'} isOpen={isOpen} onClose={closeModal}>
           <CategoriaForm
             categoria={categoriaEditando}
             onSave={handleSalvar}
-            onCancel={() => {
-              setCategoriaEditando(null);
-              closeModal();
-            }}
+            onCancel={closeModal}
           />
         </Modal>
       )}
-
-      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </div>
   );
 }
+

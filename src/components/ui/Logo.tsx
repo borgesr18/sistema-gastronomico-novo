@@ -7,7 +7,7 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ className = '', showTagline = false }) => (
-  <span`}>
+  <span}>
     <Image src="/logo.svg" alt="GastroChef" width={24} height={24} />
     <span className="font-bold">GastroChef</span>
     {showTagline && (

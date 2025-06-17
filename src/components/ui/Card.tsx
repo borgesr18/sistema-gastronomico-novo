@@ -14,7 +14,7 @@ const Card: React.FC<CardProps> = ({
   footer 
 }) => {
   return (
-    <div`}>
+    <div}>
       {title && (
         <div className="px-6 py-4 border-b" style={{ borderColor: 'var(--cor-borda)' }}>
           <h3 className="text-lg font-medium" style={{ color: 'var(--cor-texto-principal)' }}>{title}</h3>

@@ -92,11 +92,11 @@ export default function FichasTecnicasPage() {
             <p className="text-sm text-gray-600">Custo Total: {formatarPreco(selecionada.custoTotal)}</p>
             <p className="text-sm text-gray-600">Data: {formatarData(selecionada.dataModificacao)}</p>
             <div className="flex flex-col space-y-2">
-              <Link href={`/fichas-tecnicas/${selecionada.id}`}> <Button variant="secondary">Ver</Button> </Link>
-              <Link href={`/fichas-tecnicas/${selecionada.id}/editar`}> <Button variant="primary">Editar</Button> </Link>
+              <Link href={`/fichas-tecnicas/${selecionada.id}}> <Button variant="secondary">Ver</Button> </Link>
+              <Link href={`/fichas-tecnicas/${selecionada.id}/editar}> <Button variant="primary">Editar</Button> </Link>
               <Button variant="danger" onClick={() => handleRemover(selecionada.id)}>Excluir</Button>
-              <Link href={`/producao?ficha=${selecionada.id}`}><Button>Produzir</Button></Link>
-              <Link href={`/precos?ficha=${selecionada.id}`}><Button>Calcular Preço</Button></Link>
+              <Link href={`/producao?ficha=${selecionada.id}}><Button>Produzir</Button></Link>
+              <Link href={`/precos?ficha=${selecionada.id}}><Button>Calcular Preço</Button></Link>
             </div>
           </div>
         )}

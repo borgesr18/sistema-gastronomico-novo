@@ -74,8 +74,8 @@ export default function ProdutosPage() {
             <p className="text-sm text-gray-600">Categoria: {obterLabelCategoria(selecionado.categoria)}</p>
             <p className="text-sm text-gray-600">Preço: {formatarPreco(selecionado.preco)}</p>
             <div className="flex flex-col space-y-2">
-              <Link href={`/produtos/${selecionado.id}`}> <Button variant="secondary">Ver</Button> </Link>
-              <Link href={`/produtos/${selecionado.id}/editar`}> <Button variant="primary">Editar</Button> </Link>
+              <Link href={`/produtos/${selecionado.id}}> <Button variant="secondary">Ver</Button> </Link>
+              <Link href={`/produtos/${selecionado.id}/editar}> <Button variant="primary">Editar</Button> </Link>
               <Button variant="danger" onClick={() => handleRemover(selecionado.id)}>Excluir</Button>
             </div>
           </div>

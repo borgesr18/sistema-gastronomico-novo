@@ -1,32 +1,37 @@
 'use client';
 
-import React, { HTMLAttributes } from 'react';
+import React from 'react';
 
-export interface TableProps extends HTMLAttributes<HTMLTableElement> {
+export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
   headers: string[];
   emptyMessage?: string;
   className?: string;
+  children: React.ReactNode;
 }
 
-export function Table({ headers, children, emptyMessage, className, ...props }: TableProps) {
+export function Table({ headers, emptyMessage, children, className = '', ...props }: TableProps) {
   const hasData = React.Children.count(children) > 0;
 
   return (
-    <table>
-      <thead>
+    <table className={`min-w-full divide-y divide-gray-200 ${className}`} {...props}>
+      <thead className="bg-gray-50">
         <tr>
-          {headers.map((header, idx) => (
-            <th key={idx} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+          {headers.map((header, index) => (
+            <th
+              key={index}
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               {header}
             </th>
           ))}
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-200">
+      <tbody className="bg-white divide-y divide-gray-200">
         {hasData ? children : (
           <tr>
             <td colSpan={headers.length} className="px-6 py-4 text-center text-gray-500">
-              {emptyMessage || 'Nenhum dado encontrado.'}
+              {emptyMessage}
             </td>
           </tr>
         )}
@@ -35,13 +40,25 @@ export function Table({ headers, children, emptyMessage, className, ...props }: 
   );
 }
 
-export function TableRow({ children }: { children: React.ReactNode }) {
-  return <tr>{children}</tr>;
+export interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+  children: React.ReactNode;
 }
 
-export function TableCell({ children, ...props }: { children: React.ReactNode } & React.TdHTMLAttributes<HTMLTableCellElement>) {
+export function TableRow({ children, className = '', ...props }: TableRowProps) {
   return (
-    <td>
+    <tr className={className} {...props}>
+      {children}
+    </tr>
+  );
+}
+
+export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  children: React.ReactNode;
+}
+
+export function TableCell({ children, className = '', ...props }: TableCellProps) {
+  return (
+    <td className={`px-6 py-4 whitespace-nowrap ${className}`} {...props}>
       {children}
     </td>
   );

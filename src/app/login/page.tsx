@@ -1,39 +1,49 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
-import { useAuth } from '@/lib/useAuth';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import Logo from '@/components/ui/Logo';
+import Toast from '@/components/ui/Toast';
 
 export default function LoginPage() {
-  const { login } = useAuth();
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const sucesso = await login(email, senha);
-    if (!sucesso) {
-      setErro('Credenciais inválidas');
+    setLoading(true);
+    setErro('');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
+      });
+
+      if (res.ok) {
+        router.push('/');
+      } else {
+        const data = await res.json();
+        setErro(data.message || 'Falha no login');
+      }
+    } catch (error) {
+      setErro('Erro ao conectar com o servidor');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <Card className="w-96">
-        <div className="flex justify-center mb-4">
-          <Logo className="text-2xl" />
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <h1 className="text-xl font-bold text-gray-800">Entrar</h1>
-
-          {erro && <p className="text-sm text-red-600">{erro}</p>}
-
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <Card className="w-full max-w-md space-y-6 p-6">
+        <h1 className="text-2xl font-bold text-center">Login</h1>
+        <form onSubmit={handleLogin} className="space-y-4">
           <Input
             label="Email"
             type="email"
@@ -41,7 +51,6 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-
           <Input
             label="Senha"
             type="password"
@@ -49,11 +58,11 @@ export default function LoginPage() {
             onChange={(e) => setSenha(e.target.value)}
             required
           />
-
-          <Button type="submit" variant="primary">
-            Entrar
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
+        {erro && <Toast variant="danger">{erro}</Toast>}
       </Card>
     </div>
   );

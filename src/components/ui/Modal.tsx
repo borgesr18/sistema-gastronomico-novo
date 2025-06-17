@@ -37,10 +37,11 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: ReactNode;
+  footer?: ReactNode;  // <- ✅ ADICIONADO
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 'md' }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
   const sizes = {
     sm: 'max-w-sm',
     md: 'max-w-md',
@@ -82,7 +83,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
                     {title}
                   </Dialog.Title>
                 )}
-                {children}
+
+                <div className="mb-4">{children}</div>
+
+                {footer && (
+                  <div className="mt-4 border-t pt-4">
+                    {footer}
+                  </div>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -93,3 +101,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
 };
 
 export default Modal;
+

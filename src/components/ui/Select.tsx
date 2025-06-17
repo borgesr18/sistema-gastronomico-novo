@@ -1,60 +1,46 @@
 'use client';
 
-import React, { ChangeEvent } from 'react';
-
-export interface SelectOption {
-  value: string;
-  label: string;
-}
+import React, { ChangeEvent, ReactNode } from 'react';
 
 export interface SelectProps {
   label: string;
-  name?: string;
   value: string;
-  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
-  options: SelectOption[];
+  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  options?: { value: string; label: string }[];
+  children?: ReactNode;
   error?: string;
-  required?: boolean;
-  disabled?: boolean;
+  className?: string;
+  name?: string;
 }
 
-export const Select: React.FC<SelectProps> = ({
+export default function Select({
   label,
-  name,
   value,
   onChange,
   options,
+  children,
   error,
-  required = false,
-  disabled = false,
-}) => {
+  className = '',
+  name,
+}: SelectProps) {
   return (
-    <div className="flex flex-col space-y-1">
-      <label className="font-medium">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-
+    <div className="space-y-1">
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
       <select
         name={name}
         value={value}
         onChange={onChange}
-        required={required}
-        disabled={disabled}
-        className={`border p-2 rounded ${
-          error ? 'border-red-500' : 'border-gray-300'
-        }`}
+        className={`border rounded px-3 py-2 w-full ${error ? 'border-red-500' : 'border-gray-300'} ${className}`}
       >
-        <option value="">Selecione...</option>
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
+        {options
+          ? options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))
+          : children}
       </select>
-
-      {error && <span className="text-red-500 text-sm">{error}</span>}
+      {error && <p className="text-red-500 text-xs">{error}</p>}
     </div>
   );
-};
-
-export default Select;
+}

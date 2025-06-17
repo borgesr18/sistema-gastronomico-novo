@@ -4,16 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { CategoriaReceita } from '@prisma/client';
 import Modal, { useModal } from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
-import { Table, TableRow, TableCell } from '@/components/ui/Table';
 import Toast from '@/components/ui/Toast';
 import Input from '@/components/ui/Input';
+import { Table, TableRow, TableCell } from '@/components/ui/Table';
 import CategoriaReceitaForm from './CategoriaReceitaForm';
 
 export default function CategoriasReceitasConfigPage() {
   const [categorias, setCategorias] = useState<CategoriaReceita[]>([]);
   const [categoriaEditando, setCategoriaEditando] = useState<CategoriaReceita | null>(null);
-  const [filtro, setFiltro] = useState('');
   const [toast, setToast] = useState<string | null>(null);
+  const [filtro, setFiltro] = useState('');
   const { isOpen, openModal, closeModal } = useModal();
 
   useEffect(() => {
@@ -21,65 +21,51 @@ export default function CategoriasReceitasConfigPage() {
   }, []);
 
   const fetchCategorias = async () => {
-    try {
-      const res = await fetch('/api/categorias-receitas');
-      const data = await res.json();
-      setCategorias(data);
-    } catch (err) {
-      setToast('Erro ao carregar categorias');
-    }
+    const res = await fetch('/api/categorias-receitas');
+    const data = await res.json();
+    setCategorias(data);
   };
 
   const handleSalvar = async (categoria: Partial<CategoriaReceita>) => {
-    try {
-      const method = categoria.id ? 'PUT' : 'POST';
-      const url = categoria.id ? `/api/categorias-receitas/${categoria.id}` : '/api/categorias-receitas';
+    const method = categoria.id ? 'PUT' : 'POST';
+    const url = categoria.id ? `/api/categorias-receitas/${categoria.id}` : '/api/categorias-receitas';
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: categoria.nome }),
-      });
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(categoria),
+    });
 
-      if (!res.ok) {
-        throw new Error('Erro ao salvar categoria');
-      }
-
-      closeModal();
+    if (res.ok) {
+      setToast('Categoria salva com sucesso');
       fetchCategorias();
-      setToast('Categoria salva com sucesso!');
-    } catch (err) {
+      closeModal();
+    } else {
       setToast('Erro ao salvar categoria');
     }
   };
 
   const handleRemover = async (id: string) => {
-    try {
-      const res = await fetch(`/api/categorias-receitas/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/categorias-receitas/${id}`, { method: 'DELETE' });
 
-      if (!res.ok) {
-        throw new Error('Erro ao remover categoria');
-      }
-
+    if (res.ok) {
+      setToast('Categoria removida com sucesso');
       fetchCategorias();
-      setToast('Categoria removida com sucesso!');
-    } catch (err) {
+    } else {
       setToast('Erro ao remover categoria');
     }
   };
 
-  const filtradas = categorias.filter((c) => c.nome.toLowerCase().includes(filtro.toLowerCase()));
+  const filtradas = categorias.filter(c => c.nome.toLowerCase().includes(filtro.toLowerCase()));
 
   return (
-    <div>
+    <div className="p-4">
       <h2 className="text-xl font-bold">Categorias de Receitas</h2>
 
-      <Button onClick={() => { setCategoriaEditando(null); openModal(); }}>
-        Nova Categoria
-      </Button>
+      <Button onClick={() => { setCategoriaEditando(null); openModal(); }}>Nova Categoria</Button>
 
       <Input
-        label="Filtro"
+        label="Buscar"
         value={filtro}
         onChange={(e) => setFiltro(e.target.value)}
         placeholder="Buscar..."
@@ -91,11 +77,19 @@ export default function CategoriasReceitasConfigPage() {
         {filtradas.map((c) => (
           <TableRow key={c.id}>
             <TableCell>{c.nome}</TableCell>
-            <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => { setCategoriaEditando(c); openModal(); }}>
+            <TableCell className="flex space-x-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => { setCategoriaEditando(c); openModal(); }}
+              >
                 Editar
               </Button>
-              <Button size="sm" variant="danger" onClick={() => handleRemover(c.id)}>
+              <Button
+                size="sm"
+                variant="danger"
+                onClick={() => handleRemover(c.id)}
+              >
                 Remover
               </Button>
             </TableCell>
@@ -103,15 +97,16 @@ export default function CategoriasReceitasConfigPage() {
         ))}
       </Table>
 
-      {isOpen && (
-        <Modal title={categoriaEditando ? 'Editar Categoria' : 'Nova Categoria'} onClose={closeModal}>
-          <CategoriaReceitaForm
-            categoria={categoriaEditando}
-            onSave={handleSalvar}
-            onCancel={closeModal}
-          />
-        </Modal>
-      )}
+      <Modal
+        isOpen={isOpen}
+        title={categoriaEditando ? 'Editar Categoria' : 'Nova Categoria'}
+        onClose={closeModal}
+      >
+        <CategoriaReceitaForm
+          categoria={categoriaEditando}
+          onSave={handleSalvar}
+        />
+      </Modal>
     </div>
   );
 }

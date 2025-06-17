@@ -1,35 +1,23 @@
-import React, { ReactNode } from 'react';
+'use client';
+
+import React from 'react';
 
 interface CardProps {
-  children: ReactNode;
   title?: string;
-  className?: string;
-  footer?: ReactNode;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-const Card: React.FC<CardProps> = ({ 
-  children, 
-  title, 
-  className = '', 
-  footer 
-}) => {
+export default function Card({ title, children, footer }: CardProps) {
   return (
-    <div}>
+    <div className="bg-white shadow rounded-md overflow-hidden">
       {title && (
         <div className="px-6 py-4 border-b" style={{ borderColor: 'var(--cor-borda)' }}>
           <h3 className="text-lg font-medium" style={{ color: 'var(--cor-texto-principal)' }}>{title}</h3>
         </div>
       )}
-      <div className="p-6">
-        {children}
-      </div>
-      {footer && (
-        <div className="px-6 py-4 bg-gray-50 border-t" style={{ borderColor: 'var(--cor-borda)' }}>
-          {footer}
-        </div>
-      )}
+      <div className="p-6">{children}</div>
+      {footer && <div className="px-6 py-4 border-t">{footer}</div>}
     </div>
   );
-};
-
-export default Card;
+}

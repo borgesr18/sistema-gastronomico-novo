@@ -243,7 +243,7 @@ export default function ProducaoPage() {
                 <TableCell compact>{p.unidadesGeradas}</TableCell>
                 <TableCell compact>{formatarMoeda(p.custoTotal)}</TableCell>
                 <TableCell compact>{formatarMoeda(p.custoUnitario)}</TableCell>
-                <TableCell className="relative text-right">
+                <TableCell>
                   <button
                     className="p-1 rounded hover:bg-gray-100"
                     onClick={() => setMenuRow(menuRow === p.id ? null : p.id)}

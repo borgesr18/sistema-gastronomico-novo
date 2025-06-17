@@ -175,7 +175,7 @@ export default function EstoquePage() {
                 <TableCell>
                   {m.tipo === 'entrada' ? '📥 Entrada' : '📤 Saída'}
                 </TableCell>
-                <TableCell className="relative text-right">
+                <TableCell>
                   <button
                     className="p-1 rounded hover:bg-gray-100"
                     onClick={() => setMenuRow(menuRow === m.id ? null : m.id)}

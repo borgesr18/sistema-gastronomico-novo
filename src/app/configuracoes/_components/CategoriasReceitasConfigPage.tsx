@@ -86,10 +86,10 @@ export default function CategoriasReceitasConfigPage() {
             <TableCell>{c.nome}</TableCell>
             <TableCell>
               <div className="flex space-x-2">
-                <Button variant="secondary" size="sm" onClick={() => { setCategoriaEditando(c); openModal(); }}>
+                <Button variant="secondary" onClick={() => { setCategoriaEditando(c); openModal(); }}>
                   Editar
                 </Button>
-                <Button variant="danger" size="sm" onClick={() => handleRemover(c.id)}>
+                <Button variant="danger" onClick={() => handleRemover(c.id)}>
                   Excluir
                 </Button>
               </div>

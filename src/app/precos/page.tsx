@@ -105,7 +105,7 @@ export default function PrecosPage() {
                 <TableCell>{formatar(e.preco1)}</TableCell>
                 <TableCell>{formatar(e.preco2)}</TableCell>
                 <TableCell>{formatar(e.preco3)}</TableCell>
-                <TableCell className="relative text-right">
+                <TableCell>
                   <button
                     className="p-1 rounded hover:bg-gray-100"
                     onClick={() => setMenuRow(menuRow === e.id ? null : e.id)}

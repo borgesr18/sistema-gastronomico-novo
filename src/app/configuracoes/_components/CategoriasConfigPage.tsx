@@ -85,10 +85,10 @@ export default function CategoriasConfigPage() {
           <tr key={c.id}>
             <td>{c.nome}</td>
             <td>
-              <Button variant="secondary" size="sm" onClick={() => { setCategoriaEditando(c); openModal(); }}>
+              <Button variant="secondary" onClick={() => { setCategoriaEditando(c); openModal(); }}>
                 Editar
               </Button>
-              <Button variant="danger" size="sm" onClick={() => handleRemover(c.id)}>
+              <Button variant="danger" onClick={() => handleRemover(c.id)}>
                 Excluir
               </Button>
             </td>

@@ -101,11 +101,11 @@ export default function UnidadesConfigPage() {
             <TableRow key={u.id}>
               <TableCell>{u.id}</TableCell>
               <TableCell>{u.nome}</TableCell>
-              <TableCell className="flex items-center space-x-2">
-                <Button variant="secondary" size="sm" onClick={() => iniciarEdicao(u.id, u.nome)}>
+              <TableCell>
+                <Button variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)}>
                   ✏️ Editar
                 </Button>
-                <Button variant="danger" size="sm" onClick={() => removerUnidade(u.id)}>
+                <Button variant="danger" onClick={() => removerUnidade(u.id)}>
                   🗑️ Excluir
                 </Button>
               </TableCell>

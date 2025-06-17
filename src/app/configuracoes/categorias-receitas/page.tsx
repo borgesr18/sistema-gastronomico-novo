@@ -79,11 +79,11 @@ export default function CategoriasReceitasPage() {
         {categoriasFiltradas.map((cat) => (
           <TableRow key={cat.id}>
             <TableCell>{cat.nome}</TableCell>
-            <TableCell className="flex items-center space-x-2">
-              <Button variant="secondary" size="sm" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
+            <TableCell>
+              <Button variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
                 ✏️ Editar
               </Button>
-              <Button variant="danger" size="sm" onClick={() => handleRemover(cat.id)}>
+              <Button variant="danger" onClick={() => handleRemover(cat.id)}>
                 🗑️ Excluir
               </Button>
             </TableCell>

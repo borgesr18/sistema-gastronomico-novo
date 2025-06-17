@@ -77,11 +77,11 @@ export default function CategoriasPage() {
         {categoriasFiltradas.map(c => (
           <TableRow key={c.id}>
             <TableCell>{c.nome}</TableCell>
-            <TableCell className="flex space-x-2">
-              <Button variant="secondary" size="sm" onClick={() => { setCategoriaEditando(c); openModal(); }}>
+            <TableCell>
+              <Button variant="secondary" onClick={() => { setCategoriaEditando(c); openModal(); }}>
                 Editar
               </Button>
-              <Button variant="danger" size="sm" onClick={() => handleRemover(c.id)}>
+              <Button variant="danger" onClick={() => handleRemover(c.id)}>
                 Remover
               </Button>
             </TableCell>

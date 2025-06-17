@@ -50,7 +50,7 @@ export default function LoginPage() {
             required
           />
 
-          <Button type="submit" variant="primary" fullWidth>
+          <Button type="submit" variant="primary">
             Entrar
           </Button>
         </form>

@@ -70,7 +70,7 @@ export default function FichasTecnicasPage() {
               className="relative cursor-pointer"
               onClick={() => setSelecionada(ficha)}
             >
-              <TableCell className="font-medium text-gray-700">{ficha.nome}</TableCell>
+              <TableCell>{ficha.nome}</TableCell>
               <TableCell>{obterLabelCategoriaReceita(ficha.categoria)}</TableCell>
               <TableCell>{ficha.rendimentoTotal} {ficha.unidadeRendimento}</TableCell>
               <TableCell>{formatarPreco(ficha.custoTotal)}</TableCell>
@@ -92,11 +92,11 @@ export default function FichasTecnicasPage() {
             <p className="text-sm text-gray-600">Custo Total: {formatarPreco(selecionada.custoTotal)}</p>
             <p className="text-sm text-gray-600">Data: {formatarData(selecionada.dataModificacao)}</p>
             <div className="flex flex-col space-y-2">
-              <Link href={`/fichas-tecnicas/${selecionada.id}`}> <Button variant="secondary" fullWidth>Ver</Button> </Link>
-              <Link href={`/fichas-tecnicas/${selecionada.id}/editar`}> <Button variant="primary" fullWidth>Editar</Button> </Link>
-              <Button variant="danger" fullWidth onClick={() => handleRemover(selecionada.id)}>Excluir</Button>
-              <Link href={`/producao?ficha=${selecionada.id}`}><Button fullWidth>Produzir</Button></Link>
-              <Link href={`/precos?ficha=${selecionada.id}`}><Button fullWidth>Calcular Preço</Button></Link>
+              <Link href={`/fichas-tecnicas/${selecionada.id}`}> <Button variant="secondary">Ver</Button> </Link>
+              <Link href={`/fichas-tecnicas/${selecionada.id}/editar`}> <Button variant="primary">Editar</Button> </Link>
+              <Button variant="danger" onClick={() => handleRemover(selecionada.id)}>Excluir</Button>
+              <Link href={`/producao?ficha=${selecionada.id}`}><Button>Produzir</Button></Link>
+              <Link href={`/precos?ficha=${selecionada.id}`}><Button>Calcular Preço</Button></Link>
             </div>
           </div>
         )}

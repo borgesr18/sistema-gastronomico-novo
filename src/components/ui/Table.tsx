@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 
 export interface TableProps {
   headers: string[];
@@ -51,7 +51,13 @@ export function TableRow({ children }: { children: React.ReactNode }) {
   return <tr>{children}</tr>;
 }
 
-export function TableCell({ children }: { children: React.ReactNode }) {
-  return <td className="px-4 py-2">{children}</td>;
+export function TableCell({
+  children,
+  ...rest
+}: { children: React.ReactNode } & HTMLAttributes<HTMLTableCellElement>) {
+  return (
+    <td className="px-4 py-2" {...rest}>
+      {children}
+    </td>
+  );
 }
-

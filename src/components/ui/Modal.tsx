@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import React, { Fragment } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,21 +9,21 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
 }
 
-const Modal: React.FC<ModalProps> = ({
+export default function Modal({
   isOpen,
   onClose,
   title,
   children,
   footer,
-  size = "md",
-}) => {
+  size = 'md',
+}: ModalProps) {
   const sizeClasses = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-3xl',
   };
 
   return (
@@ -42,7 +42,7 @@ const Modal: React.FC<ModalProps> = ({
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -53,14 +53,14 @@ const Modal: React.FC<ModalProps> = ({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel
-                className={`w-full transform overflow-hidden rounded bg-white p-6 text-left align-middle shadow-xl transition-all ${sizeClasses[size]`}`}
+                className={`w-full transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all ${sizeClasses[size]}`}
               >
                 {title && (
                   <Dialog.Title className="text-lg font-medium text-gray-900">
                     {title}
                   </Dialog.Title>
                 )}
-                <div className="mt-4">{children}</div>
+                <div className="mt-2">{children}</div>
                 {footer && <div className="mt-4">{footer}</div>}
               </Dialog.Panel>
             </Transition.Child>
@@ -69,6 +69,4 @@ const Modal: React.FC<ModalProps> = ({
       </Dialog>
     </Transition>
   );
-};
-
-export default Modal;
+}

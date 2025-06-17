@@ -81,7 +81,7 @@ export default function CategoriasPage() {
               <Button variant="secondary" size="sm" onClick={() => { setCategoriaEditando(c); openModal(); }}>
                 Editar
               </Button>
-              <Button variant="secondary" size="sm" variant="danger" onClick={() => handleRemover(c.id)}>
+              <Button variant="danger" size="sm" onClick={() => handleRemover(c.id)}>
                 Remover
               </Button>
             </TableCell>

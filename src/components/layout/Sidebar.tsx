@@ -31,7 +31,7 @@ const Sidebar: React.FC = () => {
     <aside
       className={`text-white transition-all duration-300 ${
         isCollapsed ? 'w-16' : 'w-64'
-      } min-h-screen flex flex-col`}
+      `} min-h-screen flex flex-col`}
       style={{ backgroundColor: 'var(--cor-primaria)' }}
     >
       {/* Topo com logo e botão de colapso */}
@@ -70,3 +70,5 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+
+)

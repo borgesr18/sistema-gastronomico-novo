@@ -45,7 +45,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, c
                 isActive
                   ? 'border-[var(--cor-acao)] text-[var(--cor-acao)]'
                   : 'border-transparent text-gray-600 hover:text-gray-800'
-              }`}
+              `}`}
             >
               {tab.label}
             </button>
@@ -60,3 +60,5 @@ const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, c
 };
 
 export default Tabs;
+
+)

@@ -53,7 +53,7 @@ const Modal: React.FC<ModalProps> = ({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel
-                className={`w-full transform overflow-hidden rounded bg-white p-6 text-left align-middle shadow-xl transition-all ${sizeClasses[size]}`}
+                className={`w-full transform overflow-hidden rounded bg-white p-6 text-left align-middle shadow-xl transition-all ${sizeClasses[size]`}`}
               >
                 {title && (
                   <Dialog.Title className="text-lg font-medium text-gray-900">
@@ -72,3 +72,5 @@ const Modal: React.FC<ModalProps> = ({
 };
 
 export default Modal;
+
+)

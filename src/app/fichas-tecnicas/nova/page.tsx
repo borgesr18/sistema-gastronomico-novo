@@ -445,3 +445,5 @@ export default function NovaFichaTecnicaPage() {
     </div>
   );
 }
+
+)

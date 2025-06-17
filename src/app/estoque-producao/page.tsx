@@ -123,3 +123,5 @@ export default function EstoqueProducaoPage() {
     </div>
   );
 }
+
+)

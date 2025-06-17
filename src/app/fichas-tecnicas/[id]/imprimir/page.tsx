@@ -211,3 +211,5 @@ export default function ImprimirFichaTecnicaPage() {
     </div>
   );
 }
+
+)

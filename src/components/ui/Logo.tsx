@@ -17,3 +17,5 @@ const Logo: React.FC<LogoProps> = ({ className = '', showTagline = false }) => (
 );
 
 export default Logo;
+
+)

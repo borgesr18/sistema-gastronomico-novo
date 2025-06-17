@@ -156,3 +156,5 @@ export default function DetalheInsumoPage() {
     </div>
   );
 }
+
+)

@@ -25,7 +25,7 @@ export default function Select({ label, name, value, onChange, options, error, r
         onChange={onChange}
         required={required}
         {...props}
-        className={`block w-full border px-3 py-2 rounded ${error ? 'border-red-500' : 'border-gray-300'}`}
+        className={`block w-full border px-3 py-2 rounded ${error ? 'border-red-500' : 'border-gray-300'`}`}
       >
         <option value="">Selecione...</option>
         {options.map((option) => (
@@ -38,3 +38,5 @@ export default function Select({ label, name, value, onChange, options, error, r
     </div>
   );
 }
+
+)

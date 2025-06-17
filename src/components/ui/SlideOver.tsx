@@ -35,7 +35,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
   } as const;
 
   return (
-    <div}> 
+    <div>> 
       <div>
         onClick={onClose}
       ></div>
@@ -54,3 +54,5 @@ const SlideOver: React.FC<SlideOverProps> = ({
 };
 
 export default SlideOver;
+
+)

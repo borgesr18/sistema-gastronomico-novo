@@ -21,3 +21,5 @@ export default function Card({ title, children, footer }: CardProps) {
     </div>
   );
 }
+
+)

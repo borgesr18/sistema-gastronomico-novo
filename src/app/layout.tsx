@@ -1,7 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { ModalProvider } from '@/contexts/ModalContext';  // <-- Corrigido aqui
+import { ModalProvider } from '@/contexts/ModalContext';
+import MainLayout from '@/components/layout/MainLayout';
 
 export const metadata: Metadata = {
   title: 'Sistema Gastronômico',
@@ -14,7 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AuthProvider>
           <ModalProvider>
-            {children}
+            <MainLayout>
+              {children}
+            </MainLayout>
           </ModalProvider>
         </AuthProvider>
       </body>

@@ -15,8 +15,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             {label}
           </label>
         )}
-        <textarea
-          ref={ref} ${className}`}
+        <textarea ref={ref} ${className} />
           rows={4}
           {...props}
         />

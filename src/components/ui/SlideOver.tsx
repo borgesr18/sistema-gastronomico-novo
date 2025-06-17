@@ -36,7 +36,7 @@ const SlideOver: React.FC<SlideOverProps> = ({
 
   return (
     <div}> 
-      <div`}
+      <div>
         onClick={onClose}
       ></div>
       <div ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}

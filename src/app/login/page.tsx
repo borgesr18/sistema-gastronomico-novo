@@ -2,22 +2,21 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Toast from '@/components/ui/Toast';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState('');
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setErro('');
+    setIsLoading(true);
+    setErro(null);
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -30,40 +29,26 @@ export default function LoginPage() {
         router.push('/');
       } else {
         const data = await res.json();
-        setErro(data.message || 'Falha no login');
+        setErro(data.error || 'Falha no login.');
       }
     } catch (error) {
-      setErro('Erro ao conectar com o servidor');
+      setErro('Erro inesperado. Tente novamente.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md space-y-6 p-6">
-        <h1 className="text-2xl font-bold text-center">Login</h1>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Input
-            label="Senha"
-            type="password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-          />
-          <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Entrando...' : 'Entrar'}
-          </Button>
-        </form>
-        {erro && <Toast variant="danger">{erro}</Toast>}
-      </Card>
+    <div className="max-w-md mx-auto mt-20 space-y-4">
+      <h1 className="text-2xl font-bold text-center">Login</h1>
+      {erro && <Toast message={erro} type="error" />}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <Input label="Senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+        <Button type="submit" variant="primary" isLoading={isLoading}>
+          Entrar
+        </Button>
+      </form>
     </div>
   );
 }

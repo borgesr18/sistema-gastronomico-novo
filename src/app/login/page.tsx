@@ -1,54 +1,58 @@
-'use client';
-
-import React, { useState } from 'react';
+import Cookies from 'js-cookie';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
-import Toast from '@/components/ui/Toast';
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+  const [erro, setErro] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErro(null);
-
+  const handleLogin = async () => {
+    setErro('');
     try {
-      const res = await fetch('/api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha }),
       });
 
-      if (res.ok) {
-        router.push('/');
-      } else {
-        const data = await res.json();
-        setErro(data.error || 'Falha no login.');
+      if (!response.ok) {
+        const erro = await response.json();
+        setErro(erro.message || 'Erro ao fazer login');
+        return;
       }
+
+      const data = await response.json();
+      Cookies.set('token', data.token, { expires: 1 });
+      router.push('/');
     } catch (error) {
-      setErro('Erro inesperado. Tente novamente.');
-    } finally {
-      setIsLoading(false);
+      console.error('Erro no login:', error);
+      setErro('Erro interno');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 space-y-4">
-      <h1 className="text-2xl font-bold text-center">Login</h1>
-      {erro && <Toast message={erro} type="error" />}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <Input label="Senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
-        <Button type="submit" variant="primary" isLoading={isLoading}>
-          Entrar
-        </Button>
-      </form>
+    <div className="max-w-md mx-auto p-4">
+      <h1 className="text-xl font-bold mb-4">Login</h1>
+      {erro && <p className="text-red-600 mb-2">{erro}</p>}
+      <input
+        type="email"
+        placeholder="Email"
+        className="border w-full p-2 mb-2"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Senha"
+        className="border w-full p-2 mb-4"
+        value={senha}
+        onChange={(e) => setSenha(e.target.value)}
+      />
+      <button onClick={handleLogin} className="bg-blue-600 text-white w-full p-2">
+        Entrar
+      </button>
     </div>
   );
 }

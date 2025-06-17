@@ -35,3 +35,10 @@ model CategoriaReceita {
   nome      String
   createdAt DateTime @default(now())
 }
+
+model Unidade {
+  id        String   @id @default(cuid())
+  sigla     String   @unique
+  nome      String
+  createdAt DateTime @default(now())
+}

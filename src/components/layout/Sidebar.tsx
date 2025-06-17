@@ -1,70 +1,35 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import Logo from '../ui/Logo';
+import { usePathname } from 'next/navigation';
 
-type MenuItem = {
-  href: string;
-  icon: string;
-  label: string;
-};
+const Sidebar = () => {
+  const pathname = usePathname();
 
-const Sidebar: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
-
-  const menuItems: MenuItem[] = [
-    { href: '/', icon: 'dashboard', label: 'Dashboard' },
-    { href: '/fichas-tecnicas', icon: 'receipt', label: 'Fichas Técnicas' },
-    { href: '/produtos', icon: 'inventory', label: 'Insumos' },
-    { href: '/estoque', icon: 'store', label: 'Estoque de Insumos' },
-    { href: '/producao', icon: 'factory', label: 'Produção' },
-    { href: '/estoque-producao', icon: 'warehouse', label: 'Estoque de Produção' },
-    { href: '/precos', icon: 'attach_money', label: 'Preços de Venda' },
-    { href: '/relatorios', icon: 'bar_chart', label: 'Relatórios' },
-    { href: '/configuracoes', icon: 'settings', label: 'Configurações' },
+  const links = [
+    { href: '/', label: 'Dashboard' },
+    { href: '/fichas-tecnicas', label: 'Fichas Técnicas' },
+    { href: '/produtos', label: 'Insumos' },
+    { href: '/producao', label: 'Produção' },
+    { href: '/estoque', label: 'Estoque' },
+    { href: '/relatorios', label: 'Relatórios' },
+    { href: '/configuracoes', label: 'Configurações' },
   ];
 
   return (
-    <aside
-      className={`text-white transition-all duration-300 ${
-        isCollapsed ? 'w-16' : 'w-64'
-      `} min-h-screen flex flex-col`}
-      style={{ backgroundColor: 'var(--cor-primaria)' }}
-    >
-      {/* Topo com logo e botão de colapso */}
-      <div className="p-4 flex items-center justify-between">
-        {!isCollapsed && <Logo className="text-xl" showTagline={false} />}
-        <button
-          onClick={toggleSidebar}
-          className="p-2 rounded-full hover:bg-[var(--cor-secundaria)] focus:outline-none"
-          aria-label="Alternar menu lateral"
-          aria-expanded={!isCollapsed}
+    <aside className="w-64 h-full bg-white border-r p-4 space-y-2">
+      {links.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={`block px-3 py-2 rounded ${
+            pathname === link.href ? 'bg-gray-200 font-medium' : 'hover:bg-gray-50'
+          }`}
         >
-          <span className="material-icons">
-            {isCollapsed ? 'chevron_right' : 'chevron_left'}
-          </span>
-        </button>
-      </div>
-
-      {/* Menu de navegação */}
-      <nav className="mt-4 flex-1">
-        <ul>
-          {menuItems.map(({ href, icon, label }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                className="flex items-center px-4 py-3 hover:bg-[var(--cor-secundaria)] transition-colors"
-              >
-                <span className="material-icons mr-3">{icon}</span>
-                {!isCollapsed && <span className="text-sm">{label}</span>}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+          {link.label}
+        </Link>
+      ))}
     </aside>
   );
 };

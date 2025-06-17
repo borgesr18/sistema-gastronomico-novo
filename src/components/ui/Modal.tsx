@@ -1,61 +1,29 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { X } from 'lucide-react';
 
-export interface ModalProps {
+interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  children: ReactNode;
-  footer?: ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl'; // Suporte a tamanhos opcionais
+  title?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  size?: 'sm' | 'md' | 'lg';
 }
-
-// Contexto para o hook useModal
-interface ModalContextProps {
-  isOpen: boolean;
-  openModal: () => void;
-  closeModal: () => void;
-}
-
-const ModalContext = createContext<ModalContextProps | undefined>(undefined);
-
-export const useModal = (): ModalContextProps => {
-  const context = useContext(ModalContext);
-  if (!context) {
-    throw new Error('useModal deve ser usado dentro de ModalProvider');
-  }
-  return context;
-};
-
-export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
-  return (
-    <ModalContext.Provider value={{ isOpen, openModal, closeModal }}>
-      {children}
-    </ModalContext.Provider>
-  );
-};
-
-const sizeClasses: Record<string, string> = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-};
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
+  const sizeClasses = {
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+  };
+
   return (
-    <Transition show={isOpen} as={React.Fragment}>
+    <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
         <Transition.Child
-          as={React.Fragment}
+          as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -63,13 +31,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
+          <div className="flex min-h-full items-center justify-center p-4">
             <Transition.Child
-              as={React.Fragment}
+              as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
               enterTo="opacity-100 scale-100"
@@ -77,22 +45,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all`}
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+              <Dialog.Panel className={`w-full transform overflow-hidden rounded bg-white p-6 text-left align-middle shadow-xl transition-all ${sizeClasses[size]}`}>
+                {title && (
+                  <Dialog.Title className="text-lg font-medium text-gray-900">
                     {title}
                   </Dialog.Title>
-                  <button
-                    onClick={onClose}
-                    className="text-gray-400 hover:text-gray-600 transition"
-                  >
-                    <X />
-                  </button>
-                </div>
-
-                <div className="mb-4">{children}</div>
-
+                )}
+                <div className="mt-4">{children}</div>
                 {footer && <div className="mt-4">{footer}</div>}
               </Dialog.Panel>
             </Transition.Child>
@@ -104,3 +63,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
 };
 
 export default Modal;
+

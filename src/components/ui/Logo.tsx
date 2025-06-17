@@ -1,5 +1,7 @@
-import Image from 'next/image';
+'use client';
+
 import React from 'react';
+import Image from 'next/image';
 
 interface LogoProps {
   className?: string;
@@ -7,11 +9,11 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ className = '', showTagline = false }) => (
-  <span}>
+  <span className={`flex items-center space-x-2 ${className}`}>
     <Image src="/logo.svg" alt="GastroChef" width={24} height={24} />
     <span className="font-bold">GastroChef</span>
     {showTagline && (
-      <span className="text-xs whitespace-nowrap">Sistema de Fichas Técnicas</span>
+      <span className="text-sm text-gray-500">Sistema Gastronômico</span>
     )}
   </span>
 );

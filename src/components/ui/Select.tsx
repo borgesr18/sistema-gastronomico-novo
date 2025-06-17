@@ -31,9 +31,7 @@ export default function Select({
       <select
         name={name}
         value={value}
-        onChange={onChange}
-        required={required}
-        className={`border rounded px-3 py-2 w-full ${error ? 'border-red-500' : 'border-gray-300'} ${className}`}
+        onChange={onChange} ${className}`}
       >
         {options
           ? options.map((option) => (

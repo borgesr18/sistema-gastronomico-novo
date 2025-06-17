@@ -8,7 +8,7 @@ export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> 
 
 export function Table({ headers, emptyMessage, children, className, ...props }: TableProps) {
   return (
-    <table className={`w-full text-left border-collapse ${className ?? ''}`} {...props}>
+    <table`} {...props}>
       <thead>
         <tr>
           {headers.map((header) => (
@@ -41,7 +41,7 @@ export function TableRow({
   ...props
 }: React.HTMLAttributes<HTMLTableRowElement>) {
   return (
-    <tr className={className} {...props}>
+    <tr {...props}>
       {children}
     </tr>
   );
@@ -53,7 +53,7 @@ export function TableCell({
   ...props
 }: React.TdHTMLAttributes<HTMLTableCellElement>) {
   return (
-    <td className={`px-4 py-2 border-b ${className ?? ''}`} {...props}>
+    <td`} {...props}>
       {children}
     </td>
   );

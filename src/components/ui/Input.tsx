@@ -12,8 +12,7 @@ export default function Input({ label, error, ...props }: InputProps) {
     <div className="space-y-1">
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <input
-        {...props}
-        className={`border p-2 rounded w-full ${error ? 'border-red-500' : 'border-gray-300'}`}
+        {...props}`}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>

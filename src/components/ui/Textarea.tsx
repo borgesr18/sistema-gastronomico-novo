@@ -16,8 +16,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           </label>
         )}
         <textarea
-          ref={ref}
-          className={`w-full input ${error ? 'border-[var(--cor-erro)]' : ''} ${className}`}
+          ref={ref} ${className}`}
           rows={4}
           {...props}
         />

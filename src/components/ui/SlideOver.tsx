@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ReactNode, useEffect } from 'react';
 
 interface SlideOverProps {
@@ -33,13 +35,11 @@ const SlideOver: React.FC<SlideOverProps> = ({
   } as const;
 
   return (
-    <div className={`fixed inset-0 z-50 ${isOpen ? '' : 'pointer-events-none'}`}> 
-      <div
-        className={`absolute inset-0 bg-black transition-opacity ${isOpen ? 'opacity-50' : 'opacity-0'}`}
+    <div`}> 
+      <div`}
         onClick={onClose}
       ></div>
-      <div
-        className={`absolute right-0 top-0 h-full bg-white shadow-xl transform transition-transform ${widthClasses[width]} ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      <div ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex justify-between items-center px-4 py-3 border-b" style={{ borderColor: 'var(--cor-borda)' }}>
           <h3 className="text-lg font-medium" style={{ color: 'var(--cor-texto-principal)' }}>{title}</h3>

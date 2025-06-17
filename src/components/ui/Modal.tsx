@@ -77,8 +77,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel
-                className={`w-full ${sizeClasses[size]} transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all`}
+              <Dialog.Panel transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all`}
               >
                 <div className="flex justify-between items-center mb-4">
                   <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
@@ -88,7 +87,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
                     onClick={onClose}
                     className="text-gray-400 hover:text-gray-600 transition"
                   >
-                    <X size={20} />
+                    <X />
                   </button>
                 </div>
 

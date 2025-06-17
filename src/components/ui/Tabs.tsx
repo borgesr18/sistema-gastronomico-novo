@@ -32,7 +32,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, c
   const activeTab = tabs.find((t) => t.id === activeTabId) || tabs[0];
 
   return (
-    <div className={className}>
+    <div>
       {/* Header das abas */}
       <div className="border-b flex space-x-2 mb-4">
         {tabs.map((tab) => {

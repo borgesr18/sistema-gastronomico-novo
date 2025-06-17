@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { CategoriaReceita } from '@prisma/client';
 import Modal, { useModal } from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
-import Table, { TableRow, TableCell } from '@/components/ui/Table';
+import { Table, TableRow, TableCell } from '@/components/ui/Table';
 import Toast from '@/components/ui/Toast';
 import Input from '@/components/ui/Input';
 import CategoriaReceitaForm from './CategoriaReceitaForm';

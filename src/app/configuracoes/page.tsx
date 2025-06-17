@@ -26,7 +26,7 @@ export default function ConfiguracoesPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold text-gray-800">Configurações</h1>
-      <Tabs tabs={tabs} active={tab} onChange={setTab} />
+      <Tabs tabs={tabs} activeTab={tab} onChange={setTab} />
       {tabs.find((t) => t.id === tab)?.content}
     </div>
   );

@@ -10,15 +10,18 @@ type ButtonSize = 'sm' | 'md' | 'lg';
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  isLoading?: boolean;
 }
 
 export default function Button({
   children,
   variant = 'primary',
   size = 'md',
+  isLoading = false,
+  disabled,
   ...props
 }: ButtonProps) {
-  const baseClasses = 'rounded px-4 py-2 font-medium focus:outline-none transition';
+  const baseClasses = 'rounded px-4 py-2 font-medium focus:outline-none transition disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantClasses: Record<ButtonVariant, string> = {
     primary: 'bg-blue-500 text-white hover:bg-blue-600',
@@ -36,9 +39,10 @@ export default function Button({
   return (
     <button
       className={clsx(baseClasses, variantClasses[variant], sizeClasses[size])}
+      disabled={disabled || isLoading}
       {...props}
     >
-      {children}
+      {isLoading ? 'Salvando...' : children}
     </button>
   );
 }

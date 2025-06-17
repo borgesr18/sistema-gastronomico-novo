@@ -127,9 +127,10 @@ export default function RelatoriosPage() {
         <div className="flex items-center space-x-4">
           <label className="font-medium text-gray-700">Tipo de Relatório:</label>
           <div className="w-64">
-            <Select name="autoFix" label="Tipo de Relatório"
+            <Select
+              label="Tipo de Relatório"
               value={tipoRelatorio}
-              onChange={(e) =/> setTipoRelatorio(e.target.value)}
+              onChange={(e) => setTipoRelatorio(e.target.value)}
               options={[
                 { value: 'completo', label: 'Relatório Completo' },
                 { value: 'custos', label: 'Relatório de Custos' },

@@ -60,5 +60,3 @@ const Tabs: React.FC<TabsProps> = ({ tabs, active: controlledActive, onChange, c
 };
 
 export default Tabs;
-
-)

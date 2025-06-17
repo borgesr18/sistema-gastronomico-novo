@@ -61,5 +61,3 @@ export default function SenhaForm({ onSave, onCancel }: SenhaFormProps) {
     </form>
   );
 }
-
-)

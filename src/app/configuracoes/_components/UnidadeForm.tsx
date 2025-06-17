@@ -72,5 +72,3 @@ export default function UnidadeForm({ unidade, onSave, onCancel }: UnidadeFormPr
     </form>
   );
 }
-
-)

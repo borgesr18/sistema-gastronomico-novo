@@ -46,5 +46,3 @@ export function TableCell({ children, ...props }: { children: React.ReactNode } 
     </td>
   );
 }
-
-)

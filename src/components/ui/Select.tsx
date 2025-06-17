@@ -38,5 +38,3 @@ export default function Select({ label, name, value, onChange, options, error, r
     </div>
   );
 }
-
-)

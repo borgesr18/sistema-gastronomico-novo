@@ -99,5 +99,3 @@ export default function UsuariosPage() {
     </div>
   );
 }
-
-)

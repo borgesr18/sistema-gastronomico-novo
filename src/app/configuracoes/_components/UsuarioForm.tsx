@@ -75,5 +75,3 @@ export default function UsuarioForm({ usuario, onSave, onCancel }: UsuarioFormPr
     </form>
   );
 }
-
-)

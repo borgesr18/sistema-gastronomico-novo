@@ -17,5 +17,3 @@ export default function Toast({ message, onClose }: ToastProps) {
     </div>
   );
 }
-
-)

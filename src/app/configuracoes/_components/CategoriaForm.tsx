@@ -41,5 +41,3 @@ export default function CategoriaForm({ categoria, onSave, onCancel }: Categoria
     </form>
   );
 }
-
-)

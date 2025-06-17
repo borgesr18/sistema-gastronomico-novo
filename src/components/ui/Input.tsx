@@ -18,5 +18,3 @@ export default function Input({ label, error, ...props }: InputProps) {
     </div>
   );
 }
-
-)

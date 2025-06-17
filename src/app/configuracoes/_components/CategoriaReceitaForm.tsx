@@ -43,5 +43,3 @@ export default function CategoriaReceitaForm({ categoria, onSave, onCancel }: Ca
     </form>
   );
 }
-
-)

@@ -131,7 +131,6 @@ export default function ProducaoPage() {
         prev.unidadesGeradas === unidades &&
         prev.custoTotal === custoTotal &&
         prev.custoUnitario === custoUnitario
-      )
         return prev;
       return { ...prev, unidadesGeradas: unidades, custoTotal, custoUnitario };
     });
@@ -318,5 +317,3 @@ export default function ProducaoPage() {
     </div>
   );
 }
-
-)

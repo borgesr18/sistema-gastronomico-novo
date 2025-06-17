@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
@@ -13,7 +13,7 @@ import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 import { Table,  TableRow, TableCell } from '@/components/ui/Table';
 import { useModal } from '@/contexts/ModalContext';
-import Modal from '@/components/ui/Modal';
+import Modal from '@/contexts/ModalContext';
 import Toast from '@/components/ui/Toast';
 
 type Ingrediente = Omit<IngredienteFicha, 'id' | 'custo'>;
@@ -30,28 +30,15 @@ interface FichaTecnicaForm {
   observacoes: string;
 }
 
-export default function EditarFichaTecnicaPage() {
-  const params = useParams();
+export default function NovaFichaTecnicaPage() {
   const router = useRouter();
-  const {
-    obterFichaTecnicaPorId,
-    atualizarFichaTecnica,
-    isLoading: carregandoFichas,
-  } = useFichasTecnicas();
+  const { adicionarFichaTecnica } = useFichasTecnicas();
   const { produtos } = useProdutos();
   const { unidades } = useUnidadesMedida();
   const { categorias } = useCategoriasReceita();
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState('');
-  
-  const fichaId = params.id as string;
-  const fichaOriginal = obterFichaTecnicaPorId(fichaId);
 
-  useEffect(() => {
-    if (!carregandoFichas && !fichaOriginal) {
-      router.push('/fichas-tecnicas');
-    }
-  }, [carregandoFichas, fichaOriginal, router]);
   
   // Modal para adicionar ingredientes
   const { isOpen, openModal, closeModal } = useModal();
@@ -80,14 +67,6 @@ export default function EditarFichaTecnicaPage() {
     observacoes: '',
   });
 
-  const [erros, setErros] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(''), 3000);
-    return () => clearTimeout(t);
-  }, [toast]);
-
   useEffect(() => {
     if (!fichaTecnica.unidadeRendimento) return;
     const total = calcularRendimentoTotal(
@@ -100,37 +79,13 @@ export default function EditarFichaTecnicaPage() {
     }));
   }, [fichaTecnica.ingredientes, fichaTecnica.unidadeRendimento]);
 
-  // Carregar dados da ficha técnica
+  const [erros, setErros] = useState<Record<string, string>>({});
+
   useEffect(() => {
-    if (carregandoFichas) return;
-    if (fichaOriginal) {
-      setFichaTecnica({
-        nome: fichaOriginal.nome,
-        descricao: fichaOriginal.descricao || '',
-        categoria: fichaOriginal.categoria,
-        ingredientes: fichaOriginal.ingredientes.map(ing => ({
-          produtoId: ing.produtoId,
-          quantidade: ing.quantidade,
-          unidade: (ing as any).unidade ||
-            produtos.find(p => p.id === ing.produtoId)?.unidadeMedida || '',
-        })),
-        modoPreparo: fichaOriginal.modoPreparo,
-        tempoPreparo: fichaOriginal.tempoPreparo?.toString() || '',
-        rendimentoTotal: fichaOriginal.rendimentoTotal?.toString() || '',
-        unidadeRendimento: fichaOriginal.unidadeRendimento,
-        observacoes: fichaOriginal.observacoes || '',
-      });
-    }
-  }, [carregandoFichas, fichaOriginal]);
-
-  // Exibir carregamento ou mensagem de ficha não encontrada
-  if (carregandoFichas) {
-    return <p>Carregando...</p>;
-  }
-
-  if (!fichaOriginal) {
-    return null;
-  }
+    if (!toast) return;
+    const t = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   // Manipular mudanças nos campos da ficha técnica
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -249,7 +204,7 @@ export default function EditarFichaTecnicaPage() {
     
     if (!validarFormulario()) return;
     
-    setIsSaving(true);
+    setIsLoading(true);
     
     try {
       // Converter valores numéricos
@@ -259,13 +214,13 @@ export default function EditarFichaTecnicaPage() {
         rendimentoTotal: Number(fichaTecnica.rendimentoTotal),
       } as unknown as Omit<FichaTecnicaInfo, 'id' | 'custoTotal' | 'custoPorcao' | 'infoNutricional' | 'infoNutricionalPorcao' | 'dataCriacao' | 'dataModificacao'>;
       
-      atualizarFichaTecnica(fichaId, fichaTecnicaFormatada);
-      router.push(`/fichas-tecnicas/${fichaId}`);
+      adicionarFichaTecnica(fichaTecnicaFormatada);
+      router.push('/fichas-tecnicas');
     } catch (error) {
-      console.error('Erro ao atualizar ficha técnica:', error);
-      setToast('Erro ao atualizar ficha técnica');
+      console.error('Erro ao salvar ficha técnica:', error);
+      setToast('Erro ao salvar ficha técnica');
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
@@ -284,7 +239,7 @@ export default function EditarFichaTecnicaPage() {
   return (
     <div className="space-y-6">
       <Toast message={toast} onClose={() => setToast('')} />
-      <h1 className="text-2xl font-bold text-gray-800">Editar Ficha Técnica</h1>
+      <h1 className="text-2xl font-bold text-gray-800">Nova Ficha Técnica</h1>
       
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
@@ -420,7 +375,7 @@ export default function EditarFichaTecnicaPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push(`/fichas-tecnicas/${fichaId}`)}
+              onClick={() => router.push('/fichas-tecnicas')}
             >
               Cancelar
             </Button>
@@ -429,7 +384,7 @@ export default function EditarFichaTecnicaPage() {
               variant="primary"
               
             >
-              Atualizar Ficha Técnica
+              Salvar Ficha Técnica
             </Button>
           </div>
         </div>
@@ -462,7 +417,7 @@ export default function EditarFichaTecnicaPage() {
               .map(p => ({ value: p.id, label: `${p.nome} (${p.unidadeMedida})` }))
               .sort((a, b) => a.label.localeCompare(b.label))}
           />
-          
+
           <Input
             label="Quantidade *"
             name="quantidade"

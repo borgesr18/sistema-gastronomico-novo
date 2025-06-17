@@ -1,18 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getUsuarios, addUsuario, senhaForte, ensureAdmin, findByEmail } from '@/lib/serverUsuarios'
-import { hashSenha } from '@/lib/cryptoUtils'
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
 
-export const dynamic = 'force-dynamic'
+export async function POST(request: Request) {
+  const { nome, email, senha } = await request.json();
 
-export async function POST(req: NextRequest) {
-  await ensureAdmin()
-  const { nome, email, senha } = await req.json()
-  if (await findByEmail(email)) {
-    return NextResponse.json({ error: 'Email já cadastrado' }, { status: 400 })
+  const usuarioExistente = await prisma.usuario.findUnique({ where: { email } });
+  if (usuarioExistente) {
+    return NextResponse.json({ error: 'Email já cadastrado.' }, { status: 400 });
   }
-  if (!senhaForte(senha)) {
-    return NextResponse.json({ error: 'Senha fraca' }, { status: 400 })
-  }
-  const novo = await addUsuario({ nome, email, senha, role: 'viewer' })
-  return NextResponse.json({ id: novo.id, nome: novo.nome, email: novo.email, role: novo.role })
+
+  const senhaHash = await bcrypt.hash(senha, 10);
+
+  await prisma.usuario.create({
+    data: {
+      nome,
+      email,
+      senhaHash,
+      role: 'admin',  // Ou outro role que preferir
+    },
+  });
+
+  return NextResponse.json({ message: 'Usuário criado com sucesso.' });
 }

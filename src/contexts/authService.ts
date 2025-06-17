@@ -1,31 +1,22 @@
-'use server';
-
 import { cookies } from 'next/headers';
-import prisma from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { Usuario } from '@prisma/client';
+import jwt from 'jsonwebtoken';
 
-// Busca o usuário atualmente autenticado (Exemplo usando cookie 'userId' como base)
-export async function getUsuarioAtualAPI(): Promise<Usuario | null> {
+export async function getUsuarioAtual(): Promise<Usuario | null> {
   const cookieStore = cookies();
-  const userId = cookieStore.get('userId')?.value;
+  const token = cookieStore.get('token')?.value;
 
-  if (!userId) {
-    return null;
-  }
+  if (!token) return null;
 
   try {
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     const usuario = await prisma.usuario.findUnique({
-      where: { id: userId },
+      where: { id: decoded.id },
     });
     return usuario;
   } catch (error) {
-    console.error('Erro ao buscar usuário atual:', error);
+    console.error('Erro ao verificar o token:', error);
     return null;
   }
-}
-
-// Faz logout (Exemplo simples: remove cookie de sessão)
-export async function logoutAPI(): Promise<void> {
-  const cookieStore = cookies();
-  cookieStore.delete('userId');
 }

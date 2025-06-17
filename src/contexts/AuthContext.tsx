@@ -1,48 +1,49 @@
 'use client';
 
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { Usuario } from '@prisma/client';
-import { getUsuarioAtualAPI, logoutAPI } from '@/lib/authService'; // Ajuste o caminho se necessário
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import Cookies from 'js-cookie';
+import jwt from 'jsonwebtoken';
 
-// Tipagem do contexto
-export type AuthContextType = {
+interface Usuario {
+  id: string;
+  nome: string;
+  email: string;
+  role: string;
+}
+
+interface AuthContextType {
   usuarioAtual: Usuario | null;
   logout: () => void;
-};
+}
 
-// Criação do contexto com valor padrão
-const AuthContext = createContext<AuthContextType>({
-  usuarioAtual: null,
-  logout: () => {},
-});
+const AuthContext = createContext<AuthContextType>({ usuarioAtual: null, logout: () => {} });
 
-// Hook personalizado para consumir o contexto
-export const useAuth = () => useContext(AuthContext);
-
-// Componente Provider
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [usuarioAtual, setUsuarioAtual] = useState<Usuario | null>(null);
 
   useEffect(() => {
-    const carregarUsuario = async () => {
+    const token = Cookies.get('token');
+    if (token) {
       try {
-        const usuario = await getUsuarioAtualAPI();
-        setUsuarioAtual(usuario);
+        const decoded = jwt.decode(token) as any;
+        if (decoded) {
+          setUsuarioAtual({
+            id: decoded.id,
+            nome: decoded.nome,
+            email: decoded.email,
+            role: decoded.role,
+          });
+        }
       } catch (error) {
-        console.error('Erro ao carregar o usuário atual:', error);
+        console.error('Erro ao decodificar token:', error);
       }
-    };
-
-    carregarUsuario();
+    }
   }, []);
 
-  const logout = async () => {
-    try {
-      await logoutAPI();
-      setUsuarioAtual(null);
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-    }
+  const logout = () => {
+    Cookies.remove('token');
+    setUsuarioAtual(null);
+    window.location.href = '/login';
   };
 
   return (
@@ -51,3 +52,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

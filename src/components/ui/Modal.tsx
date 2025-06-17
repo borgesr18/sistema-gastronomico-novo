@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import React, { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,14 +9,21 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  footer,
+  size = "md",
+}) => {
   const sizeClasses = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
+    sm: "max-w-sm",
+    md: "max-w-md",
+    lg: "max-w-lg",
   };
 
   return (
@@ -45,7 +52,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className={`w-full transform overflow-hidden rounded bg-white p-6 text-left align-middle shadow-xl transition-all ${sizeClasses[size]}`}>
+              <Dialog.Panel
+                className={`w-full transform overflow-hidden rounded bg-white p-6 text-left align-middle shadow-xl transition-all ${sizeClasses[size]}`}
+              >
                 {title && (
                   <Dialog.Title className="text-lg font-medium text-gray-900">
                     {title}
@@ -63,4 +72,3 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
 };
 
 export default Modal;
-

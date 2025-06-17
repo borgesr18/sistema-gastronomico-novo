@@ -40,6 +40,7 @@ export default function UsuarioForm({ usuario, onSave, onCancel }: UsuarioFormPr
     <form onSubmit={handleSubmit} className="space-y-4">
       <Input
         label="Nome"
+        name="nome"
         value={nome}
         onChange={(e) => setNome(e.target.value)}
         required
@@ -47,6 +48,7 @@ export default function UsuarioForm({ usuario, onSave, onCancel }: UsuarioFormPr
 
       <Input
         label="Email"
+        name="email"
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -55,6 +57,7 @@ export default function UsuarioForm({ usuario, onSave, onCancel }: UsuarioFormPr
 
       <Select
         label="Função"
+        name="role"
         value={role}
         onChange={handleRoleChange}
         options={roles.map((r) => ({
@@ -75,3 +78,4 @@ export default function UsuarioForm({ usuario, onSave, onCancel }: UsuarioFormPr
     </form>
   );
 }
+

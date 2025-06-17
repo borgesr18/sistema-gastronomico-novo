@@ -12,8 +12,8 @@ import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 import { Table,  TableRow, TableCell } from '@/components/ui/Table';
-import { useModal } from '@/components/ui/Modal';
-import Modal from '@/components/ui/Modal';
+import { useModal } from '@/contexts/ModalContext';
+import Modal from '@/contexts/ModalContext';
 import Toast from '@/components/ui/Toast';
 
 type Ingrediente = Omit<IngredienteFicha, 'id' | 'custo'>;

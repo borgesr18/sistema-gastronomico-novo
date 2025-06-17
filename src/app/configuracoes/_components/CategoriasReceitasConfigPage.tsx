@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { CategoriaReceita } from '@prisma/client';
-import Modal, { useModal } from '@/components/ui/Modal';
+import Modal, { useModal } from '@/contexts/ModalContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Toast from '@/components/ui/Toast';

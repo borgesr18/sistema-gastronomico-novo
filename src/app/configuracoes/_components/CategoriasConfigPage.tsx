@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import { Categoria } from '@prisma/client';
-import { useModal } from '@/components/ui/Modal';
-import Modal from '@/components/ui/Modal';
+import { useModal } from '@/contexts/ModalContext';
+import Modal from '@/contexts/ModalContext';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { Table, TableRow, TableCell } from '@/components/ui/Table';

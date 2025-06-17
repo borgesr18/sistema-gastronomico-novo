@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { useRouter, usePathname } from 'next/navigation';
-import { ModalProvider } from '@/components/ui/Modal';
+import { ModalProvider } from '@/contexts/ModalContext';
 import { AuthProvider, useAuth } from '@/lib/useAuth';
 
 interface MainLayoutProps {

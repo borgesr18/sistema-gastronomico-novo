@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 import { useState, useRef } from 'react';
 import { Table,  TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
-import Modal, { useModal } from '@/components/ui/Modal';
+import Modal, { useModal } from '@/contexts/ModalContext';
 import Input from '@/components/ui/Input';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 

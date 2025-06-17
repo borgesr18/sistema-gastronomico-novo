@@ -6,7 +6,7 @@ import { Table,  TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
-import Modal, { useModal } from '@/components/ui/Modal';
+import Modal, { useModal } from '@/contexts/ModalContext';
 import Toast from '@/components/ui/Toast';
 import { useEstoque } from '@/lib/estoqueService';
 import { useProdutos, ProdutoInfo } from '@/lib/produtosService';

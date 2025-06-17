@@ -1,36 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { ReactNode, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-
-interface ModalContextType {
-  isOpen: boolean;
-  openModal: () => void;
-  closeModal: () => void;
-}
-
-const ModalContext = createContext<ModalContextType | undefined>(undefined);
-
-export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
-  return (
-    <ModalContext.Provider value={{ isOpen, openModal, closeModal }}>
-      {children}
-    </ModalContext.Provider>
-  );
-};
-
-export const useModal = (): ModalContextType => {
-  const context = useContext(ModalContext);
-  if (!context) {
-    throw new Error('useModal deve ser usado dentro de ModalProvider');
-  }
-  return context;
-};
 
 interface ModalProps {
   isOpen: boolean;
@@ -42,11 +13,18 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
+  const sizeClasses: Record<string, string> = {
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+  };
+
   return (
-    <Transition show={isOpen} as={React.Fragment}>
+    <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
         <Transition.Child
-          as={React.Fragment}
+          as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -59,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Transition.Child
-            as={React.Fragment}
+            as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"
@@ -68,7 +46,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer,
             leaveTo="opacity-0 scale-95"
           >
             <Dialog.Panel
-              className={`w-full max-w-${size} transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all`}
+              className={`w-full ${sizeClasses[size]} transform overflow-hidden rounded-lg bg-white p-6 text-left align-middle shadow-xl transition-all`}
             >
               {title && (
                 <Dialog.Title className="text-lg font-medium leading-6 text-gray-900">

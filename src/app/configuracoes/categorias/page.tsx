@@ -78,10 +78,10 @@ export default function CategoriasPage() {
           <TableRow key={c.id}>
             <TableCell>{c.nome}</TableCell>
             <TableCell className="flex space-x-2">
-              <Button size="sm" onClick={() => { setCategoriaEditando(c); openModal(); }}>
+              <Button variant="secondary" size="sm" onClick={() => { setCategoriaEditando(c); openModal(); }}>
                 Editar
               </Button>
-              <Button size="sm" variant="danger" onClick={() => handleRemover(c.id)}>
+              <Button variant="secondary" size="sm" variant="danger" onClick={() => handleRemover(c.id)}>
                 Remover
               </Button>
             </TableCell>

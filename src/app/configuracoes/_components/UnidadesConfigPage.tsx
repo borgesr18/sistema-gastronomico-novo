@@ -88,10 +88,10 @@ export default function UnidadesConfigPage() {
             <TableCell>{u.nome}</TableCell>
             <TableCell>
               <div className="flex space-x-2">
-                <Button size="sm" variant="secondary" onClick={() => { setUnidadeEditando(u); openModal(); }}>
+                <Button variant="secondary" size="sm" variant="secondary" onClick={() => { setUnidadeEditando(u); openModal(); }}>
                   Editar
                 </Button>
-                <Button size="sm" variant="danger" onClick={() => handleRemover(u.id)}>
+                <Button variant="secondary" size="sm" variant="danger" onClick={() => handleRemover(u.id)}>
                   Excluir
                 </Button>
               </div>

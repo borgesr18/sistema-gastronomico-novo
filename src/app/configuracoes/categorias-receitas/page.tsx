@@ -80,10 +80,10 @@ export default function CategoriasReceitasPage() {
           <TableRow key={cat.id}>
             <TableCell>{cat.nome}</TableCell>
             <TableCell className="flex items-center space-x-2">
-              <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
+              <Button variant="secondary" size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
                 ✏️ Editar
               </Button>
-              <Button size="sm" variant="danger" onClick={() => handleRemover(cat.id)}>
+              <Button variant="secondary" size="sm" variant="danger" onClick={() => handleRemover(cat.id)}>
                 🗑️ Excluir
               </Button>
             </TableCell>

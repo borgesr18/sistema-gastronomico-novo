@@ -10,14 +10,14 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  fullWidth?: boolean;
+   fullWidth={true}?: boolean;
   isLoading?: boolean;
 }
 
 export default function Button({
   variant = 'primary',
   size = 'md',
-  fullWidth = false,
+   fullWidth={true} = false,
   isLoading = false,
   className,
   disabled,
@@ -45,7 +45,7 @@ export default function Button({
     baseClass,
     sizeClasses[size],
     variantClasses[variant],
-    fullWidth && 'w-full',
+     fullWidth={true} && 'w-full',
     isLoading && 'opacity-50 cursor-not-allowed',
     className
   );

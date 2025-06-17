@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/lib/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import Logo from '../ui/Logo';
 
 const Header: React.FC = () => {
@@ -10,9 +10,7 @@ const Header: React.FC = () => {
   const closeTimeout = useRef<NodeJS.Timeout | null>(null);
   const { usuarioAtual, logout } = useAuth();
 
-  const toggleProfile = () => {
-    setIsProfileOpen(!isProfileOpen);
-  };
+  const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
   const handleMouseEnter = () => {
     if (closeTimeout.current) clearTimeout(closeTimeout.current);

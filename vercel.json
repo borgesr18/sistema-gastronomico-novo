@@ -8,11 +8,5 @@
   "regions": ["gru1"],
   "github": {
     "silent": true
-  },
-  "functions": {
-    "api/**": {
-      "maxDuration": 10,
-      "memory": 128
-    }
   }
 }

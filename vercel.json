@@ -8,5 +8,12 @@
   "regions": ["gru1"],
   "github": {
     "silent": true
+  },
+  "functions": {
+    "api/**": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 10,
+      "memory": 128
+    }
   }
 }

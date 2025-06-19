@@ -1,81 +1,78 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
+import Link from 'next/link';
+import Card from '@/components/ui/Card';
+import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
+import { useUsuarios } from '@/lib/usuariosService';
+import Logo from '@/components/ui/Logo';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login, usuarioAtual } = useUsuarios();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (usuarioAtual) {
+      router.replace('/');
+    }
+  }, [usuarioAtual, router]);
+
+  if (usuarioAtual) return null;
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setErro('');
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, senha })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        Cookies.set('token', data.token, { expires: 7 });
-        router.push('/');
-      } else {
-        const errorData = await res.json();
-        setErro(errorData.message || 'Falha ao fazer login.');
-      }
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      setErro('Erro inesperado. Tente novamente.');
+    const usuario = await login(email, senha);
+    if (usuario) {
+      router.push('/');
+    } else {
+      setErro('Credenciais inválidas');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
-      >
-        <h1 className="text-2xl font-bold text-center">Login</h1>
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <Card className="w-96">
+        <div className="flex justify-center mb-4">
+          <Logo className="text-2xl" />
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <h1 className="text-xl font-bold text-gray-800">Entrar</h1>
 
-        {erro && <p className="text-red-500 text-sm">{erro}</p>}
+          {erro && <p className="text-sm text-red-600">{erro}</p>}
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Email:</label>
-          <input
+          <Input
+            label="Email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2"
           />
-        </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Senha:</label>
-          <input
+          <Input
+            label="Senha"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2"
           />
-        </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          Entrar
-        </button>
-      </form>
+          <Button type="submit" variant="primary" fullWidth>
+            Entrar
+          </Button>
+
+          <p className="text-sm text-center">
+            Não possui conta?{' '}
+            <Link href="/usuarios/novo" className="text-blue-600 hover:underline">
+              Cadastre-se
+            </Link>
+          </p>
+        </form>
+      </Card>
     </div>
   );
 }

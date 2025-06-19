@@ -1,11 +1,9 @@
 'use client';
-export const dynamic = "force-dynamic";
 
 import { useState, useRef } from 'react';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
-import Modal from '@/components/ui/Modal';
-import { useModal } from '@/contexts/ModalContext';
+import Modal, { useModal } from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
 import { useUnidadesMedida } from '@/lib/unidadesService';
 
@@ -47,14 +45,14 @@ export default function UnidadesConfigPage() {
     URL.revokeObjectURL(url);
   };
 
-  const handleImport: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleImport: React.ChangeEventHandler<HTMLInputElement> = e => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result as string) as { id: string; nome: string }[];
-        data.forEach((d) => d.id && adicionarUnidade(d.id, d.nome));
+        data.forEach(d => d.id && adicionarUnidade(d.id, d.nome));
       } catch (err) {
         console.error('Erro ao importar unidades', err);
       }
@@ -62,7 +60,7 @@ export default function UnidadesConfigPage() {
     reader.readAsText(file);
   };
 
-  const filtradas = unidades.filter((u) =>
+  const filtradas = unidades.filter(u =>
     u.id.toLowerCase().includes(filtro.toLowerCase()) ||
     u.nome.toLowerCase().includes(filtro.toLowerCase())
   );
@@ -82,7 +80,7 @@ export default function UnidadesConfigPage() {
             label=""
             placeholder="Buscar..."
             value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
+            onChange={e => setFiltro(e.target.value)}
             className="h-[38px]"
           />
         </div>
@@ -98,15 +96,15 @@ export default function UnidadesConfigPage() {
 
       <div className="pt-2">
         <Table headers={["Sigla", "Nome", "Ações"]}>
-          {filtradas.map((u) => (
+          {filtradas.map(u => (
             <TableRow key={u.id}>
               <TableCell>{u.id}</TableCell>
               <TableCell>{u.nome}</TableCell>
-              <TableCell>
-                <Button variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)} >
+              <TableCell className="flex items-center space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(u.id, u.nome)}>
                   ✏️ Editar
                 </Button>
-                <Button variant="danger" onClick={() => removerUnidade(u.id)} >
+                <Button size="sm" variant="danger" onClick={() => removerUnidade(u.id)}>
                   🗑️ Excluir
                 </Button>
               </TableCell>
@@ -121,14 +119,14 @@ export default function UnidadesConfigPage() {
           <Input
             label="Sigla"
             value={nova.id}
-            onChange={(e) => setNova({ ...nova, id: e.target.value })}
+            onChange={e => setNova({ ...nova, id: e.target.value })}
             required
             className="h-[38px]"
           />
           <Input
             label="Nome"
             value={nova.nome}
-            onChange={(e) => setNova({ ...nova, nome: e.target.value })}
+            onChange={e => setNova({ ...nova, nome: e.target.value })}
             required
             className="h-[38px]"
           />
@@ -151,7 +149,7 @@ export default function UnidadesConfigPage() {
           <Input
             label="Nome"
             value={editar.nome}
-            onChange={(e) => setEditar({ ...editar, nome: e.target.value })}
+            onChange={e => setEditar({ ...editar, nome: e.target.value })}
             required
             className="h-[38px]"
           />

@@ -1,122 +1,147 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { CategoriaReceita } from '@prisma/client';
-import Modal from '@/components/ui/Modal';
+import { useState, useRef } from 'react';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
+import Modal, { useModal } from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
-import { Table, TableRow, TableCell } from '@/components/ui/Table';
+import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
 
-export default function CategoriasReceitasPage() {
-  const [categorias, setCategorias] = useState<CategoriaReceita[]>([]);
-  const [nome, setNome] = useState('');
-  const [editandoId, setEditandoId] = useState<string | null>(null);
-  const [modalAberto, setModalAberto] = useState(false);
+export default function CategoriasReceitasConfigPage() {
+  const { categorias, adicionar, atualizar, remover } = useCategoriasReceita();
+  const { isOpen, openModal, closeModal } = useModal();
+  const { isOpen: isEditOpen, openModal: openEdit, closeModal: closeEdit } = useModal();
+  const [nova, setNova] = useState('');
+  const [editar, setEditar] = useState({ id: '', nome: '' });
   const [filtro, setFiltro] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
 
-  const listarCategorias = async () => {
-    const res = await fetch('/api/categorias-receitas');
-    const data = await res.json();
-    setCategorias(data);
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    adicionar(nova.trim());
+    setNova('');
+    closeModal();
   };
 
-  useEffect(() => {
-    listarCategorias();
-  }, []);
-
-  const abrirModalNova = () => {
-    setNome('');
-    setEditandoId(null);
-    setModalAberto(true);
+  const iniciarEdicao = (id: string, nome: string) => {
+    setEditar({ id, nome });
+    openEdit();
   };
 
-  const iniciarEdicao = (id: string, nomeAtual: string) => {
-    setNome(nomeAtual);
-    setEditandoId(id);
-    setModalAberto(true);
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    atualizar(editar.id, editar.nome.trim());
+    closeEdit();
   };
 
-  const handleSalvar = async () => {
-    const url = editandoId ? `/api/categorias-receitas/${editandoId}` : '/api/categorias-receitas';
-    const method = editandoId ? 'PUT' : 'POST';
-
-    await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome }),
-    });
-
-    setModalAberto(false);
-    listarCategorias();
+  const handleExport = () => {
+    const data = JSON.stringify(categorias, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'categorias-receitas.json';
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
-  const handleRemover = async (id: string) => {
-    await fetch(`/api/categorias-receitas/${id}`, {
-      method: 'DELETE',
-    });
-    listarCategorias();
+  const handleImport: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string) as { nome: string }[];
+        data.forEach((d) => d.nome && adicionar(d.nome));
+      } catch (err) {
+        console.error('Erro ao importar categorias de receitas', err);
+      }
+    };
+    reader.readAsText(file);
   };
 
-  const categoriasFiltradas = categorias.filter((c) =>
+  const filtradas = categorias.filter((c) =>
     c.nome.toLowerCase().includes(filtro.toLowerCase())
   );
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Categorias de Receitas</h2>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-800">Categorias de Receitas</h1>
 
-      <div className="flex items-center space-x-2 mb-4">
-        <Button onClick={abrirModalNova}>Nova Categoria</Button>
-        <Input
-          label="Buscar"
-          placeholder="Buscar..."
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-        />
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap gap-2 grow">
+          <Button onClick={openModal} variant="primary">➕ Nova Categoria</Button>
+          <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
+          <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
+        </div>
+        <div className="w-full sm:w-[220px]">
+          <Input
+            label=""
+            placeholder="Buscar..."
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="h-[38px]"
+          />
+        </div>
       </div>
 
-      <Table headers={['Nome', 'Ações']}>
-        {categoriasFiltradas.map((cat) => (
-          <TableRow key={cat.id}>
-            <TableCell>{cat.nome}</TableCell>
-            <TableCell>
-              <Button variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)} >
-                ✏️ Editar
-              </Button>
-              <Button variant="danger" onClick={() => handleRemover(cat.id)} >
-                🗑️ Excluir
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
+      <input
+        type="file"
+        ref={fileInput}
+        className="hidden"
+        accept="application/json"
+        onChange={handleImport}
+      />
 
-      {modalAberto && (
-        <Modal title={editandoId ? 'Editar Categoria' : 'Nova Categoria'} isOpen={modalAberto} onClose={() => setModalAberto(false)} >
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSalvar();
-            }}
-            className="space-y-4"
-          >
-            <Input
-              label="Nome da Categoria"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              required
-            />
-            <div className="flex justify-end space-x-2">
-              <Button type="button" variant="secondary" onClick={() => setModalAberto(false)} >
-                Cancelar
-              </Button>
-              <Button type="submit" variant="primary">
-                Salvar
-              </Button>
-            </div>
-          </form>
-        </Modal>
-      )}
+      <div className="pt-2">
+        <Table headers={['Nome', 'Ações']}>
+          {filtradas.map((cat) => (
+            <TableRow key={cat.id}>
+              <TableCell>{cat.nome}</TableCell>
+              <TableCell className="flex items-center space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
+                  ✏️ Editar
+                </Button>
+                <Button size="sm" variant="danger" onClick={() => remover(cat.id)}>
+                  🗑️ Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </div>
+
+      {/* Modal Nova Categoria */}
+      <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
+        <form onSubmit={handleAdd} className="space-y-4">
+          <Input
+            label="Nome"
+            value={nova}
+            onChange={(e) => setNova(e.target.value)}
+            required
+          />
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
+            <Button type="submit" variant="primary">Salvar</Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal Editar Categoria */}
+      <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
+        <form onSubmit={handleEdit} className="space-y-4">
+          <Input
+            label="Nome"
+            value={editar.nome}
+            onChange={(e) => setEditar({ ...editar, nome: e.target.value })}
+            required
+          />
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="secondary" onClick={closeEdit}>Cancelar</Button>
+            <Button type="submit" variant="primary">Salvar</Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

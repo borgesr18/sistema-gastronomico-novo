@@ -1,55 +1,44 @@
-'use client';
+import React, { SelectHTMLAttributes, forwardRef } from 'react';
 
-import React from 'react';
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
-
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  name: string;
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: SelectOption[];
   error?: string;
-  required?: boolean;
+  helperText?: string;
+  options: Array<{ value: string; label: string }>;
 }
 
-export default function Select({
-  label,
-  name,
-  value,
-  onChange,
-  options,
-  error,
-  required,
-  ...props
-}: SelectProps) {
-  return (
-    <div className="space-y-1">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
-      )}
-      <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        required={required}
-        {...props}
-        className={`block w-full border px-3 py-2 rounded ${
-          error ? 'border-red-500' : 'border-gray-300'
-        }`}
-      >
-        <option value="">Selecione...</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-    </div>
-  );
-}
+const Select = forwardRef<HTMLSelectElement, SelectProps>(
+  ({ label, error, helperText, options, className = '', ...props }, ref) => {
+    return (
+      <div className="mb-4">
+        {label && (
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+          </label>
+        )}
+        <select
+          ref={ref}
+          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 
+            ${error ? 'border-red-500' : 'border-gray-300'} 
+            ${className}`}
+          {...props}
+        >
+          <option value="">Selecione...</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        {helperText && !error && (
+          <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+        )}
+      </div>
+    );
+  }
+);
+
+Select.displayName = 'Select';
+
+export default Select;

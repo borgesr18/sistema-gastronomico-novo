@@ -1,38 +1,56 @@
-'use client';
-
-import React, { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import React, { ReactNode, useEffect } from 'react';
 
 interface SlideOverProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  children: React.ReactNode;
+  title?: string;
+  children: ReactNode;
+  width?: 'sm' | 'md' | 'lg';
 }
 
-export default function SlideOver({ isOpen, onClose, title, children }: SlideOverProps) {
+const SlideOver: React.FC<SlideOverProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  width = 'md'
+}) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
+
+  const widthClasses = {
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg'
+  } as const;
+
   return (
-    <Transition show={isOpen} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 overflow-hidden z-50" onClose={onClose}>
-        <div className="absolute inset-0 overflow-hidden">
-          <Transition.Child
-            as={Fragment}
-            enter="transform transition ease-in-out duration-500 sm:duration-700"
-            enterFrom="translate-x-full"
-            enterTo="translate-x-0"
-            leave="transform transition ease-in-out duration-500 sm:duration-700"
-            leaveFrom="translate-x-0"
-            leaveTo="translate-x-full"
-          >
-            <Dialog.Panel className="absolute right-0 w-screen max-w-md h-full bg-white shadow-xl">
-              <div className="p-6 border-b">
-                <Dialog.Title className="text-lg font-medium text-gray-900">{title}</Dialog.Title>
-              </div>
-              <div className="p-6 overflow-y-auto h-full">{children}</div>
-            </Dialog.Panel>
-          </Transition.Child>
+    <div className={`fixed inset-0 z-50 ${isOpen ? '' : 'pointer-events-none'}`}> 
+      <div
+        className={`absolute inset-0 bg-black transition-opacity ${isOpen ? 'opacity-50' : 'opacity-0'}`}
+        onClick={onClose}
+      ></div>
+      <div
+        className={`absolute right-0 top-0 h-full bg-white shadow-xl transform transition-transform ${widthClasses[width]} ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <div className="flex justify-between items-center px-4 py-3 border-b" style={{ borderColor: 'var(--cor-borda)' }}>
+          <h3 className="text-lg font-medium" style={{ color: 'var(--cor-texto-principal)' }}>{title}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+            <span className="material-icons">close</span>
+          </button>
         </div>
-      </Dialog>
-    </Transition>
+        <div className="p-4 overflow-y-auto h-full">{children}</div>
+      </div>
+    </div>
   );
-}
+};
+
+export default SlideOver;

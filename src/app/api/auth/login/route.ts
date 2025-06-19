@@ -1,38 +1,23 @@
-export const runtime = 'nodejs';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAllUsuarios, hashSenha, ensureAdmin } from '@/lib/serverUsuarios';
 
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+export async function POST(req: NextRequest) {
+  ensureAdmin();
 
-export async function POST(req: Request) {
   const { email, senha } = await req.json();
 
-  const usuario = await prisma.usuario.findUnique({
-    where: { email },
-  });
-
-  if (!usuario || !(await bcrypt.compare(senha, usuario.senhaHash))) {
-    return NextResponse.json({ message: 'Credenciais inválidas.' }, { status: 401 });
-  }
-
-  const token = jwt.sign(
-    {
-      id: usuario.id,
-      nome: usuario.nome,
-      email: usuario.email,
-    },
-    process.env.JWT_SECRET!,
-    { expiresIn: '7d' }
+  const user = getAllUsuarios().find(
+    (u) => u.email === email && u.senhaHash === hashSenha(senha)
   );
 
-  const response = NextResponse.json({ token });
+  if (!user) {
+    return NextResponse.json({ error: 'Credenciais inválidas' }, { status: 401 });
+  }
 
-  response.cookies.set('token', token, {
-    httpOnly: true,
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7, // 7 dias
+  return NextResponse.json({
+    id: user.id,
+    nome: user.nome,
+    email: user.email,
+    role: user.role,
   });
-
-  return response;
 }

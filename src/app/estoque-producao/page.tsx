@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
 import Input from '@/components/ui/Input';
@@ -49,7 +49,7 @@ export default function EstoqueProducaoPage() {
             options={fichasTecnicas
               .map((f: FichaTecnicaInfo) => ({ value: f.id, label: f.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}
-            
+            error={erro && !form.fichaId ? erro : undefined}
           />
           <Select
             label="Tipo"
@@ -63,7 +63,7 @@ export default function EstoqueProducaoPage() {
             name="quantidade"
             value={form.quantidade}
             onChange={handleChange}
-            
+            error={erro && !form.quantidade ? erro : undefined}
           />
           {form.tipo === 'entrada' && (
             <Input

@@ -162,7 +162,7 @@ export default function NovoInsumoPage() {
                 name="nome"
                 value={produto.nome}
                 onChange={handleChange}
-                
+                error={erros.nome}
                 placeholder="Ex: Farinha de Trigo"
               />
 
@@ -174,7 +174,7 @@ export default function NovoInsumoPage() {
                 options={categorias
                   .map(c => ({ value: c.id, label: c.nome }))
                   .sort((a, b) => a.label.localeCompare(b.label))}
-                
+                error={erros.categoria}
               />
 
               <Input
@@ -195,7 +195,7 @@ export default function NovoInsumoPage() {
                 options={unidades
                   .map(u => ({ value: u.id, label: u.nome }))
                   .sort((a, b) => a.label.localeCompare(b.label))}
-                
+                error={erros.unidadeMedida}
               />
               
               <Input
@@ -206,7 +206,7 @@ export default function NovoInsumoPage() {
                 min="0"
                 value={produto.preco}
                 onChange={handleChange}
-                
+                error={erros.preco}
                 placeholder="Ex: 5.99"
               />
               
@@ -215,7 +215,7 @@ export default function NovoInsumoPage() {
                 name="fornecedor"
                 value={produto.fornecedor}
                 onChange={handleChange}
-                
+                error={erros.fornecedor}
                 placeholder="Ex: Distribuidora Alimentos"
               />
 
@@ -226,7 +226,7 @@ export default function NovoInsumoPage() {
                 min="0"
                 value={produto.pesoEmbalagem}
                 onChange={handleChange}
-                
+                error={erros.pesoEmbalagem}
                 placeholder="Ex: 1000"
               />
             </div>
@@ -254,7 +254,7 @@ export default function NovoInsumoPage() {
                     min="0"
                     value={produto.infoNutricional.calorias}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.calorias']}
                   />
                   
                   <Input
@@ -265,7 +265,7 @@ export default function NovoInsumoPage() {
                     step="0.1"
                     value={produto.infoNutricional.carboidratos}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.carboidratos']}
                   />
                   
                   <Input
@@ -276,7 +276,7 @@ export default function NovoInsumoPage() {
                     step="0.1"
                     value={produto.infoNutricional.proteinas}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.proteinas']}
                   />
                   
                   <Input
@@ -287,7 +287,7 @@ export default function NovoInsumoPage() {
                     step="0.1"
                     value={produto.infoNutricional.gordurasTotais}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.gordurasTotais']}
                   />
                   
                   <Input
@@ -298,7 +298,7 @@ export default function NovoInsumoPage() {
                     step="0.1"
                     value={produto.infoNutricional.gordurasSaturadas}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.gordurasSaturadas']}
                   />
                   
                   <Input
@@ -309,7 +309,7 @@ export default function NovoInsumoPage() {
                     step="0.1"
                     value={produto.infoNutricional.gordurasTrans}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.gordurasTrans']}
                   />
                   
                   <Input
@@ -320,7 +320,7 @@ export default function NovoInsumoPage() {
                     step="0.1"
                     value={produto.infoNutricional.fibras}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.fibras']}
                   />
                   
                   <Input
@@ -331,7 +331,7 @@ export default function NovoInsumoPage() {
                     step="0.1"
                     value={produto.infoNutricional.sodio}
                     onChange={handleChange}
-                    
+                    error={erros['infoNutricional.sodio']}
                   />
                 </div>
               )}
@@ -349,7 +349,7 @@ export default function NovoInsumoPage() {
             <Button
               type="submit"
               variant="primary"
-              
+              isLoading={isLoading}
             >
               Salvar Insumo
             </Button>

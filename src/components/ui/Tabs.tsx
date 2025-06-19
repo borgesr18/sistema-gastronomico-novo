@@ -1,8 +1,7 @@
 'use client';
+import React, { useState } from 'react';
 
-import React from 'react';
-
-export interface Tab {
+interface Tab {
   id: string;
   label: string;
   content: React.ReactNode;
@@ -10,28 +9,34 @@ export interface Tab {
 
 interface TabsProps {
   tabs: Tab[];
-  activeTabId: string;
-  onChange: (tabId: string) => void;
+  className?: string;
 }
 
-export function Tabs({ tabs, activeTabId, onChange }: TabsProps) {
+const Tabs: React.FC<TabsProps> = ({ tabs, className = '' }) => {
+  const [active, setActive] = useState(tabs[0]?.id);
+  const activeTab = tabs.find(t => t.id === active) || tabs[0];
+
   return (
-    <div>
-      <div className="border-b flex space-x-2 mb-4">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            className={`px-4 py-2 rounded-t ${
-              activeTabId === tab.id
-                ? 'bg-white border border-b-0'
-                : 'bg-gray-100 text-gray-600'
-            }`}
-            onClick={() => onChange(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
+    <div className={className}>
+      <div className="border-b flex space-x-2">
+        {tabs.map(tab => {
+          const isActive = active === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActive(tab.id)}
+              className={`px-3 py-2 text-sm font-medium border-b-2 ${isActive ? 'border-[var(--cor-acao)] text-[var(--cor-acao)]' : 'border-transparent text-gray-600 hover:text-gray-800'}`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-4">
+        {activeTab.content}
       </div>
     </div>
   );
-}
+};
+
+export default Tabs;

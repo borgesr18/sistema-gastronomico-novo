@@ -1,25 +1,27 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { ModalProvider } from '@/contexts/ModalContext';
-import MainLayout from '@/components/layout/MainLayout';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import MainLayout from "@/components/layout/MainLayout";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Sistema Gastronômico',
-  description: 'Sistema de gestão gastronômica',
+  title: "CustoChef",
+  description: "Sistema para gerenciamento de fichas técnicas e produtos gastronômicos",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="pt-BR">
-      <body>
-        <AuthProvider>
-          <ModalProvider>
-            <MainLayout>
-              {children}
-            </MainLayout>
-          </ModalProvider>
-        </AuthProvider>
+      <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+      </head>
+      <body className={inter.className}>
+        <MainLayout>{children}</MainLayout>
       </body>
     </html>
   );

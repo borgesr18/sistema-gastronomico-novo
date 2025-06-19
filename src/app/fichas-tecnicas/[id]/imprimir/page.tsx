@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import { useFichasTecnicas, obterLabelCategoriaReceita, obterLabelUnidadeRendimento } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 
 export default function ImprimirFichaTecnicaPage() {
   const params = useParams();

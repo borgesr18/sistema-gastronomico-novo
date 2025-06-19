@@ -1,25 +1,34 @@
-'use client';
+import React, { InputHTMLAttributes, forwardRef } from 'react';
 
-import React from 'react';
-
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  helperText?: string;
 }
 
-export default function Input({ label, error, ...props }: InputProps) {
-  return (
-    <div className="space-y-1">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
-      )}
-      <input
-        {...props}
-        className={`block w-full border px-3 py-2 rounded ${
-          error ? 'border-red-500' : 'border-gray-300'
-        }`}
-      />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-    </div>
-  );
-}
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ label, error, helperText, className = '', ...props }, ref) => {
+    return (
+      <div className="mb-4">
+        {label && (
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--cor-texto-principal)' }}>
+            {label}
+          </label>
+        )}
+        <input
+          ref={ref}
+          className={`w-full input ${error ? 'border-[var(--cor-erro)]' : ''} ${className}`}
+          {...props}
+        />
+        {error && <p className="mt-1 text-sm" style={{ color: 'var(--cor-erro)' }}>{error}</p>}
+        {helperText && !error && (
+          <p className="mt-1 text-sm" style={{ color: 'var(--cor-texto-secundario)' }}>{helperText}</p>
+        )}
+      </div>
+    );
+  }
+);
+
+Input.displayName = 'Input';
+
+export default Input;

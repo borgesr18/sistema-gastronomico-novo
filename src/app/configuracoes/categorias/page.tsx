@@ -1,105 +1,147 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Categoria } from '@prisma/client';
+import { useState, useRef } from 'react';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
-import Modal from '@/components/ui/Modal';
-import { useModal } from '@/contexts/ModalContext';
-import { Table, TableRow, TableCell } from '@/components/ui/Table';
-import Toast from '@/components/ui/Toast';
+import Modal, { useModal } from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
-import CategoriaForm from '../_components/CategoriaForm';
+import { useCategorias } from '@/lib/categoriasService';
 
-export default function CategoriasPage() {
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [filtro, setFiltro] = useState('');
-  const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
-
+export default function CategoriasConfigPage() {
+  const { categorias, adicionarCategoria, atualizarCategoria, removerCategoria } = useCategorias();
   const { isOpen, openModal, closeModal } = useModal();
+  const { isOpen: isEditOpen, openModal: openEdit, closeModal: closeEdit } = useModal();
+  const [nova, setNova] = useState('');
+  const [editar, setEditar] = useState({ id: '', nome: '' });
+  const [filtro, setFiltro] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
 
-  const carregarCategorias = async () => {
-    const res = await fetch('/api/categorias');
-    const data = await res.json();
-    setCategorias(data);
-  };
-
-  useEffect(() => {
-    carregarCategorias();
-  }, []);
-
-  const handleSalvar = async (categoria: Partial<Categoria>) => {
-    const metodo = categoria.id ? 'PUT' : 'POST';
-    const url = categoria.id ? `/api/categorias/${categoria.id}` : '/api/categorias';
-
-    await fetch(url, {
-      method: metodo,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(categoria),
-    });
-
-    setToast('Categoria salva com sucesso!');
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    adicionarCategoria(nova.trim());
+    setNova('');
     closeModal();
-    carregarCategorias();
   };
 
-  const handleRemover = async (id: string) => {
-    if (!confirm('Tem certeza que deseja remover?')) return;
-
-    await fetch(`/api/categorias/${id}`, { method: 'DELETE' });
-
-    setToast('Categoria removida com sucesso!');
-    carregarCategorias();
+  const iniciarEdicao = (id: string, nome: string) => {
+    setEditar({ id, nome });
+    openEdit();
   };
 
-  const categoriasFiltradas = categorias.filter(c =>
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    atualizarCategoria(editar.id, editar.nome.trim());
+    closeEdit();
+  };
+
+  const handleExport = () => {
+    const data = JSON.stringify(categorias, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'categorias.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string) as { nome: string }[];
+        data.forEach((d) => d.nome && adicionarCategoria(d.nome));
+      } catch (err) {
+        console.error('Erro ao importar categorias', err);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const filtradas = categorias.filter((c) =>
     c.nome.toLowerCase().includes(filtro.toLowerCase())
   );
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Categorias de Produtos</h1>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-800">Categorias de Produtos</h1>
 
-      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
-
-      <div className="flex items-center space-x-2 mb-4">
-        <Button onClick={() => { setCategoriaEditando(null); openModal(); }}>
-          Nova Categoria
-        </Button>
-        <Input
-          label="Buscar"
-          placeholder="Digite para filtrar..."
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-        />
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap gap-2 grow">
+          <Button onClick={openModal} variant="primary">➕ Nova Categoria</Button>
+          <Button onClick={handleExport} variant="secondary">⬇️ Exportar</Button>
+          <Button onClick={() => fileInput.current?.click()} variant="secondary">⬆️ Importar</Button>
+        </div>
+        <div className="w-full sm:w-[220px]">
+          <Input
+            label=""
+            placeholder="Buscar..."
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="h-[38px]"
+          />
+        </div>
       </div>
 
-      <Table headers={['Nome', 'Ações']}>
-        {categoriasFiltradas.map(c => (
-          <TableRow key={c.id}>
-            <TableCell>{c.nome}</TableCell>
-            <TableCell>
-              <Button variant="secondary" onClick={() => { setCategoriaEditando(c); openModal(); }}>
-                Editar
-              </Button>
-              <Button variant="danger" onClick={() => handleRemover(c.id)} >
-                Remover
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
+      <input
+        type="file"
+        ref={fileInput}
+        className="hidden"
+        accept="application/json"
+        onChange={handleImport}
+      />
 
-      {isOpen && (
-        <Modal title={categoriaEditando ? 'Editar Categoria' : 'Nova Categoria'} isOpen={isOpen} onClose={closeModal}>
-          <CategoriaForm
-            categoria={categoriaEditando}
-            onSave={handleSalvar}
-            onCancel={closeModal}
+      <div className="pt-2">
+        <Table headers={['Nome', 'Ações']}>
+          {filtradas.map((cat) => (
+            <TableRow key={cat.id}>
+              <TableCell>{cat.nome}</TableCell>
+              <TableCell className="flex items-center space-x-2">
+                <Button size="sm" variant="secondary" onClick={() => iniciarEdicao(cat.id, cat.nome)}>
+                  ✏️ Editar
+                </Button>
+                <Button size="sm" variant="danger" onClick={() => removerCategoria(cat.id)}>
+                  🗑️ Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+      </div>
+
+      {/* Modal Nova Categoria */}
+      <Modal isOpen={isOpen} onClose={closeModal} title="Nova Categoria">
+        <form onSubmit={handleAdd} className="space-y-4">
+          <Input
+            label="Nome"
+            value={nova}
+            onChange={(e) => setNova(e.target.value)}
+            required
           />
-        </Modal>
-      )}
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="secondary" onClick={closeModal}>Cancelar</Button>
+            <Button type="submit" variant="primary">Salvar</Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal Editar Categoria */}
+      <Modal isOpen={isEditOpen} onClose={closeEdit} title="Editar Categoria">
+        <form onSubmit={handleEdit} className="space-y-4">
+          <Input
+            label="Nome"
+            value={editar.nome}
+            onChange={(e) => setEditar({ ...editar, nome: e.target.value })}
+            required
+          />
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="secondary" onClick={closeEdit}>Cancelar</Button>
+            <Button type="submit" variant="primary">Salvar</Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
-

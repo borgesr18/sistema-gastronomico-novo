@@ -5,7 +5,7 @@ import Card from '@/components/ui/Card';
 import Select from '@/components/ui/Select';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import { useProducao, ProducaoInfo } from '@/lib/producaoService';
 import { useFichasTecnicas, FichaTecnicaInfo } from '@/lib/fichasTecnicasService';
 import { usePrecosVenda, EstrategiaPreco } from '@/lib/precosService';
@@ -105,7 +105,7 @@ export default function PrecosPage() {
                 <TableCell>{formatar(e.preco1)}</TableCell>
                 <TableCell>{formatar(e.preco2)}</TableCell>
                 <TableCell>{formatar(e.preco3)}</TableCell>
-                <TableCell>
+                <TableCell className="relative text-right">
                   <button
                     className="p-1 rounded hover:bg-gray-100"
                     onClick={() => setMenuRow(menuRow === e.id ? null : e.id)}

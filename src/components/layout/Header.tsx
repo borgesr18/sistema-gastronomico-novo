@@ -2,15 +2,17 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import { useUsuarios } from '@/lib/usuariosService';
 import Logo from '../ui/Logo';
 
 const Header: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const closeTimeout = useRef<NodeJS.Timeout | null>(null);
-  const { usuarioAtual, logout } = useAuth();
+  const { usuarioAtual, logout } = useUsuarios();
 
-  const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
 
   const handleMouseEnter = () => {
     if (closeTimeout.current) clearTimeout(closeTimeout.current);
@@ -63,8 +65,6 @@ const Header: React.FC = () => {
             {isProfileOpen && (
               <div
                 className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
               >
                 <Link
                   href="/configuracoes/perfil"

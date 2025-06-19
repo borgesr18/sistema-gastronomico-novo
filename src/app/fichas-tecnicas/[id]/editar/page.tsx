@@ -11,8 +11,8 @@ import { useFichasTecnicas, unidadesRendimento, FichaTecnicaInfo, IngredienteFic
 import { useCategoriasReceita } from '@/lib/categoriasReceitasService';
 import { useProdutos } from '@/lib/produtosService';
 import { useUnidadesMedida } from '@/lib/unidadesService';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
-import { useModal } from '@/contexts/ModalContext';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
+import { useModal } from '@/components/ui/Modal';
 import Modal from '@/components/ui/Modal';
 import Toast from '@/components/ui/Toast';
 
@@ -296,7 +296,7 @@ export default function EditarFichaTecnicaPage() {
                   name="nome"
                   value={fichaTecnica.nome}
                   onChange={handleChange}
-                  
+                  error={erros.nome}
                   placeholder="Ex: Risoto de Cogumelos"
                 />
                 
@@ -308,7 +308,7 @@ export default function EditarFichaTecnicaPage() {
                   options={categorias
                     .map(c => ({ value: c.id, label: c.nome }))
                     .sort((a, b) => a.label.localeCompare(b.label))}
-                  
+                  error={erros.categoria}
                 />
               </div>
               
@@ -329,7 +329,7 @@ export default function EditarFichaTecnicaPage() {
                   min="1"
                   value={fichaTecnica.tempoPreparo}
                   onChange={handleChange}
-                  
+                  error={erros.tempoPreparo}
                   placeholder="Ex: 45"
                 />
                 
@@ -347,7 +347,7 @@ export default function EditarFichaTecnicaPage() {
                   value={fichaTecnica.unidadeRendimento}
                   onChange={handleChange}
                   options={unidadesRendimento}
-                  
+                  error={erros.unidadeRendimento}
                 />
               </div>
             </div>
@@ -399,7 +399,7 @@ export default function EditarFichaTecnicaPage() {
               name="modoPreparo"
               value={fichaTecnica.modoPreparo}
               onChange={handleChange}
-              
+              error={erros.modoPreparo}
               placeholder="Descreva passo a passo como preparar a receita"
               rows={6}
             />
@@ -427,7 +427,7 @@ export default function EditarFichaTecnicaPage() {
             <Button
               type="submit"
               variant="primary"
-              
+              isLoading={isSaving}
             >
               Atualizar Ficha Técnica
             </Button>
@@ -457,7 +457,7 @@ export default function EditarFichaTecnicaPage() {
             name="produtoId"
             value={ingredienteAtual.produtoId}
             onChange={handleIngredienteChange}
-            
+            error={erros.produtoId}
             options={produtos
               .map(p => ({ value: p.id, label: `${p.nome} (${p.unidadeMedida})` }))
               .sort((a, b) => a.label.localeCompare(b.label))}
@@ -471,7 +471,7 @@ export default function EditarFichaTecnicaPage() {
             step="0.1"
             value={ingredienteAtual.quantidade}
             onChange={handleIngredienteChange}
-            
+            error={erros.quantidade}
             placeholder="Ex: 250"
           />
 
@@ -480,7 +480,7 @@ export default function EditarFichaTecnicaPage() {
             name="unidade"
             value={ingredienteAtual.unidade}
             onChange={handleIngredienteChange}
-            
+            error={erros.unidade}
             options={unidades
               .map(u => ({ value: u.id, label: u.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}

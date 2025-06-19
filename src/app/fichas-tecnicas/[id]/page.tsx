@@ -9,7 +9,7 @@ import {
   obterLabelUnidadeRendimento,
 } from '@/lib/fichasTecnicasService';
 import { useProdutos } from '@/lib/produtosService';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 
 export default function DetalheFichaTecnicaPage() {
   const params = useParams();
@@ -25,7 +25,7 @@ export default function DetalheFichaTecnicaPage() {
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Ficha técnica não encontrada</h2>
         <p className="text-gray-600 mb-6">A ficha técnica que você está procurando não existe ou foi removida.</p>
-        <Button variant="primary" onClick={() => router.push('/fichas-tecnicas')} >
+        <Button variant="primary" onClick={() => router.push('/fichas-tecnicas')}>
           Voltar para Fichas Técnicas
         </Button>
       </div>
@@ -89,7 +89,7 @@ export default function DetalheFichaTecnicaPage() {
             Editar
           </Button>
           <Button
-            variant="primary"
+            variant="success"
             onClick={() => router.push(`/fichas-tecnicas/${fichaId}/imprimir`)}
           >
             Imprimir

@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Card from '@/components/ui/Card';
-import { Table,  TableRow, TableCell } from '@/components/ui/Table';
+import Table, { TableRow, TableCell } from '@/components/ui/Table';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
-import Modal from '@/components/ui/Modal';
-import { useModal } from '@/contexts/ModalContext';
+import Modal, { useModal } from '@/components/ui/Modal';
 import Toast from '@/components/ui/Toast';
 import { useEstoque } from '@/lib/estoqueService';
 import { useProdutos, ProdutoInfo } from '@/lib/produtosService';
@@ -131,7 +130,7 @@ export default function EstoquePage() {
             options={produtos
               .map((p: ProdutoInfo) => ({ value: p.id, label: p.nome }))
               .sort((a, b) => a.label.localeCompare(b.label))}
-            
+            error={erros.produtoId}
             className="flex-1 min-w-[150px]"
           />
           <Select
@@ -142,12 +141,12 @@ export default function EstoquePage() {
             options={[{ value: 'entrada', label: 'Entrada' }, { value: 'saida', label: 'Saída' }]}
             className="w-32"
           />
-          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange}   />
+          <Input label="Quantidade *" name="quantidade" value={form.quantidade} onChange={handleChange} error={erros.quantidade} className="w-28" />
           {form.tipo === 'entrada' && (
             <>
-              <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange}   />
-              <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange}   />
-              <Input label="Marca" name="marca" value={form.marca} onChange={handleChange}  />
+              <Input label="Preço Unitário *" name="preco" value={form.preco} onChange={handleChange} error={erros.preco} className="w-32" />
+              <Input label="Fornecedor *" name="fornecedor" value={form.fornecedor} onChange={handleChange} error={erros.fornecedor} className="flex-1 min-w-[150px]" />
+              <Input label="Marca" name="marca" value={form.marca} onChange={handleChange} className="flex-1 min-w-[120px]" />
             </>
           )}
           <div className="flex justify-end flex-1">
@@ -159,7 +158,7 @@ export default function EstoquePage() {
       <Card>
         <Table
           headers={["Data", "Produto", "Qtd", "Preço", "Fornecedor", "Marca", "Tipo", "Ações"]}
-          
+          isLoading={isLoading}
           emptyMessage="Nenhuma movimentação registrada"
         >
           {movimentacoes.map(m => {
@@ -176,7 +175,7 @@ export default function EstoquePage() {
                 <TableCell>
                   {m.tipo === 'entrada' ? '📥 Entrada' : '📤 Saída'}
                 </TableCell>
-                <TableCell>
+                <TableCell className="relative text-right">
                   <button
                     className="p-1 rounded hover:bg-gray-100"
                     onClick={() => setMenuRow(menuRow === m.id ? null : m.id)}

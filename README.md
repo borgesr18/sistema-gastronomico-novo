@@ -9,8 +9,6 @@ Sistema completo para gestão de produtos, fichas técnicas e relatórios para e
 - **Impressão de Fichas**: Gere uma versão pronta para imprimir das fichas técnicas
 - **Autenticação de Usuários**: Acesso ao sistema mediante login e senha
 - **Controle de Usuários**: Gerencie contas na seção de configurações
-- **Configurações Avançadas**: Categorias e unidades podem ser filtradas, exportadas e importadas como JSON
-- **Abas de Configurações**: Troque entre usuários, categorias e unidades em um layout de abas que mantém a navegação na mesma página
 - **Perfil do Usuário**: Consulte seus dados e altere a senha na página de perfil
 - **Níveis de Acesso**: Cadastre usuários como administradores ou somente visualizadores
 - **Alteração de Senhas**: Atualize as senhas dos usuários a qualquer momento
@@ -125,6 +123,6 @@ Acesse [http://localhost:3000](http://localhost:3000) no seu navegador para ver 
 ## Manutenção
 
 Para atualizar o sistema após o deploy:
-1. Faça as alterações no código.
-2. Envie para o repositório GitHub.
+1. Faça as alterações no código
+2. Envie para o repositório GitHub
 3. O Vercel detectará automaticamente as mudanças e fará um novo deploy
